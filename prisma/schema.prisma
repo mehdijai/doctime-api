@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  DOCTOR
+  PATIENT
+  ADMIN
+}
+
+model User {
+  id                 String              @id @unique @default(uuid())
+  name               String
+  email              String              @unique
+  phone              String              @unique
+  password           String
+  verifiedEmail      Boolean             @default(false)
+  userType           UserType
+  patient            Patient?
+  doctor             Doctor?
+  refreshToken       RefreshToken[]
+  resetPasswordToken ResetPasswordToken?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  verifyEmailToken   VerifyEmailToken?
+
+  @@map("users")
+}
+
+model ResetPasswordToken {
+  id        String   @id @unique @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reset_password_tokens")
+}
+
+model VerifyEmailToken {
+  id        String   @id @unique @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("verify_email_tokens")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+model Patient {
+  id                     String        @id @unique @default(uuid())
+  userId                 String        @unique
+  user                   User          @relation(fields: [userId], references: [id])
+  birthDate              DateTime
+  gender                 Gender
+  address                String
+  occupation             String
+  emergencyContactName   String
+  emergencyContactNumber String
+  primaryPhysician       String
+  insuranceProvider      String?
+  insurancePolicyNumber  String?
+  allergies              String?
+  currentMedication      String?
+  familyMedicalHistory   String?
+  pastMedicalHistory     String?
+  identificationType     String?
+  identificationNumber   String?
+  identificationUrl      String?
+  privacyConsent         Boolean
+  appointments           Appointment[]
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@map("patients")
+}
+
+enum DoctorStatus {
+  AVAILABLE
+  UNAVAILABLE
+  SUSPENDED
+}
+
+model Doctor {
+  id           String        @id @unique @default(uuid())
+  userId       String        @unique
+  user         User          @relation(fields: [userId], references: [id])
+  status       DoctorStatus
+  address      String
+  mapPosition  Json?
+  specialty    String
+  biography    String?
+  pictureId    String
+  pictureUrl   String
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("doctors")
+}
+
+enum AppointmentStatus {
+  PENDING
+  SCHEDULED
+  CANCELLED
+}
+
+model Appointment {
+  id                 String            @id @unique @default(uuid())
+  patientId          String
+  patient            Patient           @relation(fields: [patientId], references: [id])
+  doctorId           String
+  doctor             Doctor            @relation(fields: [doctorId], references: [id])
+  schedule           DateTime
+  status             AppointmentStatus
+  reason             String
+  note               String?
+  cancellationReason String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@map("appointments")
+}
