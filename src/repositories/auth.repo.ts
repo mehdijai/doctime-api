@@ -252,7 +252,7 @@ export async function resetPassword(payload: TResetPasswordSchema) {
 
     if (!token) {
       resBody.error = {
-        code: HttpStatusCode.NOT_FOUND,
+        code: HttpStatusCode.FORBIDDEN,
         message: 'Invalid or expired token',
       };
       return resBody;

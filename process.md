@@ -11,8 +11,8 @@
   - [x] Verify User
   - [x] **TEST** Verify User
   - [x] Forget Password
-  - [ ] **TEST** Forget Password
+  - [x] **TEST** Forget Password
   - [x] Reset Password
-  - [ ] **TEST** Reset Password
+  - [x] **TEST** Reset Password
   - [x] Update Password
   - [ ] **TEST** Update Password

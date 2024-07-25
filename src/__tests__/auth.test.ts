@@ -10,6 +10,9 @@ import { NodemailerMock } from 'nodemailer-mock';
 import { getTokenFromMail } from '@/utils/mailerUtils';
 const { mock } = nodemailer as unknown as NodemailerMock;
 import prisma from '@/services/prisma.service';
+import exp from 'constants';
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('Test Auth system', () => {
   const baseRoute = parseAPIVersion(1) + '/auth';
@@ -31,7 +34,9 @@ describe('Test Auth system', () => {
 
     const sentEmails = mock.getSentMail();
 
-    userPayload.verificationToken = getTokenFromMail(sentEmails[0].html.toString());
+    const verifyEmail = sentEmails.find((email) => email.subject === 'Verify Email');
+    expect(verifyEmail).toBeDefined();
+    userPayload.verificationToken = getTokenFromMail(verifyEmail.html.toString());
 
     expect(response.status).toBe(HttpStatusCode.OK);
     expect(response.body).toBeDefined();
@@ -189,5 +194,124 @@ describe('Test Auth system', () => {
       .set('Authorization', 'Bearer ' + userPayload.newAccessToken)
       .set('Accept', 'application/json');
     expect(response.status).toBe(HttpStatusCode.UNAUTHORIZED);
+  });
+
+  test('Test forget password', async () => {
+    const response = await request(app)
+      .post(baseRoute + '/forget-password')
+      .send({
+        email: userPayload.email,
+        type: userPayload.type,
+      })
+      .set('Accept', 'application/json');
+
+    const sentEmails = mock.getSentMail();
+    const resetPassword = sentEmails.find((email) => email.subject === 'Reset Password');
+    expect(resetPassword).toBeDefined();
+    userPayload.forgotPasswordToken = getTokenFromMail(resetPassword.html.toString());
+    expect(userPayload.forgotPasswordToken).toBeDefined();
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+  });
+
+  test('Test forget password wrong email', async () => {
+    const response = await request(app)
+      .post(baseRoute + '/forget-password')
+      .send({
+        email: 'fake-' + userPayload.email,
+        type: userPayload.type,
+      })
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
+  });
+
+  test('Test reset password wrong token', async () => {
+    const response = await request(app)
+      .post(baseRoute + '/reset-password')
+      .send({
+        newPassword: userPayload.password,
+        token: uuidv4(),
+      })
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.FORBIDDEN);
+    expect(response.body.error.message).toEqual('Invalid or expired token');
+  });
+
+  test('Test reset password', async () => {
+    userPayload.oldPassword = userPayload.password;
+    userPayload.password = '123456789';
+    const response = await request(app)
+      .post(baseRoute + '/reset-password')
+      .send({
+        newPassword: userPayload.password,
+        token: userPayload.forgotPasswordToken,
+      })
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userPayload.userId,
+      },
+    });
+
+    expect(user).toBeDefined();
+    const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
+    expect(isValidPassword).toEqual(true);
+  });
+
+  test('Test old password', async () => {
+    const loginPayload = {
+      email: userPayload.email,
+      password: userPayload.oldPassword,
+      type: userPayload.type,
+    };
+
+    const response = await request(app)
+      .post(baseRoute + '/login')
+      .send(loginPayload)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.UNAUTHORIZED);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.message).toEqual('Password not match');
+  });
+
+  test('Test new password', async () => {
+    const loginPayload = {
+      email: userPayload.email,
+      password: userPayload.password,
+      type: userPayload.type,
+    };
+
+    const response = await request(app)
+      .post(baseRoute + '/login')
+      .send(loginPayload)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
   });
 });
