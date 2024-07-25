@@ -26,6 +26,7 @@ import {
   verifyUser,
 } from '@/repositories/auth.repo';
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
+import HttpStatusCode from '@/utils/HTTPStatusCodes';
 
 const AuthRoutes = Router();
 
@@ -36,7 +37,7 @@ AuthRoutes.post(
     try {
       const body: TAuthSchema = req.body;
       const resBody = await loginUser(body);
-      res.status(resBody.error ? resBody.error.code : 200).json(resBody);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);
@@ -51,7 +52,7 @@ AuthRoutes.post(
     try {
       const body: TRefreshTokenSchema = req.body;
       const resBody = await refreshToken(body);
-      res.status(resBody.error ? resBody.error.code : 200).json(resBody);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);
@@ -66,7 +67,7 @@ AuthRoutes.post(
     try {
       const body: TRegisterSchema = req.body;
       const resBody = await createUser(body);
-      res.status(resBody.error ? resBody.error.code : 200).json(resBody);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);
@@ -81,7 +82,7 @@ AuthRoutes.post(
     try {
       const body: TForgetPasswordSchema = req.body;
       const resBody = await forgotPassword(body);
-      res.status(resBody.error ? resBody.error.code : 200).json(resBody);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);
@@ -96,7 +97,7 @@ AuthRoutes.post(
     try {
       const body: TResetPasswordSchema = req.body;
       const resBody = await resetPassword(body);
-      res.status(resBody.error ? resBody.error.code : 200).json(resBody);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);
@@ -112,7 +113,7 @@ AuthRoutes.post(
     try {
       const body: TUpdatePasswordSchema = req.body;
       const resBody = await updatePassword(body);
-      res.status(resBody.error ? resBody.error.code : 200).json(resBody);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);
@@ -127,7 +128,7 @@ AuthRoutes.post(
     try {
       const body: TValidateUserSchema = req.body;
       const resBody = await verifyUser(body);
-      res.status(resBody.error ? resBody.error.code : 200).json(resBody);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);

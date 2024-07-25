@@ -12,14 +12,17 @@ import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
 import { ApiResponseBody, ResponseHandler } from '@/utils/ResponseHandler';
 import { logger } from '@/utils/winston';
-import { PrismaClient, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/services/prisma.service';
+import appConfig from '@/config/app.config';
+import { addTime } from '@/utils/herlpers';
 
 // TODO: Convert to class
 
 export async function loginUser(payload: TAuthSchema) {
+  const resBody = new ApiResponseBody<any>();
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -39,15 +42,13 @@ export async function loginUser(payload: TAuthSchema) {
     const isValidPassword = await bcrypt.compare(payload.password, user.password);
 
     if (isValidPassword) {
-      const token = generateAccessToken({
-        userId: user.id,
-      });
+      const token = generateAccessToken(user.id);
       const refreshToken = generateRefreshToken();
       await prisma.refreshToken.create({
         data: {
           token: refreshToken,
           userId: user.id,
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          expiresAt: addTime(30, 'd'),
         },
       });
 
@@ -60,7 +61,7 @@ export async function loginUser(payload: TAuthSchema) {
         accessToken: accessToken,
         user: {
           id: user.id,
-          type: user.userType,
+          userType: user.userType,
           email: user.email,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
@@ -79,44 +80,52 @@ export async function loginUser(payload: TAuthSchema) {
           doctor: user.doctor,
         };
       }
-      const resBody = new ApiResponseBody<any>();
       resBody.data = responseData;
       return resBody;
     } else {
       const resBody = ResponseHandler.Unauthorized('Password not match');
       return resBody;
     }
-  } catch (error) {
-    const resBody = ResponseHandler.response(String(error), HttpStatusCode.INTERNAL_SERVER_ERROR);
-    return resBody;
+  } catch (err) {
+    logger.error(err);
+    resBody.error = {
+      code: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      message: String(err),
+    };
   }
+  return resBody;
 }
 export async function refreshToken({ refreshToken }: TRefreshTokenSchema) {
-  const storedToken = await prisma.refreshToken.findUnique({
-    where: { token: refreshToken },
-  });
-
-  if (!storedToken || new Date() > storedToken.expiresAt) {
-    const resBody = ResponseHandler.Unauthorized('Invalid or expired refresh token');
-    return resBody;
-  }
-
-  const newAccessToken = generateAccessToken({
-    userId: storedToken.userId,
-  });
-  const newRefreshToken = generateRefreshToken();
-
-  await prisma.refreshToken.update({
-    where: { token: refreshToken },
-    data: {
-      token: newRefreshToken,
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days expiration
-    },
-  });
-
   const resBody = new ApiResponseBody<any>();
+  try {
+    const storedToken = await prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+    });
 
-  resBody.data = { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    if (!storedToken || new Date() > storedToken.expiresAt) {
+      const resBody = ResponseHandler.Unauthorized('Invalid or expired refresh token');
+      return resBody;
+    }
+
+    const newAccessToken = generateAccessToken(storedToken.userId);
+    const newRefreshToken = generateRefreshToken();
+
+    await prisma.refreshToken.update({
+      where: { token: refreshToken },
+      data: {
+        token: newRefreshToken,
+        expiresAt: addTime(30, 'd'),
+      },
+    });
+
+    resBody.data = { accessToken: newAccessToken, refreshToken: newRefreshToken };
+  } catch (err) {
+    logger.error(err);
+    resBody.error = {
+      code: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      message: String(err),
+    };
+  }
   return resBody;
 }
 export async function createUser(payload: TRegisterSchema) {
@@ -135,8 +144,9 @@ export async function createUser(payload: TRegisterSchema) {
 
     resBody.data = user;
 
-    // TODO: Verify Email Config Boolean
-    sendEmailVerification(user);
+    if (appConfig.requireVerifyEmail) {
+      await sendEmailVerification(user);
+    }
   } catch (err) {
     logger.error(err);
     resBody.error = {
@@ -147,28 +157,31 @@ export async function createUser(payload: TRegisterSchema) {
   return resBody;
 }
 async function sendEmailVerification(user: User) {
-  const token = uuidv4();
+  try {
+    const token = uuidv4();
 
-  await prisma.verifyEmailToken.create({
-    data: {
-      token,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 30 * 60 * 1000), // TODO: Fix Time conversions
-    },
-  });
+    await prisma.verifyEmailToken.create({
+      data: {
+        token,
+        userId: user.id,
+        expiresAt: addTime(1, 'h'), // TODO: Fix Time conversions
+      },
+    });
 
-  const bodyHTML = `<h1>Verify Your Email</h1>
-    <p>Click here to verify your email:</p>
-    <a href="${process.env.VERIFY_EMAIL_UI_URL}/${token}">Confirm Email</a>`;
+    const bodyHTML = `<h1>Verify Your Email</h1>
+      <p>Verify your email. The link expires after <strong>1 hour</strong>.</p>
+      <a id="token-link" href="${process.env.VERIFY_EMAIL_UI_URL}/${token}">Confirm Email</a><br>
+      or copy this link: <br>
+      <span>${process.env.VERIFY_EMAIL_UI_URL}/${token}</span>`;
 
-  sendEmail({
-    fromEmail: process.env.FROM_EMAIL!,
-    fromName: process.env.FROM_NAME!,
-    toEmail: user.email,
-    toName: user.name,
-    subject: 'Verify Email',
-    html: bodyHTML,
-  });
+    sendEmail({
+      receivers: [user.email],
+      subject: 'Verify Email',
+      html: bodyHTML,
+    });
+  } catch (err) {
+    logger.error({ message: 'Send Email Verification Error:', error: err });
+  }
 }
 export async function forgotPassword(payload: TForgetPasswordSchema) {
   const resBody = new ApiResponseBody<any>();
@@ -195,20 +208,19 @@ export async function forgotPassword(payload: TForgetPasswordSchema) {
       data: {
         token,
         userId: user.id,
-        expiresAt: new Date(Date.now() + 30 * 60 * 1000), // TODO: Fix Time conversions
+        expiresAt: addTime(30, 'm'),
       },
     });
 
     const bodyHTML = `<h1>Reset Password</h1>
     <p>Click here to reset your password:</p>
-    <a href="${process.env.RESET_PASSWORD_UI_URL}/${token}">Reset Password</a>`;
+    <a id="token-link" href="${process.env.RESET_PASSWORD_UI_URL}/${token}">Reset Password</a><br>
+      or copy this link: <br>
+      <span>${process.env.RESET_PASSWORD_UI_URL}/${token}</span>`;
 
     if (user) {
       sendEmail({
-        fromEmail: process.env.FROM_EMAIL!,
-        fromName: process.env.FROM_NAME!,
-        toEmail: user.email,
-        toName: user.name,
+        receivers: [user.email],
         subject: 'Reset Password',
         html: bodyHTML,
       });
@@ -218,6 +230,7 @@ export async function forgotPassword(payload: TForgetPasswordSchema) {
       status: true,
     };
   } catch (err) {
+    logger.error(err);
     resBody.error = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
       message: String(err),
@@ -266,6 +279,7 @@ export async function resetPassword(payload: TResetPasswordSchema) {
       status: true,
     };
   } catch (err) {
+    logger.error(err);
     resBody.error = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
       message: String(err),
@@ -315,6 +329,7 @@ export async function updatePassword(payload: TUpdatePasswordSchema) {
       status: true,
     };
   } catch (err) {
+    logger.error(err);
     resBody.error = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
       message: String(err),
@@ -361,6 +376,7 @@ export async function verifyUser(payload: TValidateUserSchema) {
       status: true,
     };
   } catch (err) {
+    logger.error(err);
     resBody.error = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
       message: String(err),

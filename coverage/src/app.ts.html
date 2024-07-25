@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">65.11% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/42</span>
+                <span class='fraction'>28/43</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.77% </span>
+                <span class="strong">75.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/36</span>
+                <span class='fraction'>28/37</span>
             </div>
         
             
@@ -123,7 +123,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -154,15 +154,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import bodyParser from 'body-parser';
-import express, { NextFunction, Request, Res<span class="fstat-no" title="function not covered" >po</span>nse } from 'express';
+<span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">import bodyParser from 'body-parser';
+import express, { NextFunction, Response } f<span class="fstat-no" title="function not covered" >ro</span>m 'express';
 import cors f<span class="fstat-no" title="function not covered" >rom 'c</span>ors';<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
 impo<span class="cstat-no" title="statement not covered" >rt helmet from 'helmet';<span class="fstat-no" title="function not covered" ></span></span>
 import xss from '<span class="fstat-no" title="function not covered" >x-xss-prot</span>ection';<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span>
@@ -170,11 +170,10 @@ import cookiePars<span class="fstat-no" title="function not covered" >er from '<
 import rateLimit <span class="fstat-no" title="function not covered" >from </span>'express-r<span class="cstat-no" title="statement not covered" >ate-limit';</span>
 import v<span class="cstat-no" title="statement not covered" >1Routes from './routes/v1';</span>
 import { parseAPIVersion } from './config/app.config';
-import { PrismaClient } from '@prisma/client';
+import HttpStatusCode from './utils/HTTPStatusCodes';
 &nbsp;
 const app = express();
 &nbsp;
-app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
@@ -196,28 +195,29 @@ app.use(limiter);
 // Handle Routes
 app.use(parseAPIVersion(1), v1Routes);
 &nbsp;
-app.all('*', (_, res: Response) =&gt; {
-  res.json({
-    status: 404,
+app.all('*', (_, res: Response, next: NextFunction) =&gt; {
+  res.status(HttpStatusCode.NOT_FOUND).json({
+    status: HttpStatusCode.NOT_FOUND,
     message: 'Route Not Found',
   });
+  next();
 });
 &nbsp;
 // Graceful shutdown
 process.on('SIGINT', async () =&gt; {
   await prisma.$disconnect();
   process.exit(0);
-});
+});<span class="cstat-no" title="statement not covered" ></span>
 &nbsp;
-export default app;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" ></span></pre></td></tr></table></pre>
+export default app;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:23:48.419Z
+                at 2024-07-25T14:48:50.717Z
             </div>
         <script src="../prettify.js"></script>
         <script>

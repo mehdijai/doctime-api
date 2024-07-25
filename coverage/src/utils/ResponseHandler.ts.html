@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">43.75% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/16</span>
+                <span class='fraction'>11/16</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">37.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/8</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">43.75% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/16</span>
+                <span class='fraction'>11/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -115,15 +115,12 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -133,6 +130,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -154,13 +154,13 @@ export class ApiResponseBody&lt;T = undefined&gt; {
   data?: T;
 }
 &nbsp;
-expo<span class="fstat-no" title="function not covered" >rt</span> class ResponseHandler {
-  static res: Response;<span class="cstat-no" title="statement not covered" ></span>
-  static<span class="cstat-no" title="statement not covered" > response(message: any, status: HttpStatusCode) {</span>
+export class ResponseHandler {
+  static res: Response;
+  static response(message: any, status: HttpStatusCode) {
     const response = new ApiResponseBody();
     response.error = {
       code: status,
-      me<span class="cstat-no" title="statement not covered" >ssage: message,</span>
+      message: message,
     };
 <span class="fstat-no" title="function not covered" >    re</span>turn response;<span class="branch-0 cbranch-no" title="branch not covered" ></span>
   }<span class="cstat-no" title="statement not covered" ></span>
@@ -171,8 +171,8 @@ expo<span class="fstat-no" title="function not covered" >rt</span> class Respons
 <span class="fstat-no" title="function not covered" >    re</span>turn this.response(message,<span class="branch-0 cbranch-no" title="branch not covered" > HttpStatusCode.NOT_FOU</span>ND);
   }<span class="cstat-no" title="statement not covered" ></span>
   static InvalidBody(message: any = 'Invalid request body') {
-<span class="fstat-no" title="function not covered" >    re</span>turn this.response(message, <span class="branch-0 cbranch-no" title="branch not covered" >HttpStatusCode.</span>UNPROCESSABLE_ENTITY);
-  }<span class="cstat-no" title="statement not covered" ></span>
+    return this.response(message, <span class="branch-0 cbranch-no" title="branch not covered" >HttpStatusCode.</span>UNPROCESSABLE_ENTITY);
+  }
   static Unauthorized(message: any = 'Unauthorized') {
 <span class="fstat-no" title="function not covered" >    re</span>turn this.response(messag<span class="branch-0 cbranch-no" title="branch not covered" >e, HttpStatu</span>sCode.UNAUTHORIZED);
   }<span class="cstat-no" title="statement not covered" ></span>
@@ -190,7 +190,7 @@ expo<span class="fstat-no" title="function not covered" >rt</span> class Respons
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:23:48.419Z
+                at 2024-07-25T14:48:50.717Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

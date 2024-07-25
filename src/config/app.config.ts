@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 // Configs
 const appConfig = {
   apiURI: '/api/$v',
@@ -9,7 +12,7 @@ const appConfig = {
     refreshSecretKey: process.env.REFRESH_SECRET_KEY!,
     expiresIn: '15d',
   },
-  logRootPath: ".logs"
+  logRootPath: '.logs',
 };
 
 export default appConfig;

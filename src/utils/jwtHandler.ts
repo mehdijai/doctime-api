@@ -2,8 +2,15 @@ import appConfig from '@/config/app.config';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 
-export const generateAccessToken = (payload: object) => {
-  return jwt.sign(payload, appConfig.jwt.secret, { expiresIn: appConfig.jwt.expiresIn });
+export const generateAccessToken = (userId: string) => {
+  return jwt.sign(
+    {
+      userId,
+      timestamp: Date.now(),
+    },
+    appConfig.jwt.secret,
+    { expiresIn: appConfig.jwt.expiresIn }
+  );
 };
 
 export const generateRefreshToken = () => {

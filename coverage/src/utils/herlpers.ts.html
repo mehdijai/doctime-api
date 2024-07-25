@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/services/prisma.service.ts</title>
+    <title>Code coverage report for src/utils/herlpers.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/services</a> prisma.service.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> herlpers.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.53% </span>
+                <span class="strong">70% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/13</span>
+                <span class='fraction'>21/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">76.47% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>13/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">81.81% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>9/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.53% </span>
+                <span class="strong">79.16% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/13</span>
+                <span class='fraction'>19/24</span>
             </div>
         
             
@@ -89,62 +89,59 @@
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { logger } from '@/utils/winston';
-import { PrismaClient } from '@prisma/client';
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { logger } from './winston';
 &nbsp;
-declare global {
-  var prisma: PrismaClient | undefined;
-}
-<span class="missing-if-branch" title="if path not taken" >I</span>
-let pris<span class="cstat-no" title="statement not covered" >ma: PrismaClient;</span>
+export default async function wait(time: number) {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" ></span></span></span>
+  await new Promise((r) =&gt; setTimeout(r, time));
+}<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span>
+export function addTime(value: number, unit: 'ms' | 's' | 'm' | 'h' | 'd', start?: Date) {
+  let addedValue = value;
 &nbsp;
-try {
-  if (process.env.NODE_ENV === 'production') {
-    prisma = new PrismaClient();
-  } else if (process.env.STAGE === 'TEST') {
-    prisma = new PrismaClient({
-      dat<span class="missing-if-branch" title="else path not taken" >E</span>asourceUrl: process.env.TEST_DATABASE_URL,
-    });<span class="cstat-no" title="statement not covered" ></span>
-  } else {<span class="cstat-no" title="statement not covered" ></span>
-    if (!global.prisma) {
-      gl<span class="cstat-no" title="statement not covered" >obal.prisma = new Prisma</span>Client();
-    }
-    prisma = global.prisma;
-  }
-} ca<span class="cstat-no" title="statement not covered" >tch (err) {</span>
-  logger.error(err);
-}
-&nbsp;
-export default prisma;
-&nbsp;</pre></td></tr></table></pre>
+  switch (unit) {
+    case 's':
+      addedValue *= 1000;
+      break;
+    case 'm':
+      addedValue *= 60 * 1000;
+      break;
+    case 'h':
+      addedValue *= 60 * 60 * 1000;
+      break;
+    case 'd':
+      addedValue *= 24 * 60 * 60 * 1000;
+      br<span class="branch-0 cbranch-no" title="branch not covered" >eak;</span>
+  }<span class="cstat-no" title="statement not covered" ></span>
+  const init<span class="cstat-no" title="statement not covered" >Value =</span> start ? start.getTime() : Date.now();
+  return<span class="branch-1 cbranch-no" title="branch not covered" > new Date(initValue + addedValue);</span>
+}<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" ></span></pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
