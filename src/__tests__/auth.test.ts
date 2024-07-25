@@ -3,14 +3,12 @@ import app from '@/app';
 import appConfig, { parseAPIVersion } from '@/config/app.config';
 import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { logger } from '@/utils/winston';
-import wait from '@/utils/herlpers';
+import wait from '@/utils/helpers';
 import * as nodemailer from 'nodemailer';
 import { NodemailerMock } from 'nodemailer-mock';
 import { getTokenFromMail } from '@/utils/mailerUtils';
 const { mock } = nodemailer as unknown as NodemailerMock;
 import prisma from '@/services/prisma.service';
-import exp from 'constants';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 

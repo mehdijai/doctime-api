@@ -16,3 +16,4 @@
   - [x] **TEST** Reset Password
   - [x] Update Password
   - [x] **TEST** Update Password
+  - [ ] Update password check

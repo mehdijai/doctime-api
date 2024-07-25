@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.43% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>122/148</span>
+                <span class='fraction'>120/144</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.36% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>38/44</span>
+                <span class='fraction'>36/40</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.91% </span>
+                <span class="strong">84.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>120/143</span>
+                <span class='fraction'>118/139</span>
             </div>
         
             
@@ -449,7 +449,11 @@
 <a name='L384'></a><a href='#L384'>384</a>
 <a name='L385'></a><a href='#L385'>385</a>
 <a name='L386'></a><a href='#L386'>386</a>
-<a name='L387'></a><a href='#L387'>387</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L387'></a><a href='#L387'>387</a>
+<a name='L388'></a><a href='#L388'>388</a>
+<a name='L389'></a><a href='#L389'>389</a>
+<a name='L390'></a><a href='#L390'>390</a>
+<a name='L391'></a><a href='#L391'>391</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">16x</span>
@@ -490,10 +494,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -523,11 +523,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -593,6 +589,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -823,6 +827,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -847,27 +855,23 @@
 import { sendEmail } from '@/services/mail.service';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
-import { ApiResponseBody, ResponseHandler } from '@/utils/ResponseHandler';
+import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
 import { logger } from '@/utils/winston';
 import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/services/prisma.service';
 import appConfig from '@/config/app.config';
-import { addTime } from '@/utils/herlpers';
+import { addTime } from '@/utils/helpers';
 &nbsp;
 // TODO: Convert to class
 &nbsp;
-export async function loginUser(payload: TAuthSchema) {
-  const resBody = new ApiResponseBody&lt;any&gt;();
+export async function loginUser(payload: TAuthSchema): Promise&lt;ApiResponseBody&lt;IAuthResponse&gt;&gt; {
+  const resBody = new ApiResponseBody&lt;IAuthResponse&gt;();
   try {
     const user = await prisma.user.findUnique({
       where: {
         email: payload.email,
-      },
-      include: {
-        patient: true,
-        doctor: true,
       },
     });
 &nbsp;
@@ -894,29 +898,19 @@ export async function loginUser(payload: TAuthSchema) {
         refreshToken: refreshToken,
       };
 &nbsp;
-      const responseData: any = {
+      const responseData = {
         accessToken: accessToken,
         user: {
           id: user.id,
-          userType: user.userType,
           email: user.email,
+          phone: user.phone,
+          name: user.name,
+          userType: user.userType,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         },
       };
 &nbsp;
-      if (user.patient) {
-        responseData.user = {
-          ...responseData.user,
-          patient: user.patient,
-        };<span class="missing-if-branch" title="if path not taken" >I</span>
-      }<span class="cstat-no" title="statement not covered" ></span>
-      if (user.doctor) {
-        response<span class="missing-if-branch" title="if path not taken" >I</span>Data.user = {
-          ...respons<span class="cstat-no" title="statement not covered" >eData.user,</span>
-          doctor: user.doctor,
-        };
-      }
       resBody.data = responseData;
       return resBody;
     } else {
@@ -924,29 +918,31 @@ export async function loginUser(payload: TAuthSchema) {
       return resBody;
     }
   } catch (err) {
-    logger.e<span class="cstat-no" title="statement not covered" >rror(err);</span>
-    resBody.<span class="cstat-no" title="statement not covered" >error = {</span>
+    logger.error(err);
+    resBody.error = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
       message: String(err),
     };
   }
-  return<span class="cstat-no" title="statement not covered" > resBody;</span>
-}
-export async function refreshToken({ refreshToken }: TRefreshTokenSchema) {
-  const resBody = new ApiResponseBody&lt;any&gt;();
-  try {
+  return res<span class="cstat-no" title="statement not covered" >Body;</span>
+}<span class="cstat-no" title="statement not covered" ></span>
+export async function refreshToken({
+  refreshToken,
+}: TRefreshTokenSchema): Promise&lt;ApiResponseBody&lt;IRefreshTokenResponse&gt;&gt; {
+  const resBody = new ApiResponseBody&lt;IRefreshTokenResponse&gt;();
+  try {<span class="cstat-no" title="statement not covered" ></span>
     const storedToken = await prisma.refreshToken.findUnique({
       where: { token: refreshToken },
     });
 &nbsp;
     if (!storedToken || new Date() &gt; storedToken.expiresAt) {
-      const <span class="missing-if-branch" title="if path not taken" >I</span>resBody = ResponseHandler.Unauthorized('Invalid or expired refresh token');
-      return resBody;<span class="cstat-no" title="statement not covered" ></span>
-    }<span class="cstat-no" title="statement not covered" ></span>
+      const resBody = ResponseHandler.Unauthorized('Invalid or expired refresh token');
+      return resBody;
+    }
 &nbsp;
-    const newAccessToken = generateAccessToken(storedToken.userId);
-    const newRefreshToken = generateRefreshToken();
-&nbsp;
+    const ne<span class="missing-if-branch" title="if path not taken" >I</span>wAccessToken = generateAccessToken(storedToken.userId);
+    const newRefreshToken = gene<span class="cstat-no" title="statement not covered" >rateRefreshToken();</span>
+<span class="cstat-no" title="statement not covered" ></span>
     await prisma.refreshToken.update({
       where: { token: refreshToken },
       data: {
@@ -956,17 +952,17 @@ export async function refreshToken({ refreshToken }: TRefreshTokenSchema) {
     });
 &nbsp;
     resBody.data = { accessToken: newAccessToken, refreshToken: newRefreshToken };
-  } catch (e<span class="cstat-no" title="statement not covered" >rr) {</span>
-    logger.e<span class="cstat-no" title="statement not covered" >rror(err);</span>
+  } catch (err) {
+    logger.error(err);
     resBody.error = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
-      message: String(err),
-    };
+      messag<span class="cstat-no" title="statement not covered" >e: String(err),</span>
+    };<span class="cstat-no" title="statement not covered" ></span>
   }
   return resBody;
 }
-export async function createUser(payload: TRegisterSchema) {
-  const resBody = new ApiResponseBody&lt;any&gt;();
+export async function createUser(payload: TRegisterSchema): Promise&lt;ApiResponseBody&lt;IUser&gt;&gt; {
+  const resBody = new ApiResponseBody&lt;IUser&gt;();
 &nbsp;
   try {
     const user = await prisma.user.create({
@@ -979,17 +975,25 @@ export async function createUser(payload: TRegisterSchema) {
       },
     });
 &nbsp;
-    resBody.<span class="missing-if-branch" title="else path not taken" >E</span>data = user;
+    resBody.data = {
+      id: user.id,
+      email: user.email,
+      phone: user.phone,
+      name: user.name,
+      userType: user.userType,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
 &nbsp;
     if (appConfig.requireVerifyEmail) {
       await sendEmailVerification(user);
-    }
-  } catch (e<span class="cstat-no" title="statement not covered" >rr) {</span>
-    logger.e<span class="cstat-no" title="statement not covered" >rror(err);</span>
+    }<span class="missing-if-branch" title="else path not taken" >E</span>
+  } catch (err) {
+    logger.error(err);
     resBody.error = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
-      message: String(err),
-    };
+      messag<span class="cstat-no" title="statement not covered" >e: String(err),</span>
+    };<span class="cstat-no" title="statement not covered" ></span>
   }
   return resBody;
 }
@@ -1016,12 +1020,14 @@ async function sendEmailVerification(user: User) {
       subject: 'Verify Email',
       html: bodyHTML,
     });
-  } catch (e<span class="cstat-no" title="statement not covered" >rr) {</span>
+  } catch (err) {
     logger.error({ message: 'Send Email Verification Error:', error: err });
   }
 }
-export async function forgotPassword(payload: TForgetPasswordSchema) {
-  const resBody = new ApiResponseBody&lt;any&gt;();
+export async<span class="cstat-no" title="statement not covered" > function forgotPassword(</span>
+  payload: TForgetPasswordSchema
+): Promise&lt;ApiResponseBody&lt;IStatusResponse&gt;&gt; {
+  const resBody = new ApiResponseBody&lt;IStatusResponse&gt;();
 &nbsp;
   try {
     const user = await prisma.user.findUnique({
@@ -1050,9 +1056,9 @@ export async function forgotPassword(payload: TForgetPasswordSchema) {
     });
 &nbsp;
     const bodyHTML = `&lt;h1&gt;Reset Password&lt;/h1&gt;
-    &lt;p&gt;Click<span class="missing-if-branch" title="else path not taken" >E</span> here to reset your password:&lt;/p&gt;
+    &lt;p&gt;Click here to reset your password:&lt;/p&gt;
     &lt;a id="token-link" href="${process.env.RESET_PASSWORD_UI_URL}/${token}"&gt;Reset Password&lt;/a&gt;&lt;br&gt;
-      or copy this link: &lt;br&gt;
+      or cop<span class="missing-if-branch" title="else path not taken" >E</span>y this link: &lt;br&gt;
       &lt;span&gt;${process.env.RESET_PASSWORD_UI_URL}/${token}&lt;/span&gt;`;
 &nbsp;
     if (user) {
@@ -1062,10 +1068,10 @@ export async function forgotPassword(payload: TForgetPasswordSchema) {
         html: bodyHTML,
       });
     }
-<span class="cstat-no" title="statement not covered" ></span>
-    resBody.<span class="cstat-no" title="statement not covered" >data = {</span>
-      status: true,
-    };
+&nbsp;
+    resBody.data = {
+      status<span class="cstat-no" title="statement not covered" >: true,</span>
+    };<span class="cstat-no" title="statement not covered" ></span>
   } catch (err) {
     logger.error(err);
     resBody.error = {
@@ -1075,8 +1081,10 @@ export async function forgotPassword(payload: TForgetPasswordSchema) {
   }
   return resBody;
 }
-export async function resetPassword(payload: TResetPasswordSchema) {
-  const resBody = new ApiResponseBody&lt;any&gt;();
+export async function resetPassword(
+  payload: TResetPasswordSchema
+): Promise&lt;ApiResponseBody&lt;IStatusResponse&gt;&gt; {
+  const resBody = new ApiResponseBody&lt;IStatusResponse&gt;();
   try {
     const token = await prisma.resetPasswordToken.findUnique({
       where: {
@@ -1124,8 +1132,10 @@ export async function resetPassword(payload: TResetPasswordSchema) {
   }
   return resBody;
 }
-export async function updatePassword(payload: TUpdatePasswordSchema) {
-  const resBody = new ApiResponseBody&lt;any&gt;();
+export async function updatePassword(
+  payload: TUpdatePasswordSchema
+): Promise&lt;ApiResponseBody&lt;IStatusResponse&gt;&gt; {
+  const resBody = new ApiResponseBody&lt;IStatusResponse&gt;();
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -1154,10 +1164,10 @@ export async function updatePassword(payload: TUpdatePasswordSchema) {
     const hashedPassword = await bcrypt.hash(payload.newPassword, 10);
 &nbsp;
     await prisma.user.update({
-      where: {
-        id: payload.userId,
-      },<span class="cstat-no" title="statement not covered" ></span>
-      data: <span class="cstat-no" title="statement not covered" >{</span>
+      where:<span class="cstat-no" title="statement not covered" > {</span>
+        id: <span class="cstat-no" title="statement not covered" >payload.userId,</span>
+      },
+      data: {
         password: hashedPassword,
       },
     });
@@ -1174,15 +1184,17 @@ export async function updatePassword(payload: TUpdatePasswordSchema) {
   }
   return resBody;
 }
-export async function verifyUser(payload: TValidateUserSchema) {
-  const resBody = new ApiResponseBody&lt;any&gt;();
+export async function verifyUser(
+  payload: T<span class="missing-if-branch" title="if path not taken" >I</span>ValidateUserSchema
+): Promise&lt;ApiRe<span class="cstat-no" title="statement not covered" >sponseBody&lt;IStatusResponse&gt;&gt; {</span>
+  const resBody = new ApiResponseBody&lt;IStatusResponse&gt;();
   try {
-    const to<span class="missing-if-branch" title="if path not taken" >I</span>ken = await prisma.verifyEmailToken.findUnique({
+    const token = await prisma.verifyEmailToken.findUnique({
       where: {<span class="cstat-no" title="statement not covered" ></span>
         token: payload.token,
       },
       include: {
-        user: tr<span class="cstat-no" title="statement not covered" >ue,</span>
+        user: true,
       },
     });
 &nbsp;
@@ -1198,12 +1210,12 @@ export async function verifyUser(payload: TValidateUserSchema) {
       where: {
         id: token.userId,
       },
-      data: {
-        verifiedEmail: true,
+      data: <span class="cstat-no" title="statement not covered" >{</span>
+        veri<span class="cstat-no" title="statement not covered" >fiedEmail: true,</span>
       },
     });
-<span class="cstat-no" title="statement not covered" ></span>
-    await pr<span class="cstat-no" title="statement not covered" >isma.verifyEmailToken.delete({</span>
+&nbsp;
+    await prisma.verifyEmailToken.delete({
       where: {
         token: payload.token,
       },
@@ -1228,7 +1240,7 @@ export async function verifyUser(payload: TValidateUserSchema) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-25T15:31:33.623Z
+                at 2024-07-25T18:13:31.498Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

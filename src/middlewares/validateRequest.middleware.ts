@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError, ZodSchema } from 'zod';
-import { ResponseHandler } from '@/utils/ResponseHandler';
+import { ResponseHandler } from '@/utils/responseHandler';
 
 function parseZodErrors(errors: ZodError) {
   return errors.errors.map((err) => `${err.path.join(', ')}: ${err.message}`);

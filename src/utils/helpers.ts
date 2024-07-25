@@ -1,5 +1,3 @@
-import { logger } from './winston';
-
 export default async function wait(time: number) {
   await new Promise((r) => setTimeout(r, time));
 }

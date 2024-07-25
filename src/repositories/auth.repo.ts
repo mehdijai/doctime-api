@@ -10,27 +10,23 @@ import {
 import { sendEmail } from '@/services/mail.service';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
-import { ApiResponseBody, ResponseHandler } from '@/utils/ResponseHandler';
+import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
 import { logger } from '@/utils/winston';
 import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/services/prisma.service';
 import appConfig from '@/config/app.config';
-import { addTime } from '@/utils/herlpers';
+import { addTime } from '@/utils/helpers';
 
 // TODO: Convert to class
 
-export async function loginUser(payload: TAuthSchema) {
-  const resBody = new ApiResponseBody<any>();
+export async function loginUser(payload: TAuthSchema): Promise<ApiResponseBody<IAuthResponse>> {
+  const resBody = new ApiResponseBody<IAuthResponse>();
   try {
     const user = await prisma.user.findUnique({
       where: {
         email: payload.email,
-      },
-      include: {
-        patient: true,
-        doctor: true,
       },
     });
 
@@ -57,29 +53,19 @@ export async function loginUser(payload: TAuthSchema) {
         refreshToken: refreshToken,
       };
 
-      const responseData: any = {
+      const responseData = {
         accessToken: accessToken,
         user: {
           id: user.id,
-          userType: user.userType,
           email: user.email,
+          phone: user.phone,
+          name: user.name,
+          userType: user.userType,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         },
       };
 
-      if (user.patient) {
-        responseData.user = {
-          ...responseData.user,
-          patient: user.patient,
-        };
-      }
-      if (user.doctor) {
-        responseData.user = {
-          ...responseData.user,
-          doctor: user.doctor,
-        };
-      }
       resBody.data = responseData;
       return resBody;
     } else {
@@ -95,8 +81,10 @@ export async function loginUser(payload: TAuthSchema) {
   }
   return resBody;
 }
-export async function refreshToken({ refreshToken }: TRefreshTokenSchema) {
-  const resBody = new ApiResponseBody<any>();
+export async function refreshToken({
+  refreshToken,
+}: TRefreshTokenSchema): Promise<ApiResponseBody<IRefreshTokenResponse>> {
+  const resBody = new ApiResponseBody<IRefreshTokenResponse>();
   try {
     const storedToken = await prisma.refreshToken.findUnique({
       where: { token: refreshToken },
@@ -128,8 +116,8 @@ export async function refreshToken({ refreshToken }: TRefreshTokenSchema) {
   }
   return resBody;
 }
-export async function createUser(payload: TRegisterSchema) {
-  const resBody = new ApiResponseBody<any>();
+export async function createUser(payload: TRegisterSchema): Promise<ApiResponseBody<IUser>> {
+  const resBody = new ApiResponseBody<IUser>();
 
   try {
     const user = await prisma.user.create({
@@ -142,7 +130,15 @@ export async function createUser(payload: TRegisterSchema) {
       },
     });
 
-    resBody.data = user;
+    resBody.data = {
+      id: user.id,
+      email: user.email,
+      phone: user.phone,
+      name: user.name,
+      userType: user.userType,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
 
     if (appConfig.requireVerifyEmail) {
       await sendEmailVerification(user);
@@ -183,8 +179,10 @@ async function sendEmailVerification(user: User) {
     logger.error({ message: 'Send Email Verification Error:', error: err });
   }
 }
-export async function forgotPassword(payload: TForgetPasswordSchema) {
-  const resBody = new ApiResponseBody<any>();
+export async function forgotPassword(
+  payload: TForgetPasswordSchema
+): Promise<ApiResponseBody<IStatusResponse>> {
+  const resBody = new ApiResponseBody<IStatusResponse>();
 
   try {
     const user = await prisma.user.findUnique({
@@ -238,8 +236,10 @@ export async function forgotPassword(payload: TForgetPasswordSchema) {
   }
   return resBody;
 }
-export async function resetPassword(payload: TResetPasswordSchema) {
-  const resBody = new ApiResponseBody<any>();
+export async function resetPassword(
+  payload: TResetPasswordSchema
+): Promise<ApiResponseBody<IStatusResponse>> {
+  const resBody = new ApiResponseBody<IStatusResponse>();
   try {
     const token = await prisma.resetPasswordToken.findUnique({
       where: {
@@ -287,8 +287,10 @@ export async function resetPassword(payload: TResetPasswordSchema) {
   }
   return resBody;
 }
-export async function updatePassword(payload: TUpdatePasswordSchema) {
-  const resBody = new ApiResponseBody<any>();
+export async function updatePassword(
+  payload: TUpdatePasswordSchema
+): Promise<ApiResponseBody<IStatusResponse>> {
+  const resBody = new ApiResponseBody<IStatusResponse>();
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -337,8 +339,10 @@ export async function updatePassword(payload: TUpdatePasswordSchema) {
   }
   return resBody;
 }
-export async function verifyUser(payload: TValidateUserSchema) {
-  const resBody = new ApiResponseBody<any>();
+export async function verifyUser(
+  payload: TValidateUserSchema
+): Promise<ApiResponseBody<IStatusResponse>> {
+  const resBody = new ApiResponseBody<IStatusResponse>();
   try {
     const token = await prisma.verifyEmailToken.findUnique({
       where: {

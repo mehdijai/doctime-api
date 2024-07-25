@@ -11,10 +11,10 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "noUnusedLocals": false, // TODO: Enable
-    "noUnusedParameters": false, // TODO: Enable
-    "noImplicitAny": false, // TODO: Enable
-    "noImplicitReturns": false, // TODO: Enable
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

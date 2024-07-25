@@ -1,4 +1,4 @@
-import { ApiResponseBody } from '@/utils/ResponseHandler';
+import { ApiResponseBody } from '@/utils/responseHandler';
 import prisma from '@/services/prisma.service';
 
 export async function createAppointment() {

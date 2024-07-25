@@ -1,8 +1,9 @@
 import { Response, NextFunction } from 'express';
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
-import { ResponseHandler } from '@/utils/ResponseHandler';
+import { ResponseHandler } from '@/utils/responseHandler';
+import appConfig from '@/config/app.config';
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY!;
+const SECRET_KEY = appConfig.jwt.secret;
 
 export function authenticateJWT(req: IRequest, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
