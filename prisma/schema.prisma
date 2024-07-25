@@ -14,20 +14,21 @@ enum UserType {
 }
 
 model User {
-  id                 String              @id @unique @default(uuid())
-  name               String
-  email              String              @unique
-  phone              String              @unique
-  password           String
-  verifiedEmail      Boolean             @default(false)
-  userType           UserType
-  patient            Patient?
-  doctor             Doctor?
-  refreshToken       RefreshToken[]
-  resetPasswordToken ResetPasswordToken?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  verifyEmailToken   VerifyEmailToken?
+  id                  String               @id @unique @default(uuid())
+  name                String
+  email               String               @unique
+  phone               String               @unique
+  password            String
+  verifiedEmail       Boolean              @default(false)
+  userType            UserType
+  patient             Patient?
+  doctor              Doctor?
+  refreshToken        RefreshToken[]
+  resetPasswordToken  ResetPasswordToken?
+  updatePasswordToken UpdatePasswordToken?
+  verifyEmailToken    VerifyEmailToken?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
 
   @@map("users")
 }
@@ -42,6 +43,19 @@ model ResetPasswordToken {
   updatedAt DateTime @updatedAt
 
   @@map("reset_password_tokens")
+}
+
+model UpdatePasswordToken {
+  id          String   @id @unique @default(uuid())
+  token       String   @unique
+  newPassword String
+  expiresAt   DateTime
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("update_password_tokens")
 }
 
 model VerifyEmailToken {

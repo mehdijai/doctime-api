@@ -38,6 +38,19 @@ CREATE TABLE "reset_password_tokens" (
 );
 
 -- CreateTable
+CREATE TABLE "update_password_tokens" (
+    "id" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "newPassword" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "update_password_tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "verify_email_tokens" (
     "id" TEXT NOT NULL,
     "token" TEXT NOT NULL,
@@ -139,6 +152,15 @@ CREATE UNIQUE INDEX "reset_password_tokens_token_key" ON "reset_password_tokens"
 CREATE UNIQUE INDEX "reset_password_tokens_userId_key" ON "reset_password_tokens"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "update_password_tokens_id_key" ON "update_password_tokens"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "update_password_tokens_token_key" ON "update_password_tokens"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "update_password_tokens_userId_key" ON "update_password_tokens"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "verify_email_tokens_id_key" ON "verify_email_tokens"("id");
 
 -- CreateIndex
@@ -167,6 +189,9 @@ CREATE UNIQUE INDEX "appointments_id_key" ON "appointments"("id");
 
 -- AddForeignKey
 ALTER TABLE "reset_password_tokens" ADD CONSTRAINT "reset_password_tokens_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "update_password_tokens" ADD CONSTRAINT "update_password_tokens_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "verify_email_tokens" ADD CONSTRAINT "verify_email_tokens_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

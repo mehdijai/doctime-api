@@ -17,6 +17,7 @@ import {
   validateUserSchema,
 } from '@/schemas/auth.schema';
 import {
+  confirmUpdatePassword,
   createUser,
   forgotPassword,
   loginUser,
@@ -113,6 +114,21 @@ AuthRoutes.post(
     try {
       const body: TUpdatePasswordSchema = req.body;
       const resBody = await updatePassword(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+AuthRoutes.post(
+  '/confirm-update-password',
+  validate(validateUserSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TValidateUserSchema = req.body;
+      const resBody = await confirmUpdatePassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
