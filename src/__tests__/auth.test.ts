@@ -314,4 +314,121 @@ describe('Test Auth system', () => {
     expect(response.body.data).toBeDefined();
     expect(response.body.error).toBeUndefined();
   });
+
+  test('Test update password -- Wrong user', async () => {
+    const updatePasswordPayload = {
+      userId: uuidv4(),
+      oldPassword: userPayload.oldPassword,
+      newPassword: userPayload.password,
+      type: userPayload.type,
+    };
+
+    const response = await request(app)
+      .post(baseRoute + '/update-password')
+      .send(updatePasswordPayload)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
+  });
+
+  test('Test update password -- Wrong password', async () => {
+    const updatePasswordPayload = {
+      userId: userPayload.userId,
+      oldPassword: userPayload.oldPassword,
+      newPassword: userPayload.password,
+      type: userPayload.type,
+    };
+
+    const response = await request(app)
+      .post(baseRoute + '/update-password')
+      .send(updatePasswordPayload)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.UNAUTHORIZED);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.UNAUTHORIZED);
+    expect(response.body.error.message).toEqual('Invalid old password');
+  });
+
+  test('Test update password -- password characters not enough', async () => {
+    const updatePasswordPayload = {
+      userId: userPayload.userId,
+      oldPassword: userPayload.password,
+      newPassword: '1234',
+      type: userPayload.type,
+    };
+
+    const response = await request(app)
+      .post(baseRoute + '/update-password')
+      .send(updatePasswordPayload)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.UNPROCESSABLE_ENTITY);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.UNPROCESSABLE_ENTITY);
+  });
+
+  test('Test update password -- unauthorized', async () => {
+    const updatePasswordPayload = {
+      userId: userPayload.userId,
+      oldPassword: userPayload.password,
+      newPassword: userPayload.oldPassword,
+      type: userPayload.type,
+    };
+
+    const response = await request(app)
+      .post(baseRoute + '/update-password')
+      .send(updatePasswordPayload)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.UNAUTHORIZED);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.UNAUTHORIZED);
+  });
+
+  test('Test update password', async () => {
+    const updatePasswordPayload = {
+      userId: userPayload.userId,
+      oldPassword: userPayload.password,
+      newPassword: userPayload.oldPassword,
+      type: userPayload.type,
+    };
+
+    userPayload.password = userPayload.oldPassword;
+
+    const response = await request(app)
+      .post(baseRoute + '/update-password')
+      .send(updatePasswordPayload)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userPayload.userId,
+      },
+    });
+
+    expect(user).toBeDefined();
+    const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
+    expect(isValidPassword).toEqual(true);
+  });
 });

@@ -1,6 +1,6 @@
 # Process
 
-- [ ] AUTH
+- [x] AUTH
   - [x] Create User
   - [x] **TEST** Create User
   - [x] Login
@@ -15,4 +15,4 @@
   - [x] Reset Password
   - [x] **TEST** Reset Password
   - [x] Update Password
-  - [ ] **TEST** Update Password
+  - [x] **TEST** Update Password
