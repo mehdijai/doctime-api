@@ -16,5 +16,5 @@
   - [x] **TEST** Reset Password
   - [x] Update Password
   - [x] **TEST** Update Password
-  - [ ] Update password validation
-  - [ ] **TEST** Update password validation
+  - [x] Update password validation
+  - [x] **TEST** Update password validation

@@ -397,7 +397,8 @@ describe('Test Auth system', () => {
     expect(response.body.error.code).toEqual(HttpStatusCode.UNAUTHORIZED);
   });
 
-  test('Test update password', async () => {
+  test('Test direct update password', async () => {
+    appConfig.updatePasswordRequireVerification = false;
     const updatePasswordPayload = {
       userId: userPayload.userId,
       oldPassword: userPayload.password,
@@ -411,6 +412,64 @@ describe('Test Auth system', () => {
       .post(baseRoute + '/update-password')
       .send(updatePasswordPayload)
       .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userPayload.userId,
+      },
+    });
+
+    expect(user).toBeDefined();
+    const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
+    expect(isValidPassword).toEqual(true);
+  });
+
+  test('Test confirming update password', async () => {
+    appConfig.updatePasswordRequireVerification = true;
+    const updatePasswordPayload = {
+      userId: userPayload.userId,
+      oldPassword: userPayload.password,
+      newPassword: userPayload.oldPassword,
+      type: userPayload.type,
+    };
+
+    userPayload.password = userPayload.oldPassword;
+
+    const response = await request(app)
+      .post(baseRoute + '/update-password')
+      .send(updatePasswordPayload)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    const sentEmails = mock.getSentMail();
+    const updatePasswordEmail = sentEmails.find((email) => email.subject === 'Update Password');
+    expect(updatePasswordEmail).toBeDefined();
+    userPayload.updatePasswordToken = getTokenFromMail(updatePasswordEmail.html.toString());
+    expect(userPayload.updatePasswordToken).toBeDefined();
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+  });
+
+  test('Test confirm update password', async () => {
+    appConfig.updatePasswordRequireVerification = true;
+    const confirmUpdatePasswordPayload = {
+      token: userPayload.updatePasswordToken,
+    };
+
+    const response = await request(app)
+      .post(baseRoute + '/confirm-update-password')
+      .send(confirmUpdatePasswordPayload)
       .set('Accept', 'application/json');
 
     expect(response.status).toBe(HttpStatusCode.OK);
