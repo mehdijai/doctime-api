@@ -106,10 +106,10 @@ CREATE TABLE "doctors" (
     "userId" TEXT NOT NULL,
     "status" "DoctorStatus" NOT NULL,
     "address" TEXT NOT NULL,
-    "mapPosition" JSONB,
+    "mapPosition" TEXT,
     "specialty" TEXT NOT NULL,
     "biography" TEXT,
-    "pictureUrl" TEXT NOT NULL,
+    "pictureUrl" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

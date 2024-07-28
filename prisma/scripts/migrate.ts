@@ -5,7 +5,7 @@ config()
 async function runMigrations() {
   try {
     console.log('Running migrations...');
-    execSync(`cross-env DATABASE_URL=${process.env.TEST_DATABASE_URL} npx prisma migrate deploy`, {
+    execSync(`cross-env DATABASE_URL=${process.env.TEST_DATABASE_URL} npx prisma migrate reset`, {
       stdio: 'inherit',
     });
     console.log('Migrations completed successfully.');

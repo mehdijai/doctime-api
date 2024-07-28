@@ -126,10 +126,10 @@ model Doctor {
   user         User          @relation(fields: [userId], references: [id])
   status       DoctorStatus
   address      String
-  mapPosition  Json?
+  mapPosition  String?
   specialty    String
   biography    String?
-  pictureUrl   String
+  pictureUrl   String?
   appointments Appointment[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt

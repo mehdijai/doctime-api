@@ -68,7 +68,7 @@ export class DoctorRepository {
         if (!doctor.mapPosition) return false;
         return isNearCoordinates(
           searchPayload.nearMe as ICoordinates,
-          JSON.parse(JSON.stringify(doctor.mapPosition)) as ICoordinates,
+          JSON.parse(doctor.mapPosition) as ICoordinates,
           5
         );
       })
@@ -84,7 +84,7 @@ export class DoctorRepository {
       data: {
         address: payload.address,
         status: 'AVAILABLE',
-        mapPosition: payload.mapPosition,
+        mapPosition: payload.mapPosition ? JSON.stringify(payload.mapPosition) : undefined,
         specialty: payload.specialty,
         biography: payload.biography,
         pictureUrl: payload.pictureUrl,
@@ -114,7 +114,7 @@ export class DoctorRepository {
       data: {
         address: payload.address,
         status: payload.status,
-        mapPosition: payload.mapPosition,
+        mapPosition: payload.mapPosition ? JSON.stringify(payload.mapPosition) : undefined,
         specialty: payload.specialty,
         biography: payload.biography,
         pictureUrl: payload.pictureUrl,

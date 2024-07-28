@@ -19,7 +19,7 @@ export function parseDoctor(doctor: Doctor & { user: User }): IDoctor {
     user: parseUserPayload(doctor.user),
     status: doctor.status as DoctorStatus,
     address: doctor.address,
-    mapPosition: doctor.mapPosition ? JSON.parse(JSON.stringify(doctor.mapPosition)) : undefined,
+    mapPosition: doctor.mapPosition ? JSON.parse(doctor.mapPosition) : undefined,
     specialty: doctor.specialty,
     biography: doctor.biography,
     pictureUrl: doctor.pictureUrl,

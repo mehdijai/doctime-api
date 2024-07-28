@@ -22,7 +22,7 @@ export async function truncateAllTables() {
     // Re-enable triggers
     await prisma.$queryRawUnsafe(`SET session_replication_role = 'origin';`);
 
-    logger.info('All tables truncated successfully');
+    // logger.info('All tables truncated successfully');
   } catch (error) {
     logger.error('Error truncating tables:', error);
   } finally {
