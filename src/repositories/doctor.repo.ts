@@ -129,7 +129,9 @@ export class DoctorRepository {
   }
 
   @apiMethod<IStatusResponse>()
-  static async deleteDoctor(id: string): Promise<ApiResponseBody<IStatusResponse>> {
+  static async deleteDoctor({
+    id,
+  }: TDeleteDoctorSchema): Promise<ApiResponseBody<IStatusResponse>> {
     const resBody: ApiResponseBody<IStatusResponse> = (this as any).getResBody();
     await prisma.doctor.delete({
       where: { id },

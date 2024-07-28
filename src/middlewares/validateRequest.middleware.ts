@@ -6,10 +6,14 @@ function parseZodErrors(errors: ZodError) {
   return errors.errors.map((err) => `${err.path.join(', ')}: ${err.message}`);
 }
 
-export function validate(schema: ZodSchema) {
+export function validate(schema: ZodSchema, query = false) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.body);
+      if (query) {
+        schema.parse(req.query);
+      } else {
+        schema.parse(req.body);
+      }
       next();
     } catch (error: any) {
       const resBody = ResponseHandler.InvalidBody({
