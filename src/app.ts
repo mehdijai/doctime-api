@@ -8,7 +8,8 @@ import rateLimit from 'express-rate-limit';
 import v1Routes from './routes/v1';
 import { parseAPIVersion } from './config/app.config';
 import HttpStatusCode from './utils/HTTPStatusCodes';
-import { ApiResponseBody } from './utils/responseHandler';
+import prisma from '@/services/prisma.service';
+import { ResponseHandler } from '@/utils/responseHandler';
 
 const app = express();
 
@@ -34,11 +35,7 @@ app.use(limiter);
 app.use(parseAPIVersion(1), v1Routes);
 
 app.all('*', (_, res: Response, next: NextFunction) => {
-  const resBody = new ApiResponseBody<any>();
-  resBody.error = {
-    code: HttpStatusCode.NOT_FOUND,
-    message: 'Route Not Found',
-  };
+  const resBody = ResponseHandler.NotFound('Route Not Found');
   res.status(HttpStatusCode.NOT_FOUND).json(resBody);
   next();
 });

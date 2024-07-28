@@ -12,6 +12,15 @@ import prisma from '@/services/prisma.service';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 
+function testEmails(subject: string) {
+  const sentEmails = mock.getSentMail();
+  const email = sentEmails.find((email) => email.subject === subject);
+  expect(email).toBeDefined();
+  const token = getTokenFromMail(email.html.toString());
+  expect(token).toBeDefined();
+  return token;
+}
+
 describe('Test Auth system', () => {
   const baseRoute = parseAPIVersion(1) + '/auth';
   afterAll(async () => {
@@ -30,11 +39,7 @@ describe('Test Auth system', () => {
       .send(userPayload)
       .set('Accept', 'application/json');
 
-    const sentEmails = mock.getSentMail();
-
-    const verifyEmail = sentEmails.find((email) => email.subject === 'Verify Email');
-    expect(verifyEmail).toBeDefined();
-    userPayload.verificationToken = getTokenFromMail(verifyEmail.html.toString());
+    userPayload.verificationToken = testEmails('Verify Email');
 
     expect(response.status).toBe(HttpStatusCode.OK);
     expect(response.body).toBeDefined();
@@ -44,6 +49,19 @@ describe('Test Auth system', () => {
     expect(response.body.data.email).toEqual(userPayload.email);
     expect(response.body.data.userType).toEqual(userPayload.type);
     userPayload.userId = response.body.data.id;
+  });
+
+  test('Test Create User email conflict', async () => {
+    const response = await request(app)
+      .post(baseRoute + '/register')
+      .send(userPayload)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.CONFLICT);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.CONFLICT);
   });
 
   test('Test verify User', async () => {
@@ -90,7 +108,6 @@ describe('Test Auth system', () => {
     expect(response.body.data.accessToken.token).toBeDefined();
     expect(response.body.data.accessToken.refreshToken).toBeDefined();
     expect(response.body.data.user).toBeDefined();
-    // TODO: Test Doctor entity
     expect(response.body.data.user.id).toBeDefined();
     expect(response.body.data.user.id).toEqual(userPayload.userId);
     expect(response.body.data.user.email).toEqual(userPayload.email);
@@ -159,7 +176,7 @@ describe('Test Auth system', () => {
       refreshToken: userPayload.refreshToken,
     };
 
-    appConfig.jwt.expiresIn = '1s';
+    appConfig.jwt.expiresIn = '2s';
 
     const response = await request(app)
       .post(baseRoute + '/refresh-token')
@@ -186,7 +203,7 @@ describe('Test Auth system', () => {
   });
 
   test('Test token expiration', async () => {
-    await wait(1000);
+    await wait(3000);
     const response = await request(app)
       .get(parseAPIVersion(1) + '/protected')
       .set('Authorization', 'Bearer ' + userPayload.newAccessToken)
@@ -203,11 +220,8 @@ describe('Test Auth system', () => {
       })
       .set('Accept', 'application/json');
 
-    const sentEmails = mock.getSentMail();
-    const resetPassword = sentEmails.find((email) => email.subject === 'Reset Password');
-    expect(resetPassword).toBeDefined();
-    userPayload.forgotPasswordToken = getTokenFromMail(resetPassword.html.toString());
-    expect(userPayload.forgotPasswordToken).toBeDefined();
+    userPayload.forgotPasswordToken = testEmails('Reset Password');
+
     expect(response.status).toBe(HttpStatusCode.OK);
     expect(response.body).toBeDefined();
     expect(response.body.data).toBeDefined();
@@ -313,30 +327,8 @@ describe('Test Auth system', () => {
     expect(response.body.error).toBeUndefined();
   });
 
-  test('Test update password -- Wrong user', async () => {
-    const updatePasswordPayload = {
-      userId: uuidv4(),
-      oldPassword: userPayload.oldPassword,
-      newPassword: userPayload.password,
-      type: userPayload.type,
-    };
-
-    const response = await request(app)
-      .post(baseRoute + '/update-password')
-      .send(updatePasswordPayload)
-      .set('Authorization', 'Bearer ' + userPayload.accessToken)
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
-    expect(response.body).toBeDefined();
-    expect(response.body.data).toBeUndefined();
-    expect(response.body.error).toBeDefined();
-    expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
-  });
-
   test('Test update password -- Wrong password', async () => {
     const updatePasswordPayload = {
-      userId: userPayload.userId,
       oldPassword: userPayload.oldPassword,
       newPassword: userPayload.password,
       type: userPayload.type,
@@ -358,7 +350,6 @@ describe('Test Auth system', () => {
 
   test('Test update password -- password characters not enough', async () => {
     const updatePasswordPayload = {
-      userId: userPayload.userId,
       oldPassword: userPayload.password,
       newPassword: '1234',
       type: userPayload.type,
@@ -379,7 +370,6 @@ describe('Test Auth system', () => {
 
   test('Test update password -- unauthorized', async () => {
     const updatePasswordPayload = {
-      userId: userPayload.userId,
       oldPassword: userPayload.password,
       newPassword: userPayload.oldPassword,
       type: userPayload.type,
@@ -400,7 +390,6 @@ describe('Test Auth system', () => {
   test('Test direct update password', async () => {
     appConfig.updatePasswordRequireVerification = false;
     const updatePasswordPayload = {
-      userId: userPayload.userId,
       oldPassword: userPayload.password,
       newPassword: userPayload.oldPassword,
       type: userPayload.type,
@@ -434,7 +423,6 @@ describe('Test Auth system', () => {
   test('Test confirming update password', async () => {
     appConfig.updatePasswordRequireVerification = true;
     const updatePasswordPayload = {
-      userId: userPayload.userId,
       oldPassword: userPayload.password,
       newPassword: userPayload.oldPassword,
       type: userPayload.type,
@@ -448,11 +436,7 @@ describe('Test Auth system', () => {
       .set('Authorization', 'Bearer ' + userPayload.accessToken)
       .set('Accept', 'application/json');
 
-    const sentEmails = mock.getSentMail();
-    const updatePasswordEmail = sentEmails.find((email) => email.subject === 'Update Password');
-    expect(updatePasswordEmail).toBeDefined();
-    userPayload.updatePasswordToken = getTokenFromMail(updatePasswordEmail.html.toString());
-    expect(userPayload.updatePasswordToken).toBeDefined();
+    userPayload.updatePasswordToken = testEmails('Update Password');
 
     expect(response.status).toBe(HttpStatusCode.OK);
     expect(response.body).toBeDefined();
@@ -462,7 +446,6 @@ describe('Test Auth system', () => {
   });
 
   test('Test confirm update password', async () => {
-    appConfig.updatePasswordRequireVerification = true;
     const confirmUpdatePasswordPayload = {
       token: userPayload.updatePasswordToken,
     };

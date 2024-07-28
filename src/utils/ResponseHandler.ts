@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import HttpStatusCode from './HTTPStatusCodes';
 
 export class ApiResponseBody<T = undefined> {
@@ -10,7 +9,6 @@ export class ApiResponseBody<T = undefined> {
 }
 
 export class ResponseHandler {
-  static res: Response;
   static response(message: any, status: HttpStatusCode) {
     const response = new ApiResponseBody();
     response.error = {

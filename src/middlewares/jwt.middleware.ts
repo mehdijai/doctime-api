@@ -3,15 +3,13 @@ import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { ResponseHandler } from '@/utils/responseHandler';
 import appConfig from '@/config/app.config';
 
-const SECRET_KEY = appConfig.jwt.secret;
-
 export function authenticateJWT(req: IRequest, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    jwt.verify(token, SECRET_KEY, (err, user) => {
+    jwt.verify(token, appConfig.jwt.secret, (err, user) => {
       if (err || !user) {
         if (err instanceof TokenExpiredError) {
           const resBody = ResponseHandler.Unauthorized('Unauthenticated');

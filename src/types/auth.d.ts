@@ -3,6 +3,7 @@ declare interface IUser {
   email: string;
   phone: string;
   name: string;
+  verifiedEmail: boolean;
   userType: string;
   createdAt: Date;
   updatedAt: Date;

@@ -1,43 +1,19 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { validate } from '@/middlewares/validateRequest.middleware';
-import {
-  authSchema,
-  forgetPasswordSchema,
-  refreshTokenSchema,
-  registerSchema,
-  resetPasswordSchema,
-  TAuthSchema,
-  TForgetPasswordSchema,
-  TRefreshTokenSchema,
-  TRegisterSchema,
-  TResetPasswordSchema,
-  TUpdatePasswordSchema,
-  TValidateUserSchema,
-  updatePasswordSchema,
-  validateUserSchema,
-} from '@/schemas/auth.schema';
-import {
-  confirmUpdatePassword,
-  createUser,
-  forgotPassword,
-  loginUser,
-  refreshToken,
-  resetPassword,
-  updatePassword,
-  verifyUser,
-} from '@/repositories/auth.repo';
+import { AuthRepository } from '@/repositories/auth.repo';
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
+import { AuthZODSchema } from '@/schemas/auth/auth.schema';
 
 const AuthRoutes = Router();
 
 AuthRoutes.post(
   '/login',
-  validate(authSchema),
+  validate(AuthZODSchema.authSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TAuthSchema = req.body;
-      const resBody = await loginUser(body);
+      const resBody = await AuthRepository.loginUser(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -48,11 +24,11 @@ AuthRoutes.post(
 
 AuthRoutes.post(
   '/refresh-token',
-  validate(refreshTokenSchema),
+  validate(AuthZODSchema.refreshTokenSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TRefreshTokenSchema = req.body;
-      const resBody = await refreshToken(body);
+      const resBody = await AuthRepository.refreshToken(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -63,11 +39,11 @@ AuthRoutes.post(
 
 AuthRoutes.post(
   '/register',
-  validate(registerSchema),
+  validate(AuthZODSchema.registerSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TRegisterSchema = req.body;
-      const resBody = await createUser(body);
+      const resBody = await AuthRepository.createUser(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -78,11 +54,11 @@ AuthRoutes.post(
 
 AuthRoutes.post(
   '/forget-password',
-  validate(forgetPasswordSchema),
+  validate(AuthZODSchema.forgetPasswordSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TForgetPasswordSchema = req.body;
-      const resBody = await forgotPassword(body);
+      const resBody = await AuthRepository.forgotPassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -93,11 +69,11 @@ AuthRoutes.post(
 
 AuthRoutes.post(
   '/reset-password',
-  validate(resetPasswordSchema),
+  validate(AuthZODSchema.resetPasswordSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TResetPasswordSchema = req.body;
-      const resBody = await resetPassword(body);
+      const resBody = await AuthRepository.resetPassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -109,11 +85,11 @@ AuthRoutes.post(
 AuthRoutes.post(
   '/update-password',
   authenticateJWT,
-  validate(updatePasswordSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  validate(AuthZODSchema.updatePasswordSchema),
+  async (req: IRequest, res: Response, next: NextFunction) => {
     try {
       const body: TUpdatePasswordSchema = req.body;
-      const resBody = await updatePassword(body);
+      const resBody = await AuthRepository.updatePassword(body, req.user.userId);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -124,11 +100,11 @@ AuthRoutes.post(
 
 AuthRoutes.post(
   '/confirm-update-password',
-  validate(validateUserSchema),
+  validate(AuthZODSchema.validateUserSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TValidateUserSchema = req.body;
-      const resBody = await confirmUpdatePassword(body);
+      const resBody = await AuthRepository.confirmUpdatePassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -139,11 +115,11 @@ AuthRoutes.post(
 
 AuthRoutes.post(
   '/verify-user',
-  validate(validateUserSchema),
+  validate(AuthZODSchema.validateUserSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TValidateUserSchema = req.body;
-      const resBody = await verifyUser(body);
+      const resBody = await AuthRepository.verifyUser(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {

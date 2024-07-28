@@ -1,4 +1,7 @@
 {
+  "ts-node": {
+    "files": true
+  },
   "compilerOptions": {
     "target": "es6",
     "module": "CommonJS",
@@ -19,7 +22,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types"]
   },
   "types": ["src/index.d.ts"],
   "include": ["src/**/**/*.ts"],
