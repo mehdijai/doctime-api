@@ -129,7 +129,6 @@ model Doctor {
   mapPosition  Json?
   specialty    String
   biography    String?
-  pictureId    String
   pictureUrl   String
   appointments Appointment[]
   createdAt    DateTime      @default(now())

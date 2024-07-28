@@ -109,7 +109,6 @@ CREATE TABLE "doctors" (
     "mapPosition" JSONB,
     "specialty" TEXT NOT NULL,
     "biography" TEXT,
-    "pictureId" TEXT NOT NULL,
     "pictureUrl" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
