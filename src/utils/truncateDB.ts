@@ -15,14 +15,16 @@ export async function truncateAllTables() {
       `);
 
     // Truncate each table
-    for (const { tablename } of tables as { tablename: string }[]) {
+    for (const { tablename } of (tables as { tablename: string }[]).filter(
+      (table) => !table.tablename.startsWith('_')
+    )) {
       await prisma.$queryRawUnsafe(`TRUNCATE TABLE ${tablename} CASCADE;`);
     }
 
     // Re-enable triggers
     await prisma.$queryRawUnsafe(`SET session_replication_role = 'origin';`);
 
-    // logger.info('All tables truncated successfully');
+    logger.info('All tables truncated successfully');
   } catch (error) {
     logger.error('Error truncating tables:', error);
   } finally {
