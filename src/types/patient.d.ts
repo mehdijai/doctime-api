@@ -36,5 +36,6 @@ declare interface IPrivatePatient extends IPublicPatient {
   identificationType?: string;
   identificationNumber?: string;
   identificationUrl?: string;
-  privacyConsent?: string;
+  privacyConsent?: boolean;
+  doctors?: IDoctor[];
 }

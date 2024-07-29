@@ -20,6 +20,7 @@
   - [x] **TEST** Update password validation
 - [ ] Doctors
   - [x] Create Doctor
+  - [ ] Validate User
   - [x] **TEST** Create Doctor
   - [x] Search Doctors
   - [x] **TEST** Search Doctors
@@ -32,6 +33,7 @@
   - [x] **TEST** Delete Doctor
 - [ ] Patient
   - [ ] Create Patient
+  - [ ] Validate User
   - [ ] **TEST** Create Patient
   - [ ] Search Patients
   - [ ] **TEST** Search Patients
@@ -67,3 +69,5 @@
 - [ ] Authorization
   - [ ] Require Verified Email
   - [ ] Create Permissions
+  - [ ] Confirm deletion
+- [ ] Implement Pagination

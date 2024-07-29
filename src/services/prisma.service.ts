@@ -24,4 +24,5 @@ try {
   logger.error(err);
 }
 
+// @ts-ignore
 export default prisma;

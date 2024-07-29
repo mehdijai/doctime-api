@@ -6,4 +6,5 @@ declare global {
   type TUpdatePatientSchema = z.infer<typeof PatientZODSchema.updatePatientSchema>;
   type TDeletePatientSchema = z.infer<typeof PatientZODSchema.deletePatientSchema>;
   type TSearchPatientSchema = z.infer<typeof PatientZODSchema.searchPatientSchema>;
+  type TAddDoctorSchema = z.infer<typeof PatientZODSchema.addDoctorSchema>;
 }

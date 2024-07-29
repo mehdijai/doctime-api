@@ -17,6 +17,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitAny": true,
+    "strictNullChecks": true,
     "noImplicitReturns": true,
     "baseUrl": ".",
     "paths": {

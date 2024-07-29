@@ -16,7 +16,7 @@ function testEmails(subject: string) {
   const sentEmails = mock.getSentMail();
   const email = sentEmails.find((email) => email.subject === subject);
   expect(email).toBeDefined();
-  const token = getTokenFromMail(email.html.toString());
+  const token = getTokenFromMail(email?.html?.toString() ?? '');
   expect(token).toBeDefined();
   return token;
 }
@@ -85,7 +85,7 @@ describe('Test Auth system', () => {
     });
 
     expect(user).toBeDefined();
-    expect(user.verifiedEmail).toEqual(true);
+    expect(user?.verifiedEmail).toEqual(true);
   });
 
   test('Test Login', async () => {
@@ -286,8 +286,10 @@ describe('Test Auth system', () => {
     });
 
     expect(user).toBeDefined();
-    const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
-    expect(isValidPassword).toEqual(true);
+    if (user) {
+      const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
+      expect(isValidPassword).toEqual(true);
+    }
   });
 
   test('Test old password', async () => {
@@ -416,8 +418,10 @@ describe('Test Auth system', () => {
     });
 
     expect(user).toBeDefined();
-    const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
-    expect(isValidPassword).toEqual(true);
+    if (user) {
+      const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
+      expect(isValidPassword).toEqual(true);
+    }
   });
 
   test('Test confirming update password', async () => {
@@ -468,7 +472,9 @@ describe('Test Auth system', () => {
     });
 
     expect(user).toBeDefined();
-    const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
-    expect(isValidPassword).toEqual(true);
+    if (user) {
+      const isValidPassword = await bcrypt.compare(userPayload.password, user.password);
+      expect(isValidPassword).toEqual(true);
+    }
   });
 });

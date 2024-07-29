@@ -49,7 +49,9 @@ export class DoctorRepository extends AuthClass {
       wherePrisma['status'] = searchPayload.status;
     }
     if (searchPayload.address) {
-      wherePrisma['address'] = searchPayload.address;
+      wherePrisma['address'] = {
+        contains: searchPayload.address,
+      };
     }
     if (searchPayload.specialty) {
       wherePrisma['specialty'] = searchPayload.specialty;

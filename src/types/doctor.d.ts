@@ -15,6 +15,7 @@ declare interface IDoctor {
   pictureUrl?: string;
   createdAt: Date;
   updatedAt: Date;
+  patients?: IPatient[];
 }
 
 declare interface ISearchDoctor {

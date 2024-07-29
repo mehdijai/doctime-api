@@ -61,4 +61,8 @@ export class PatientZODSchema {
     gender: z.enum(['MALE', 'FEMALE']).optional(),
     address: z.string().min(5).optional(),
   });
+
+  static readonly addDoctorSchema = z.object({
+    doctorId: z.string().uuid(),
+  });
 }

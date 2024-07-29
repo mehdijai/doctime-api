@@ -223,7 +223,7 @@ describe('Test doctors api', () => {
     });
 
     expect(doctor).toBeDefined();
-    expect(doctor.address).toEqual(updatePayload.address);
+    expect(doctor?.address).toEqual(updatePayload.address);
   });
 
   test('Test delete doctor', async () => {

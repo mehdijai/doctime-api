@@ -9,30 +9,30 @@ export class ApiResponseBody<T = undefined> {
 }
 
 export class ResponseHandler {
-  static response(message: any, status: HttpStatusCode) {
-    const response = new ApiResponseBody();
+  static response<T>(message: any, status: HttpStatusCode) {
+    const response = new ApiResponseBody<T>();
     response.error = {
       code: status,
       message: message,
     };
     return response;
   }
-  static NoDataResponse(message: any = 'Operation successful') {
-    return this.response(message, HttpStatusCode.OK);
+  static NoDataResponse<T>(message: any = 'Operation successful') {
+    return this.response<T>(message, HttpStatusCode.OK);
   }
-  static NotFound(message: any = 'Not found') {
-    return this.response(message, HttpStatusCode.NOT_FOUND);
+  static NotFound<T>(message: any = 'Not found') {
+    return this.response<T>(message, HttpStatusCode.NOT_FOUND);
   }
-  static InvalidBody(message: any = 'Invalid request body') {
-    return this.response(message, HttpStatusCode.UNPROCESSABLE_ENTITY);
+  static InvalidBody<T>(message: any = 'Invalid request body') {
+    return this.response<T>(message, HttpStatusCode.UNPROCESSABLE_ENTITY);
   }
-  static Unauthorized(message: any = 'Unauthorized') {
-    return this.response(message, HttpStatusCode.UNAUTHORIZED);
+  static Unauthorized<T>(message: any = 'Unauthorized') {
+    return this.response<T>(message, HttpStatusCode.UNAUTHORIZED);
   }
-  static Forbidden(message: any = 'Forbidden') {
-    return this.response(message, HttpStatusCode.FORBIDDEN);
+  static Forbidden<T>(message: any = 'Forbidden') {
+    return this.response<T>(message, HttpStatusCode.FORBIDDEN);
   }
-  static BadRequest(message: any = 'Bad Request') {
-    return this.response(message, HttpStatusCode.BAD_REQUEST);
+  static BadRequest<T>(message: any = 'Bad Request') {
+    return this.response<T>(message, HttpStatusCode.BAD_REQUEST);
   }
 }

@@ -108,6 +108,7 @@ model Patient {
   identificationUrl      String?
   privacyConsent         Boolean
   appointments           Appointment[]
+  doctors                Doctor[]
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
@@ -131,6 +132,7 @@ model Doctor {
   biography    String?
   pictureUrl   String?
   appointments Appointment[]
+  patients     Patient[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
