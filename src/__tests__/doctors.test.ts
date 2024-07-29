@@ -20,7 +20,6 @@ describe('Test doctors api', () => {
     type: 'DOCTOR',
   };
   const doctorPayload: any = {
-    userId: '',
     address: 'some address',
     specialty: 'Urology',
     mapPosition: {
@@ -43,7 +42,6 @@ describe('Test doctors api', () => {
     expect(response.body.data.email).toEqual(userPayload.email);
     expect(response.body.data.userType).toEqual(userPayload.type);
     userPayload.userId = response.body.data.id;
-    doctorPayload.userId = response.body.data.id;
   });
 
   test('Test Login', async () => {
