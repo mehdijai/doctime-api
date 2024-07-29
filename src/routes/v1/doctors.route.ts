@@ -28,7 +28,7 @@ DoctorsRoutes.get(
   validate(DoctorZODSchema.searchDoctorSchema, true),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: TSearchDoctorSchema = req.params;
+      const body: TSearchDoctorSchema = req.query;
       const resBody = await DoctorRepository.getDoctors(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();

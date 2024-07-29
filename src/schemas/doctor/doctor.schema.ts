@@ -41,8 +41,8 @@ export class DoctorZODSchema {
     address: z.string().min(5).optional(),
     specialty: z.string().min(5).optional(),
     nearMe: z.object({
-      lat: z.number().min(-90).max(90),
-      lng: z.number().min(-180).max(180),
+      lat: z.string().refine((lat) => parseFloat(lat) >= -90 && parseFloat(lat) <= 90),
+      lng: z.string().refine((lat) => parseFloat(lat) >= -180 && parseFloat(lat) <= 180),
     }).optional(),
   });
 }

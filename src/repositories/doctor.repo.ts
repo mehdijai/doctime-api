@@ -1,7 +1,7 @@
 import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
 import prisma from '@/services/prisma.service';
 import { apiMethod } from '@/decorators/api.decorator';
-import { parseDoctor } from '@/utils/parsers';
+import { parseCoords, parseDoctor } from '@/utils/parsers';
 import { isNearCoordinates } from '@/utils/geo';
 
 export class DoctorRepository {
@@ -67,7 +67,7 @@ export class DoctorRepository {
           return true;
         if (!doctor.mapPosition) return false;
         return isNearCoordinates(
-          searchPayload.nearMe as ICoordinates,
+          parseCoords(searchPayload.nearMe),
           JSON.parse(doctor.mapPosition) as ICoordinates,
           5
         );

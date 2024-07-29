@@ -18,3 +18,10 @@
   - [x] **TEST** Update Password
   - [x] Update password validation
   - [x] **TEST** Update password validation
+- [ ] Doctors
+- [ ] Patient
+- [ ] Appointment
+- [ ] Mailer
+- [ ] SMS
+- [ ] CI/CD GitHub
+- [ ] Deployment

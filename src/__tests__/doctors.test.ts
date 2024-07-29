@@ -18,7 +18,7 @@ describe('Test doctors api', () => {
     password: '12345678',
     type: 'DOCTOR',
   };
-  const doctorPayload = {
+  const doctorPayload: any = {
     userId: '',
     address: 'some address',
     specialty: 'Urology',
@@ -98,11 +98,79 @@ describe('Test doctors api', () => {
     expect(response.body.data.user.id).toBeDefined();
     expect(response.body.data.user.id).toEqual(userPayload.userId);
 
+    doctorPayload.id = response.body.data.id;
+
     // Test in Prisma
     const storedDoctor = await prisma.doctor.findUnique({
       where: { id: response.body.data.id },
     });
 
     expect(storedDoctor).toBeDefined();
+  });
+
+  test('Test list doctors', async () => {
+    const response = await request(app)
+      .get(doctorsBaseRoute + '/')
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.length).toEqual(1);
+    expect(response.body.data[0].id).toEqual(doctorPayload.id);
+  });
+
+  test('Test search doctors -- Search Name', async () => {
+    const response = await request(app)
+      .get(doctorsBaseRoute + '/')
+      .query({ name: 'Hassan' })
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.length).toEqual(0);
+  });
+
+  test('Test search doctors -- Near me', async () => {
+    const response = await request(app)
+      .get(doctorsBaseRoute + '/')
+      .query({
+        nearMe: {
+          lat: 34.89054894126703,
+          lng: -2.516329371111121,
+        },
+      })
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.length).toEqual(1);
+  });
+
+  test('Test search doctors -- NOT Near me', async () => {
+    const response = await request(app)
+      .get(doctorsBaseRoute + '/')
+      .query({
+        nearMe: {
+          lat: 34.87021040967859,
+          lng: -2.3564429284624344,
+        },
+      })
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.length).toEqual(0);
   });
 });

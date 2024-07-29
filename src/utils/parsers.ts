@@ -27,3 +27,10 @@ export function parseDoctor(doctor: Doctor & { user: User }): IDoctor {
     updatedAt: doctor.updatedAt,
   };
 }
+
+export function parseCoords(coords: { lat?: string; lng?: string }) {
+  return {
+    lat: parseFloat(coords.lat ?? '0'),
+    lng: parseFloat(coords.lng ?? '0'),
+  } as ICoordinates;
+}
