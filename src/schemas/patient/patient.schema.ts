@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 export class PatientZODSchema {
-  static readonly createPatientSchema = z.object({
-    birthDate: z.date(),
-    gender: z.enum(['MALE', 'FEMALE']),
+  static readonly createPatientSchema = z.strictObject({
+    birthDate: z.coerce.date(),
+    gender: z.enum(['Male', 'Female']),
     address: z.string().min(5),
     occupation: z.string().min(2),
     emergencyContactName: z.string().min(2),
@@ -23,10 +23,10 @@ export class PatientZODSchema {
     privacyConsent: z.boolean(),
   });
 
-  static readonly updatePatientSchema = z.object({
+  static readonly updatePatientSchema = z.strictObject({
     id: z.string().uuid(),
-    birthDate: z.date(),
-    gender: z.enum(['MALE', 'FEMALE']),
+    birthDate: z.coerce.date(),
+    gender: z.enum(['Male', 'Female']),
     address: z.string().min(5),
     occupation: z.string().min(2),
     emergencyContactName: z.string().min(2),
@@ -46,23 +46,23 @@ export class PatientZODSchema {
     privacyConsent: z.boolean(),
   });
 
-  static readonly deletePatientSchema = z.object({
+  static readonly deletePatientSchema = z.strictObject({
     id: z.string().uuid(),
   });
 
-  static readonly searchPatientSchema = z.object({
+  static readonly searchPatientSchema = z.strictObject({
     name: z.string().optional(),
     email: z.string().email().optional(),
     phone: z
       .string()
       .refine((phone) => /^\+\d{10,15}$/.test(phone), 'Invalid phone number')
       .optional(),
-    birthDate: z.date().optional(),
-    gender: z.enum(['MALE', 'FEMALE']).optional(),
+    birthDate: z.coerce.date().optional(),
+    gender: z.enum(['Male', 'Female']).optional(),
     address: z.string().min(5).optional(),
   });
 
-  static readonly addDoctorSchema = z.object({
+  static readonly addDoctorSchema = z.strictObject({
     doctorId: z.string().uuid(),
   });
 }
