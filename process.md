@@ -28,8 +28,8 @@
   - [x] **TEST** Get Doctor
   - [x] Update Doctor
   - [x] **TEST** Update Doctor
-  - [ ] Delete Doctor
-  - [ ] **TEST** Delete Doctor
+  - [x] Delete Doctor
+  - [x] **TEST** Delete Doctor
 - [ ] Patient
   - [ ] Create Patient
   - [ ] **TEST** Create Patient
