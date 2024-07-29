@@ -42,7 +42,7 @@ DoctorsRoutes.get(
   authenticateJWT,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.params.id;
+      const id = req.params.docId;
       const resBody = await DoctorRepository.getDoctor(id);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();

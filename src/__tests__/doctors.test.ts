@@ -4,6 +4,7 @@ import appConfig, { parseAPIVersion } from '@/config/app.config';
 import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('Test doctors api', () => {
   const authBaseRoute = parseAPIVersion(1) + '/auth';
@@ -172,5 +173,31 @@ describe('Test doctors api', () => {
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.length).toEqual(0);
+  });
+
+  test('Test get doctor', async () => {
+    const response = await request(app)
+      .get(doctorsBaseRoute + '/' + doctorPayload.id)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.id).toEqual(doctorPayload.id);
+  });
+
+  test('Test get doctor -- non existing', async () => {
+    const response = await request(app)
+      .get(doctorsBaseRoute + '/' + uuidv4())
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
   });
 });
