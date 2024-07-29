@@ -14,8 +14,8 @@ export class DoctorZODSchema {
 
   static readonly updateDoctorSchema = z.object({
     id: z.string().uuid(),
-    address: z.string().min(5),
-    specialty: z.string().min(5),
+    address: z.string().min(5).optional(),
+    specialty: z.string().min(5).optional(),
     status: z.enum(['AVAILABLE', 'UNAVAILABLE', 'SUSPENDED']).optional(),
     biography: z.string().min(5).optional(),
     pictureUrl: z.string().url().optional(),

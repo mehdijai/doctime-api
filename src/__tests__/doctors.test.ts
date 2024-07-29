@@ -200,4 +200,29 @@ describe('Test doctors api', () => {
     expect(response.body.error).toBeDefined();
     expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
   });
+
+  test('Test update doctor', async () => {
+    const updatePayload = {
+      id: doctorPayload.id,
+      address: 'some other address',
+    };
+    const response = await request(app)
+      .put(doctorsBaseRoute + '/')
+      .send(updatePayload)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.address).toEqual(updatePayload.address);
+
+    const doctor = await prisma.doctor.findUnique({
+      where: { id: doctorPayload.id },
+    });
+
+    expect(doctor).toBeDefined()
+    expect(doctor.address).toEqual(updatePayload.address);
+  });
 });

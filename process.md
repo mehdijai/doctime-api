@@ -26,8 +26,8 @@
   - [x] **TEST** Search Near Doctors
   - [x] Get Doctor
   - [x] **TEST** Get Doctor
-  - [ ] Update Doctor
-  - [ ] **TEST** Update Doctor
+  - [x] Update Doctor
+  - [x] **TEST** Update Doctor
   - [ ] Delete Doctor
   - [ ] **TEST** Delete Doctor
 - [ ] Patient
