@@ -1,18 +1,8 @@
-import { sendEmail } from '@/services/mail.service';
-import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
-import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
-import { logger } from '@/utils/winston';
-import { User } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
-import prisma from '@/services/prisma.service';
-import appConfig from '@/config/app.config';
-import { addTime } from '@/utils/helpers';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ApiResponseBody } from '@/utils/responseHandler';
 import { apiMethod } from '@/decorators/api.decorator';
+import { AuthClass } from '@/decorators/auth.decorator';
 
-export class AppointmentRepository {
+export class AppointmentRepository extends AuthClass {
   @apiMethod<IAppointment>()
   static async getAppointment(id: string): Promise<ApiResponseBody<IAppointment>> {
     const resBody = (this as any).getResBody();

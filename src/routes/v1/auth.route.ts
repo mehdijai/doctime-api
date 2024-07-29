@@ -86,10 +86,10 @@ AuthRoutes.post(
   '/update-password',
   authenticateJWT,
   validate(AuthZODSchema.updatePasswordSchema),
-  async (req: IRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TUpdatePasswordSchema = req.body;
-      const resBody = await AuthRepository.updatePassword(body, req.user.userId);
+      const resBody = await AuthRepository.updatePassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {

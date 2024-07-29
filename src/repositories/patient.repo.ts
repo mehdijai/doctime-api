@@ -1,17 +1,8 @@
-import { sendEmail } from '@/services/mail.service';
-import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
-import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
-import { logger } from '@/utils/winston';
-import { User } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
-import prisma from '@/services/prisma.service';
-import appConfig from '@/config/app.config';
-import { addTime } from '@/utils/helpers';
+import { ApiResponseBody } from '@/utils/responseHandler';
 import { apiMethod } from '@/decorators/api.decorator';
+import { AuthClass } from '@/decorators/auth.decorator';
 
-export class PatientRepository {
+export class PatientRepository extends AuthClass {
   @apiMethod<IPrivatePatient>()
   static async getPatient(
     patientId: string,

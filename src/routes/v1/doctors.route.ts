@@ -11,11 +11,10 @@ DoctorsRoutes.post(
   '/',
   authenticateJWT,
   validate(DoctorZODSchema.createDoctorSchema),
-  async (req: IRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body: TCreateDoctorSchema = req.body;
-      const userId = req.user.userId;
-      const resBody = await DoctorRepository.createDoctor(body, userId);
+      const resBody = await DoctorRepository.createDoctor(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {

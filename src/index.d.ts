@@ -10,8 +10,12 @@
 import { Request as ExpressRequest } from 'express';
 
 declare global {
-  interface IRequest extends ExpressRequest {
-    user?: any;
+  interface IAuthUser {
+    userId: string;
+    timestamp: number;
+  }
+  interface IWithUser {
+    USER: IAuthUser;
   }
   declare interface ICoordinates {
     lat: number;
