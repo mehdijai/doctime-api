@@ -26,6 +26,11 @@ export function apiMethod<T>() {
               code: HttpStatusCode.CONFLICT,
               message: 'Email already exists',
             };
+          } else {
+            resBody.error = {
+              code: HttpStatusCode.INTERNAL_SERVER_ERROR,
+              message: String(err),
+            };
           }
         } else {
           resBody.error = {
