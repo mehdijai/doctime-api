@@ -54,7 +54,13 @@ describe('Test Auth system', () => {
   test('Test Create User email conflict', async () => {
     const response = await request(app)
       .post(baseRoute + '/register')
-      .send(userPayload)
+      .send({
+        name: userPayload.name,
+        phone: userPayload.phone,
+        email: userPayload.email,
+        password: userPayload.password,
+        type: userPayload.type,
+      })
       .set('Accept', 'application/json');
 
     expect(response.status).toBe(HttpStatusCode.CONFLICT);
