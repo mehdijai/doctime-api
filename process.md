@@ -19,9 +19,51 @@
   - [x] Update password validation
   - [x] **TEST** Update password validation
 - [ ] Doctors
+  - [x] Create Doctor
+  - [x] **TEST** Create Doctor
+  - [x] Search Doctors
+  - [x] **TEST** Search Doctors
+  - [x] **TEST** Search Near Doctors
+  - [ ] Get Doctor
+  - [ ] **TEST** Get Doctor
+  - [ ] Update Doctor
+  - [ ] **TEST** Update Doctor
+  - [ ] Delete Doctor
+  - [ ] **TEST** Delete Doctor
 - [ ] Patient
+  - [ ] Create Patient
+  - [ ] **TEST** Create Patient
+  - [ ] Search Patients
+  - [ ] **TEST** Search Patients
+  - [ ] Get Patient
+  - [ ] **TEST** Get Patient
+  - [ ] Update Patient
+  - [ ] **TEST** Update Patient
+  - [ ] Delete Patient
+  - [ ] **TEST** Delete Patient
 - [ ] Appointment
+  - [ ] Create Appointment
+  - [ ] **TEST** Create Appointment
+  - [ ] Search Appointments
+  - [ ] **TEST** Search Appointments
+  - [ ] Get Appointment
+  - [ ] **TEST** Get Appointment
+  - [ ] Update Appointment
+  - [ ] **TEST** Update Appointment
+  - [ ] Delete Appointment
+  - [ ] **TEST** Delete Appointment
 - [ ] Mailer
+  - [ ] Mailer Service
+  - [ ] **TEST** Mailer Service
+  - [ ] Mailer Providers
+  - [ ] Testing Mail Independent Provider
 - [ ] SMS
+  - [ ] SMS Service
+  - [ ] **TEST** SMS Service
+  - [ ] SMS Provider
+  - [ ] Testing SMS Independent Provider
 - [ ] CI/CD GitHub
 - [ ] Deployment
+- [ ] Authorization
+  - [ ] Require Verified Email
+  - [ ] Create Permissions

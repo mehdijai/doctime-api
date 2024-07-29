@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export class DoctorZODSchema {
   static readonly createDoctorSchema = z.object({
-    userId: z.string().uuid(),
     address: z.string().min(5),
     specialty: z.string().min(5),
     biography: z.string().min(5).optional(),

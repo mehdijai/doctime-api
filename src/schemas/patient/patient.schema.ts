@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export class PatientZODSchema {
   static readonly createPatientSchema = z.object({
-    userId: z.string().uuid(),
     birthDate: z.date(),
     gender: z.enum(['MALE', 'FEMALE']),
     address: z.string().min(5),
@@ -26,7 +25,6 @@ export class PatientZODSchema {
 
   static readonly updatePatientSchema = z.object({
     id: z.string().uuid(),
-    userId: z.string().uuid(),
     birthDate: z.date(),
     gender: z.enum(['MALE', 'FEMALE']),
     address: z.string().min(5),

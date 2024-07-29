@@ -77,7 +77,10 @@ export class DoctorRepository {
   }
 
   @apiMethod<IDoctor>()
-  static async createDoctor(payload: TCreateDoctorSchema): Promise<ApiResponseBody<IDoctor>> {
+  static async createDoctor(
+    payload: TCreateDoctorSchema,
+    userId: string
+  ): Promise<ApiResponseBody<IDoctor>> {
     const resBody: ApiResponseBody<IDoctor> = (this as any).getResBody();
 
     const doctor = await prisma.doctor.create({
@@ -90,7 +93,7 @@ export class DoctorRepository {
         pictureUrl: payload.pictureUrl,
         user: {
           connect: {
-            id: payload.userId,
+            id: userId,
           },
         },
       },
