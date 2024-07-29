@@ -1,15 +1,16 @@
-import { Response, NextFunction } from 'express';
+import { Response, NextFunction, Request } from 'express';
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { ResponseHandler } from '@/utils/responseHandler';
 import appConfig from '@/config/app.config';
+import { AuthFacade } from '@/facades/auth.facade';
 
-export function authenticateJWT(req: IRequest, res: Response, next: NextFunction) {
+export function authenticateJWT(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    jwt.verify(token, appConfig.jwt.secret, (err, user) => {
+    jwt.verify(token, appConfig.jwt.secret, (err, user: jwt.JwtPayload & IAuthUser) => {
       if (err || !user) {
         if (err instanceof TokenExpiredError) {
           const resBody = ResponseHandler.Unauthorized('Unauthenticated');
@@ -20,7 +21,7 @@ export function authenticateJWT(req: IRequest, res: Response, next: NextFunction
         }
         return;
       }
-      req.user = user;
+      AuthFacade.set(user.userId, user.timestamp);
       next();
     });
   } else {

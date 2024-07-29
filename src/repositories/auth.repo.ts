@@ -10,8 +10,9 @@ import prisma from '@/services/prisma.service';
 import appConfig from '@/config/app.config';
 import { addTime } from '@/utils/helpers';
 import { apiMethod } from '@/decorators/api.decorator';
+import { Auth, AuthClass } from '@/decorators/auth.decorator';
 
-export class AuthRepository {
+export class AuthRepository extends AuthClass {
   @apiMethod<IAuthResponse>()
   static async loginUser(payload: TAuthSchema): Promise<ApiResponseBody<IAuthResponse>> {
     const resBody = (this as any).getResBody();
@@ -215,11 +216,12 @@ export class AuthRepository {
     return resBody;
   }
 
+  @Auth
   @apiMethod<IStatusResponse>()
   static async updatePassword(
-    payload: TUpdatePasswordSchema,
-    userId: string
+    payload: TUpdatePasswordSchema
   ): Promise<ApiResponseBody<IStatusResponse>> {
+    const userId = this.USER.userId;
     const resBody = (this as any).getResBody();
     const user = await prisma.user.findUnique({
       where: {

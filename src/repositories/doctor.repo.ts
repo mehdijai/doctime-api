@@ -3,8 +3,9 @@ import prisma from '@/services/prisma.service';
 import { apiMethod } from '@/decorators/api.decorator';
 import { parseCoords, parseDoctor } from '@/utils/parsers';
 import { isNearCoordinates } from '@/utils/geo';
+import { Auth, AuthClass } from '@/decorators/auth.decorator';
 
-export class DoctorRepository {
+export class DoctorRepository extends AuthClass {
   @apiMethod<IDoctor>()
   static async getDoctor(id: string): Promise<ApiResponseBody<IDoctor>> {
     const resBody: ApiResponseBody<IDoctor> = (this as any).getResBody();
@@ -76,11 +77,10 @@ export class DoctorRepository {
     return resBody;
   }
 
+  @Auth
   @apiMethod<IDoctor>()
-  static async createDoctor(
-    payload: TCreateDoctorSchema,
-    userId: string
-  ): Promise<ApiResponseBody<IDoctor>> {
+  static async createDoctor(payload: TCreateDoctorSchema): Promise<ApiResponseBody<IDoctor>> {
+    const userId = this.USER.userId;
     const resBody: ApiResponseBody<IDoctor> = (this as any).getResBody();
 
     const doctor = await prisma.doctor.create({
