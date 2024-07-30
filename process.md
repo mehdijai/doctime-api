@@ -18,10 +18,10 @@
   - [x] **TEST** Update Password
   - [x] Update password validation
   - [x] **TEST** Update password validation
-- [ ] Doctors
+- [x] Doctors
   - [x] Create Doctor
   - [x] Validate User type
-  - [ ] Validate User unattached
+  - [x] Validate User unattached
   - [x] **TEST** Create Doctor
   - [x] Search Doctors
   - [x] **TEST** Search Doctors
@@ -32,10 +32,10 @@
   - [x] **TEST** Update Doctor
   - [x] Delete Doctor
   - [x] **TEST** Delete Doctor
-- [ ] Patient
+- [x] Patient
   - [x] Create Patient
   - [x] Validate User type
-  - [ ] Validate User unattached
+  - [x] Validate User unattached
   - [x] **TEST** Create Patient
   - [x] Add doctor to patient
   - [x] **TEST** Add doctor to patient

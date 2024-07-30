@@ -174,6 +174,23 @@ describe('Test doctors api', () => {
     expect(storedDoctor).toBeDefined();
   });
 
+  test('Test create doctor in user with existing doctor', async () => {
+    const response = await request(app)
+      .post(doctorsBaseRoute + '/')
+      .send({
+        address: 'some x address',
+        specialty: 'Urology',
+      })
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.FORBIDDEN);
+  });
+
   test('Test list doctors', async () => {
     const response = await request(app)
       .get(doctorsBaseRoute + '/')

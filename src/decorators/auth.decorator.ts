@@ -7,7 +7,15 @@ export class AuthClass {
   protected static async isValidUser(userId: string, type: $Enums.UserType) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        patient: true,
+        doctor: true,
+      },
     });
+
+    if (user?.patient || user?.doctor) {
+      return false;
+    }
 
     return user?.userType === type;
   }

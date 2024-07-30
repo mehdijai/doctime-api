@@ -264,6 +264,29 @@ describe('Test patients api', () => {
     expect(storedPatient).toBeDefined();
   });
 
+  test('Test create patient in user with existing patient', async () => {
+    const response = await request(app)
+      .post(patientsBaseRoute + '/')
+      .send({
+        birthDate: new Date(),
+        gender: 'Male',
+        address: 'Some x address',
+        occupation: 'Barber',
+        emergencyContactName: 'John doe',
+        emergencyContactNumber: '+212816910830',
+        primaryPhysician: 'Dr. Aouad',
+        privacyConsent: true,
+      })
+      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.FORBIDDEN);
+  });
+
   test('Test list patients -- Doctor not linked', async () => {
     const response = await request(app)
       .get(patientsBaseRoute + '/')
