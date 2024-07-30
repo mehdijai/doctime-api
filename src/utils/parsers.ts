@@ -13,10 +13,10 @@ export function parseUserPayload(user: User): IUser {
   };
 }
 
-export function parseDoctor(doctor: Doctor & { user: User }): IDoctor {
+export function parseDoctor(doctor: Doctor & { user?: User }): IDoctor {
   return {
     id: doctor.id,
-    user: parseUserPayload(doctor.user),
+    user: doctor.user && parseUserPayload(doctor.user),
     status: doctor.status as DoctorStatus,
     address: doctor.address,
     mapPosition: doctor.mapPosition ? JSON.parse(doctor.mapPosition) : undefined,
@@ -49,7 +49,7 @@ export function parsePublicPatient(patient: Patient & { user: User }): IPublicPa
 }
 
 export function parsePrivatePatient(
-  patient: Patient & { user: User; doctors?: Doctor[] }
+  patient: Patient & { user: User; doctors?: (Doctor & { user?: User })[] }
 ): IPrivatePatient {
   const publicPatient = parsePublicPatient(patient);
   return {

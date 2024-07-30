@@ -6,7 +6,7 @@ enum DoctorStatus {
 
 declare interface IDoctor {
   id: string;
-  user: IUser;
+  user?: IUser;
   status: DoctorStatus;
   address: string;
   mapPosition?: ICoordinates;

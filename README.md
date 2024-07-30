@@ -11,7 +11,7 @@ To run the Jest tests:
 npm run test
 ```
 
-*Note*
+_Note_
 **Insure the environment variable for test db is set**
 
 ## Run the API

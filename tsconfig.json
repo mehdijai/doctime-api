@@ -5,8 +5,9 @@
   "compilerOptions": {
     "target": "es6",
     "module": "CommonJS",
+    "composite": false,
     "sourceMap": false,
-    "strict": false,
+    "strict": true,
     "outDir": "./dist",
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -20,6 +21,7 @@
     "strictNullChecks": true,
     "noImplicitReturns": true,
     "baseUrl": ".",
+    "rootDir": ".",
     "paths": {
       "@/*": ["src/*"]
     },

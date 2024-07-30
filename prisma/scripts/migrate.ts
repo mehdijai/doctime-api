@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { config } from 'dotenv';
-config()
+config();
 
 async function runMigrations() {
   try {
@@ -15,4 +15,4 @@ async function runMigrations() {
   }
 }
 
-runMigrations()
+runMigrations();

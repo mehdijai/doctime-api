@@ -6,10 +6,12 @@ export class DoctorZODSchema {
     specialty: z.string().min(5),
     biography: z.string().min(5).optional(),
     pictureUrl: z.string().url().optional(),
-    mapPosition: z.object({
-      lat: z.number().min(-90).max(90),
-      lng: z.number().min(-180).max(180),
-    }).optional(),
+    mapPosition: z
+      .object({
+        lat: z.number().min(-90).max(90),
+        lng: z.number().min(-180).max(180),
+      })
+      .optional(),
   });
 
   static readonly updateDoctorSchema = z.strictObject({

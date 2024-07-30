@@ -10,7 +10,7 @@ export function authenticateJWT(req: Request, res: Response, next: NextFunction)
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    jwt.verify(token, appConfig.jwt.secret, (err, user: jwt.JwtPayload & IAuthUser) => {
+    jwt.verify(token, appConfig.jwt.secret, (err, user) => {
       if (err || !user) {
         if (err instanceof TokenExpiredError) {
           const resBody = ResponseHandler.Unauthorized('Unauthenticated');
@@ -19,10 +19,11 @@ export function authenticateJWT(req: Request, res: Response, next: NextFunction)
           const resBody = ResponseHandler.Forbidden('Access forbidden: Invalid token');
           res.status(resBody.error!.code).json(resBody);
         }
-        return;
+      } else {
+        const { userId, timestamp, ...jwtPayload } = user as jwt.JwtPayload;
+        AuthFacade.set(userId, timestamp);
+        next();
       }
-      AuthFacade.set(user.userId, user.timestamp);
-      next();
     });
   } else {
     const resBody = ResponseHandler.Unauthorized('Access denied: No token provided');

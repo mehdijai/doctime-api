@@ -148,6 +148,14 @@ describe('Test Auth system', () => {
     expect(response.body.error.message).toEqual('Password not match');
   });
 
+  test('Test unauthenticated user -- invalid token', async () => {
+    const response = await request(app)
+      .get(parseAPIVersion(1) + '/protected')
+      .set('Authorization', 'Bearer ' + 'some-token')
+      .set('Accept', 'application/json');
+    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+  });
+
   test('Test unauthenticated user', async () => {
     const response = await request(app)
       .get(parseAPIVersion(1) + '/protected')
