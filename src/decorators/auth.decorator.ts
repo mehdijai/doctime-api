@@ -1,7 +1,16 @@
 import { AuthFacade } from '@/facades/auth.facade';
+import prisma from '@/services/prisma.service';
+import { $Enums } from '@prisma/client';
 
 export class AuthClass {
   static USER: IAuthUser;
+  protected static async isValidUser(userId: string, type: $Enums.UserType) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    return user?.userType === type;
+  }
 }
 
 export function Auth(_: any, __: string, descriptor: PropertyDescriptor) {

@@ -19,6 +19,13 @@ describe('Test doctors api', () => {
     password: '12345678',
     type: 'DOCTOR',
   };
+  const invalidUserPayload: any = {
+    name: 'John Doe',
+    phone: '+212610090830',
+    email: 'jdoe@doctime.ma',
+    password: '12345678',
+    type: 'PATIENT',
+  };
   const doctorPayload: any = {
     address: 'some address',
     specialty: 'Urology',
@@ -27,6 +34,66 @@ describe('Test doctors api', () => {
       lng: -2.5195691,
     },
   };
+
+  test('Test Create the invalid User', async () => {
+    appConfig.requireVerifyEmail = false;
+    const response = await request(app)
+      .post(authBaseRoute + '/register')
+      .send(invalidUserPayload)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.id).toBeDefined();
+    expect(response.body.data.email).toEqual(invalidUserPayload.email);
+    expect(response.body.data.userType).toEqual(invalidUserPayload.type);
+    invalidUserPayload.userId = response.body.data.id;
+  });
+
+  test('Test Login the invalid user', async () => {
+    const loginPayload = {
+      email: invalidUserPayload.email,
+      password: invalidUserPayload.password,
+      type: invalidUserPayload.type,
+    };
+
+    const response = await request(app)
+      .post(authBaseRoute + '/login')
+      .send(loginPayload)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.accessToken).toBeDefined();
+    expect(response.body.data.accessToken.token).toBeDefined();
+    expect(response.body.data.accessToken.refreshToken).toBeDefined();
+    expect(response.body.data.user).toBeDefined();
+    expect(response.body.data.user.id).toBeDefined();
+    expect(response.body.data.user.id).toEqual(invalidUserPayload.userId);
+    expect(response.body.data.user.email).toEqual(invalidUserPayload.email);
+    expect(response.body.data.user.userType).toEqual(invalidUserPayload.type);
+    invalidUserPayload.accessToken = response.body.data.accessToken.token;
+    invalidUserPayload.refreshToken = response.body.data.accessToken.refreshToken;
+  });
+
+  test('Test create doctor of invalid user', async () => {
+    const response = await request(app)
+      .post(doctorsBaseRoute + '/')
+      .send(doctorPayload)
+      .set('Authorization', 'Bearer ' + invalidUserPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeUndefined();
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.code).toEqual(HttpStatusCode.FORBIDDEN);
+  });
+
   test('Test Create User', async () => {
     appConfig.requireVerifyEmail = false;
     const response = await request(app)

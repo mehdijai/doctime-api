@@ -126,6 +126,10 @@ export class PatientRepository extends AuthClass {
     const userId = this.USER.userId;
     const resBody: ApiResponseBody<IPrivatePatient> = (this as any).getResBody();
 
+    if (!(await this.isValidUser(userId, 'PATIENT'))) {
+      return ResponseHandler.Forbidden('This user is not allowed to perform this action');
+    }
+
     const patient = await prisma.patient.create({
       data: {
         ...payload,

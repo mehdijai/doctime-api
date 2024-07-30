@@ -20,7 +20,8 @@
   - [x] **TEST** Update password validation
 - [ ] Doctors
   - [x] Create Doctor
-  - [ ] Validate User
+  - [x] Validate User type
+  - [ ] Validate User unattached
   - [x] **TEST** Create Doctor
   - [x] Search Doctors
   - [x] **TEST** Search Doctors
@@ -33,7 +34,8 @@
   - [x] **TEST** Delete Doctor
 - [ ] Patient
   - [x] Create Patient
-  - [ ] Validate User
+  - [x] Validate User type
+  - [ ] Validate User unattached
   - [x] **TEST** Create Patient
   - [x] Add doctor to patient
   - [x] **TEST** Add doctor to patient
