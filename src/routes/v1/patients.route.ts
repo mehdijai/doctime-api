@@ -65,7 +65,7 @@ PatientsRoutes.get(
   }
 );
 PatientsRoutes.put(
-  '/:id',
+  '/',
   authenticateJWT,
   validate(PatientZODSchema.updatePatientSchema),
   async (req: Request, res: Response, next: NextFunction) => {
@@ -80,7 +80,7 @@ PatientsRoutes.put(
   }
 );
 PatientsRoutes.delete(
-  '/:id',
+  '/',
   authenticateJWT,
   validate(PatientZODSchema.deletePatientSchema),
   async (req: Request, res: Response, next: NextFunction) => {

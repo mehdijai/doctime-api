@@ -39,8 +39,10 @@
   - [x] **TEST** Add doctor to patient
   - [x] Search Patients
   - [x] **TEST** Search Patients
-  - [ ] Get Patient
-  - [ ] **TEST** Get Patient
+  - [x] Remove doctor to patient
+  - [x] **TEST** Remove doctor to patient
+  - [x] Get Patient
+  - [x] **TEST** Get Patient
   - [ ] Update Patient
   - [ ] **TEST** Update Patient
   - [ ] Delete Patient
