@@ -238,7 +238,7 @@ describe('Test patients api', () => {
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.length).toEqual(1);
-    expect("emergencyContactName" in response.body.data[0]).toEqual(false)
+    expect('emergencyContactName' in response.body.data[0]).toEqual(false);
   });
 
   test('Test search patients -- Search Name', async () => {
@@ -266,7 +266,7 @@ describe('Test patients api', () => {
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.id).toEqual(patientPayload.id);
-    expect("emergencyContactName" in response.body.data).toEqual(true)
+    expect('emergencyContactName' in response.body.data).toEqual(true);
   });
 
   test('Test unlink patient to doctor', async () => {
@@ -295,6 +295,20 @@ describe('Test patients api', () => {
     expect(response.body.data).toBeUndefined();
     expect(response.body.error).toBeDefined();
     expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
+  });
+
+  test('Test get patient profile', async () => {
+    const response = await request(app)
+      .get(patientsBaseRoute + '/me')
+      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.id).toEqual(patientPayload.id);
+    expect('emergencyContactName' in response.body.data).toEqual(true);
   });
 
   //   test('Test get patient -- non existing', async () => {

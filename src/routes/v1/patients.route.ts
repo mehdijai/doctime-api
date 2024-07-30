@@ -38,12 +38,11 @@ PatientsRoutes.get(
   }
 );
 PatientsRoutes.get(
-  '/:patientId',
+  '/me',
   authenticateJWT,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const patientId: string = req.params.patientId;
-      const resBody = await PatientRepository.getPatient(patientId);
+      const resBody = await PatientRepository.getPatient();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -52,11 +51,12 @@ PatientsRoutes.get(
   }
 );
 PatientsRoutes.get(
-  '/me',
+  '/:patientId',
   authenticateJWT,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const resBody = await PatientRepository.getPatient();
+      const patientId: string = req.params.patientId;
+      const resBody = await PatientRepository.getPatient(patientId);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {

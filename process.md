@@ -43,6 +43,8 @@
   - [x] **TEST** Remove doctor to patient
   - [x] Get Patient
   - [x] **TEST** Get Patient
+  - [x] Get Patient profile
+  - [x] **TEST** Get Patient profile
   - [ ] Update Patient
   - [ ] **TEST** Update Patient
   - [ ] Delete Patient

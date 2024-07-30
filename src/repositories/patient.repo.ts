@@ -33,7 +33,7 @@ export class PatientRepository extends AuthClass {
     const patient = await prisma.patient.findUnique({
       where: {
         id: patientId,
-        doctors: patientId
+        doctors: !isProfile
           ? {
               some: { userId },
             }
