@@ -37,8 +37,8 @@
   - [x] **TEST** Create Patient
   - [x] Add doctor to patient
   - [x] **TEST** Add doctor to patient
-  - [ ] Search Patients
-  - [ ] **TEST** Search Patients
+  - [x] Search Patients
+  - [x] **TEST** Search Patients
   - [ ] Get Patient
   - [ ] **TEST** Get Patient
   - [ ] Update Patient

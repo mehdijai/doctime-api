@@ -198,7 +198,7 @@ describe('Test patients api', () => {
     expect(storedPatient).toBeDefined();
   });
 
-  test('Test list patients', async () => {
+  test('Test list patients -- Doctor not linked', async () => {
     const response = await request(app)
       .get(patientsBaseRoute + '/')
       .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
@@ -227,19 +227,32 @@ describe('Test patients api', () => {
     expect(response.body.data.doctors[0].id).toEqual(doctorPayload.id);
   });
 
-  //   test('Test search patients -- Search Name', async () => {
-  //     const response = await request(app)
-  //       .get(patientsBaseRoute + '/')
-  //       .query({ name: 'Hassan' })
-  //       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-  //       .set('Accept', 'application/json');
+  test('Test list patients -- Doctor is linked', async () => {
+    const response = await request(app)
+      .get(patientsBaseRoute + '/')
+      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
+      .set('Accept', 'application/json');
 
-  //     expect(response.status).toBe(HttpStatusCode.OK);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.error).toBeUndefined();
-  //     expect(response.body.data).toBeDefined();
-  //     expect(response.body.data.length).toEqual(0);
-  //   });
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.length).toEqual(1);
+  });
+
+  test('Test search patients -- Search Name', async () => {
+    const response = await request(app)
+      .get(patientsBaseRoute + '/')
+      .query({ name: 'Hassan' })
+      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.length).toEqual(0);
+  });
 
   //   test('Test get patient', async () => {
   //     const response = await request(app)
