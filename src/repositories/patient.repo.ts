@@ -172,8 +172,12 @@ export class PatientRepository extends AuthClass {
     id,
   }: TDeletePatientSchema): Promise<ApiResponseBody<IStatusResponse>> {
     const resBody: ApiResponseBody<IStatusResponse> = (this as any).getResBody();
-    await prisma.patient.delete({
+    const patient = await prisma.patient.delete({
       where: { id },
+    });
+
+    await prisma.user.delete({
+      where: { id: patient.userId },
     });
 
     resBody.data = { status: true };

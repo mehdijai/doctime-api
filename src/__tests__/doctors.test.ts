@@ -245,5 +245,11 @@ describe('Test doctors api', () => {
     });
 
     expect(doctor).toBeNull();
+
+    const user = await prisma.user.findUnique({
+      where: { id: userPayload.userId },
+    });
+
+    expect(user).toBeNull();
   });
 });

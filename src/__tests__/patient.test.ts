@@ -357,5 +357,11 @@ describe('Test patients api', () => {
     });
 
     expect(patient).toBeNull();
+
+    const user = await prisma.user.findUnique({
+      where: { id: patientUserPayload.userId },
+    });
+
+    expect(user).toBeNull();
   });
 });
