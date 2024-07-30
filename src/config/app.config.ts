@@ -6,6 +6,7 @@ const appConfig = {
   apiURI: '/api/$v',
   requireVerifyEmail: true,
   updatePasswordRequireVerification: true,
+  deleteProfileRequireVerification: true,
   apiVersion: '1.0.0',
   apiName: 'DocTime API',
   jwt: {

@@ -23,7 +23,8 @@
         "format": "prettier --write .",
         "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
         "typecheck": "tsc --noEmit -p tsconfig.json --composite false",
-        "build": "typecheck && tsc"
+        "build": "typecheck && tsc",
+        "migrate:test": "ts-node ./prisma/scripts/migrate.ts"
     },
     "author": "Mehdi Jai",
     "private": true,

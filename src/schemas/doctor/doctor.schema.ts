@@ -48,4 +48,7 @@ export class DoctorZODSchema {
       })
       .optional(),
   });
+  static readonly validateDeleteSchema = z.strictObject({
+    token: z.string().uuid(),
+  });
 }

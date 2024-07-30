@@ -342,20 +342,6 @@ export class AuthRepository extends AuthClass {
     return resBody;
   }
 
-  @apiMethod<IStatusResponse>()
-  static async deleteUser(payload: TValidateUserSchema): Promise<ApiResponseBody<IStatusResponse>> {
-    const resBody = (this as any).getResBody();
-    return resBody;
-  }
-
-  @apiMethod<IStatusResponse>()
-  static async confirmDeleteUser(
-    payload: TValidateUserSchema
-  ): Promise<ApiResponseBody<IStatusResponse>> {
-    const resBody = (this as any).getResBody();
-    return resBody;
-  }
-
   private static async sendEmailVerification(user: User) {
     try {
       const token = uuidv4();

@@ -5,6 +5,7 @@ import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
+import { testEmails } from '@/utils/mailerUtils';
 
 describe('Test doctors api', () => {
   const authBaseRoute = parseAPIVersion(1) + '/auth';
@@ -315,6 +316,30 @@ describe('Test doctors api', () => {
     const response = await request(app)
       .delete(doctorsBaseRoute + '/')
       .send(deletePayload)
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.status).toEqual(true);
+
+    userPayload.deleteConfirmationToken = testEmails('Confirm deleting profile');
+
+    const doctor = await prisma.doctor.findUnique({
+      where: { id: doctorPayload.id },
+    });
+
+    expect(doctor).toBeDefined();
+  });
+
+  test('Test confirm delete doctor', async () => {
+    const response = await request(app)
+      .post(doctorsBaseRoute + '/confirm-delete')
+      .send({
+        token: userPayload.deleteConfirmationToken,
+      })
       .set('Authorization', 'Bearer ' + userPayload.accessToken)
       .set('Accept', 'application/json');
 

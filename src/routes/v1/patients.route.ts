@@ -96,6 +96,22 @@ PatientsRoutes.delete(
 );
 
 PatientsRoutes.post(
+  '/confirm-delete',
+  authenticateJWT,
+  validate(PatientZODSchema.validateDeleteSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TValidateDeleteSchema = req.body;
+      const resBody = await PatientRepository.confirmDeletePatient(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+PatientsRoutes.post(
   '/add-doctor',
   authenticateJWT,
   validate(PatientZODSchema.addDoctorSchema),

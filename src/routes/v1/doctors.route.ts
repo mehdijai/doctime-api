@@ -82,4 +82,20 @@ DoctorsRoutes.delete(
   }
 );
 
+DoctorsRoutes.post(
+  '/confirm-delete',
+  authenticateJWT,
+  validate(DoctorZODSchema.validateDeleteSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TValidateDeleteSchema = req.body;
+      const resBody = await DoctorRepository.confirmDeleteDoctor(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 export default DoctorsRoutes;

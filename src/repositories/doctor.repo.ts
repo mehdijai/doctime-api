@@ -4,6 +4,7 @@ import { apiMethod } from '@/decorators/api.decorator';
 import { parseCoords, parseDoctor } from '@/utils/parsers';
 import { isNearCoordinates } from '@/utils/geo';
 import { Auth, AuthClass } from '@/decorators/auth.decorator';
+import appConfig from '@/config/app.config';
 
 export class DoctorRepository extends AuthClass {
   @apiMethod<IDoctor>()
@@ -137,20 +138,87 @@ export class DoctorRepository extends AuthClass {
     return resBody;
   }
 
+  @Auth
   @apiMethod<IStatusResponse>()
   static async deleteDoctor({
     id,
   }: TDeleteDoctorSchema): Promise<ApiResponseBody<IStatusResponse>> {
+    const userId = this.USER.userId;
     const resBody: ApiResponseBody<IStatusResponse> = (this as any).getResBody();
-    const doctor = await prisma.doctor.delete({
-      where: { id },
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (user && appConfig.deleteProfileRequireVerification) {
+      await this.sendConfirmDeletionToken(user);
+    } else {
+      const doctor = await prisma.doctor.delete({
+        where: { id },
+      });
+
+      await prisma.user.delete({
+        where: { id: doctor.userId },
+      });
+    }
+
+    resBody.data = { status: true };
+    return resBody;
+  }
+
+  @apiMethod<IStatusResponse>()
+  static async confirmDeleteDoctor(
+    payload: TValidateDeleteSchema
+  ): Promise<ApiResponseBody<IStatusResponse>> {
+    const resBody: ApiResponseBody<IStatusResponse> = (this as any).getResBody();
+
+    const token = await prisma.confirmDeletionToken.findUnique({
+      where: {
+        token: payload.token,
+        user: {
+          userType: 'DOCTOR',
+          doctor: {
+            NOT: undefined,
+          },
+        },
+        expiresAt: {
+          gte: new Date(),
+        },
+      },
+      include: {
+        user: {
+          include: {
+            doctor: true,
+          },
+        },
+      },
+    });
+
+    if (!token) {
+      return ResponseHandler.Forbidden('Invalid or expired token');
+    }
+
+    await prisma.confirmDeletionToken.delete({
+      where: {
+        id: token.id,
+      },
+    });
+
+    await prisma.doctor.delete({
+      where: {
+        id: token.user.doctor?.id,
+      },
     });
 
     await prisma.user.delete({
-      where: { id: doctor.userId },
+      where: {
+        id: token.userId,
+      },
     });
 
-    resBody.data = { status: true };
+    resBody.data = {
+      status: true,
+    };
     return resBody;
   }
 }

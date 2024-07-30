@@ -32,7 +32,8 @@ export class PatientZODSchema {
     emergencyContactName: z.string().min(2).optional(),
     emergencyContactNumber: z
       .string()
-      .refine((phone) => /^\+\d{10,15}$/.test(phone), 'Invalid phone number').optional(),
+      .refine((phone) => /^\+\d{10,15}$/.test(phone), 'Invalid phone number')
+      .optional(),
     primaryPhysician: z.string().min(2).optional(),
     insuranceProvider: z.string().optional(),
     insurancePolicyNumber: z.string().optional(),
@@ -63,5 +64,9 @@ export class PatientZODSchema {
 
   static readonly addDoctorSchema = z.strictObject({
     doctorId: z.string().uuid(),
+  });
+
+  static readonly validateDeleteSchema = z.strictObject({
+    token: z.string().uuid(),
   });
 }

@@ -77,5 +77,5 @@
 - [ ] Authorization
   - [ ] Require Verified Email
   - [ ] Create Permissions
-  - [ ] Confirm deletion
+  - [x] Confirm deletion
 - [ ] Implement Pagination
