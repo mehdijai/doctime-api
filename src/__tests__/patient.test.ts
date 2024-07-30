@@ -336,26 +336,26 @@ describe('Test patients api', () => {
     expect(patient?.address).toEqual(updatePayload.address);
   });
 
-  //   test('Test delete patient', async () => {
-  //     const deletePayload = {
-  //       id: patientPayload.id,
-  //     };
-  //     const response = await request(app)
-  //       .delete(patientsBaseRoute + '/')
-  //       .send(deletePayload)
-  //       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-  //       .set('Accept', 'application/json');
+  test('Test delete patient', async () => {
+    const deletePayload = {
+      id: patientPayload.id,
+    };
+    const response = await request(app)
+      .delete(patientsBaseRoute + '/')
+      .send(deletePayload)
+      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
+      .set('Accept', 'application/json');
 
-  //     expect(response.status).toBe(HttpStatusCode.OK);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.error).toBeUndefined();
-  //     expect(response.body.data).toBeDefined();
-  //     expect(response.body.data.status).toEqual(true);
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.status).toEqual(true);
 
-  //     const patient = await prisma.patient.findUnique({
-  //       where: { id: patientPayload.id },
-  //     });
+    const patient = await prisma.patient.findUnique({
+      where: { id: patientPayload.id },
+    });
 
-  //     expect(patient).toBeNull();
-  //   });
+    expect(patient).toBeNull();
+  });
 });
