@@ -48,7 +48,7 @@ export function parsePublicPatient(patient: Patient & { user: User }): IPublicPa
   };
 }
 
-export function parsePrivatePatient(patient: Patient & { user: User }): IPrivatePatient {
+export function parsePrivatePatient(patient: Patient & { user: User, doctors?: Doctor[] }): IPrivatePatient {
   const publicPatient = parsePublicPatient(patient);
   return {
     ...publicPatient,
@@ -65,5 +65,6 @@ export function parsePrivatePatient(patient: Patient & { user: User }): IPrivate
     identificationNumber: patient.identificationNumber ?? undefined,
     identificationUrl: patient.identificationUrl ?? undefined,
     privacyConsent: patient.privacyConsent,
+    doctors: patient.doctors?.map(parseDoctor) ?? undefined,
   };
 }

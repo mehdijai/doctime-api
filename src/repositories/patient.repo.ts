@@ -41,7 +41,11 @@ export class PatientRepository extends AuthClass {
       },
       include: {
         user: true,
-        doctors: isProfile,
+        doctors: isProfile && {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -195,7 +199,11 @@ export class PatientRepository extends AuthClass {
       },
       include: {
         user: true,
-        doctors: true,
+        doctors: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -222,7 +230,11 @@ export class PatientRepository extends AuthClass {
       },
       include: {
         user: true,
-        doctors: true,
+        doctors: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

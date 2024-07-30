@@ -32,9 +32,11 @@
   - [x] Delete Doctor
   - [x] **TEST** Delete Doctor
 - [ ] Patient
-  - [ ] Create Patient
+  - [x] Create Patient
   - [ ] Validate User
-  - [ ] **TEST** Create Patient
+  - [x] **TEST** Create Patient
+  - [x] Add doctor to patient
+  - [x] **TEST** Add doctor to patient
   - [ ] Search Patients
   - [ ] **TEST** Search Patients
   - [ ] Get Patient

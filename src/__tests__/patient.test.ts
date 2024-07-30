@@ -211,6 +211,22 @@ describe('Test patients api', () => {
     expect(response.body.data.length).toEqual(0);
   });
 
+  test('Test link patient to doctor', async () => {
+    const response = await request(app)
+      .post(patientsBaseRoute + '/add-doctor')
+      .send({ doctorId: doctorPayload.id })
+      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.doctors).toBeDefined();
+    expect(response.body.data.doctors.length).toEqual(1);
+    expect(response.body.data.doctors[0].id).toEqual(doctorPayload.id);
+  });
+
   //   test('Test search patients -- Search Name', async () => {
   //     const response = await request(app)
   //       .get(patientsBaseRoute + '/')
