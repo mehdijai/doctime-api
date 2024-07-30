@@ -6,43 +6,45 @@ import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { testEmails } from '@/utils/mailerUtils';
+import moment from 'moment';
 
 describe('Test patients api', () => {
   const authBaseRoute = parseAPIVersion(1) + '/auth';
   const patientsBaseRoute = parseAPIVersion(1) + '/patients';
   const doctorsBaseRoute = parseAPIVersion(1) + '/doctors';
+  const appointmentsBaseRoute = parseAPIVersion(1) + '/appointments';
 
   afterAll(async () => {
     await truncateAllTables();
   });
   const doctorUserPayload: any = {
-    name: 'Mehdi Jai',
+    name: 'Doctor',
     phone: '+212610010830',
-    email: 'mjai@doctime.ma',
-    password: '12345678',
-    type: 'DOCTOR',
-  };
-  const patientUserPayload: any = {
-    name: 'Patient',
-    phone: '+212610910830',
-    email: 'hjai@doctime.ma',
-    password: '12345678',
-    type: 'PATIENT',
-  };
-  const patientInvalidUserPayload: any = {
-    name: 'John Doe',
-    phone: '+212616910830',
-    email: 'jdoe@doctime.ma',
+    email: 'doc@doctime.ma',
     password: '12345678',
     type: 'DOCTOR',
   };
   const doctorPayload: any = {
     address: 'some address',
     specialty: 'Urology',
-    mapPosition: {
-      lat: 34.8870549,
-      lng: -2.5195691,
-    },
+  };
+  const doctorUserPayload2: any = {
+    name: 'Doctor 2',
+    phone: '+212618010830',
+    email: 'doc2@doctime.ma',
+    password: '12345678',
+    type: 'DOCTOR',
+  };
+  const doctorPayload2: any = {
+    address: 'some 2 address',
+    specialty: 'Urology',
+  };
+  const patientUserPayload: any = {
+    name: 'Patient',
+    phone: '+212610910830',
+    email: 'patient@doctime.ma',
+    password: '12345678',
+    type: 'PATIENT',
   };
   const patientPayload: any = {
     birthDate: new Date(),
@@ -51,7 +53,7 @@ describe('Test patients api', () => {
     occupation: 'Dev',
     emergencyContactName: 'Emergency',
     emergencyContactNumber: '+212810910830',
-    primaryPhysician: 'Dr. x',
+    primaryPhysician: 'Dr. X',
     privacyConsent: true,
   };
 
@@ -126,11 +128,11 @@ describe('Test patients api', () => {
     expect(storedDoctor).toBeDefined();
   });
 
-  test('Test Create Invalid Patient User', async () => {
+  test('Create Doctor 2 User', async () => {
     appConfig.requireVerifyEmail = false;
     const response = await request(app)
       .post(authBaseRoute + '/register')
-      .send(patientInvalidUserPayload)
+      .send(doctorUserPayload2)
       .set('Accept', 'application/json');
 
     expect(response.status).toBe(HttpStatusCode.OK);
@@ -138,16 +140,16 @@ describe('Test patients api', () => {
     expect(response.body.data).toBeDefined();
     expect(response.body.error).toBeUndefined();
     expect(response.body.data.id).toBeDefined();
-    expect(response.body.data.email).toEqual(patientInvalidUserPayload.email);
-    expect(response.body.data.userType).toEqual(patientInvalidUserPayload.type);
-    patientInvalidUserPayload.userId = response.body.data.id;
+    expect(response.body.data.email).toEqual(doctorUserPayload2.email);
+    expect(response.body.data.userType).toEqual(doctorUserPayload2.type);
+    doctorUserPayload2.userId = response.body.data.id;
   });
 
-  test('Test Login Invalid patient user', async () => {
+  test('Test Login doctor 2', async () => {
     const loginPayload = {
-      email: patientInvalidUserPayload.email,
-      password: patientInvalidUserPayload.password,
-      type: patientInvalidUserPayload.type,
+      email: doctorUserPayload2.email,
+      password: doctorUserPayload2.password,
+      type: doctorUserPayload2.type,
     };
 
     const response = await request(app)
@@ -164,25 +166,37 @@ describe('Test patients api', () => {
     expect(response.body.data.accessToken.refreshToken).toBeDefined();
     expect(response.body.data.user).toBeDefined();
     expect(response.body.data.user.id).toBeDefined();
-    expect(response.body.data.user.id).toEqual(patientInvalidUserPayload.userId);
-    expect(response.body.data.user.email).toEqual(patientInvalidUserPayload.email);
-    expect(response.body.data.user.userType).toEqual(patientInvalidUserPayload.type);
-    patientInvalidUserPayload.accessToken = response.body.data.accessToken.token;
-    patientInvalidUserPayload.refreshToken = response.body.data.accessToken.refreshToken;
+    expect(response.body.data.user.id).toEqual(doctorUserPayload2.userId);
+    expect(response.body.data.user.email).toEqual(doctorUserPayload2.email);
+    expect(response.body.data.user.userType).toEqual(doctorUserPayload2.type);
+    doctorUserPayload2.accessToken = response.body.data.accessToken.token;
+    doctorUserPayload2.refreshToken = response.body.data.accessToken.refreshToken;
   });
 
-  test('Test create patient of invalid user', async () => {
+  test('Create doctor 2', async () => {
     const response = await request(app)
-      .post(patientsBaseRoute + '/')
-      .send(patientPayload)
-      .set('Authorization', 'Bearer ' + patientInvalidUserPayload.accessToken)
+      .post(doctorsBaseRoute + '/')
+      .send(doctorPayload2)
+      .set('Authorization', 'Bearer ' + doctorUserPayload2.accessToken)
       .set('Accept', 'application/json');
 
-    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+    expect(response.status).toBe(HttpStatusCode.OK);
     expect(response.body).toBeDefined();
-    expect(response.body.data).toBeUndefined();
-    expect(response.body.error).toBeDefined();
-    expect(response.body.error.code).toEqual(HttpStatusCode.FORBIDDEN);
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.id).toBeDefined();
+    expect(response.body.data.user).toBeDefined();
+    expect(response.body.data.user.id).toBeDefined();
+    expect(response.body.data.user.id).toEqual(doctorUserPayload2.userId);
+
+    doctorPayload2.id = response.body.data.id;
+
+    // Test in Prisma
+    const storedDoctor = await prisma.doctor.findUnique({
+      where: { id: response.body.data.id },
+    });
+
+    expect(storedDoctor).toBeDefined();
   });
 
   test('Test Create Patient User', async () => {
@@ -230,15 +244,6 @@ describe('Test patients api', () => {
     patientUserPayload.refreshToken = response.body.data.accessToken.refreshToken;
   });
 
-  test('Test create patient -- unauthenticated', async () => {
-    const response = await request(app)
-      .post(patientsBaseRoute + '/')
-      .send(patientPayload)
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.UNAUTHORIZED);
-  });
-
   test('Test create patient', async () => {
     const response = await request(app)
       .post(patientsBaseRoute + '/')
@@ -265,33 +270,44 @@ describe('Test patients api', () => {
     expect(storedPatient).toBeDefined();
   });
 
-  test('Test create patient in user with existing patient', async () => {
+  const appointmentPayload: any = {
+    patientId: '',
+    doctorId: '',
+    schedule: moment().add(3, 'd').toDate(),
+    reason: 'Testing reason',
+  };
+  const createAppointmentPayload: TCreateAppointmentSchema = {
+    ...appointmentPayload,
+  };
+
+  test('Test create appointment', async () => {
+    createAppointmentPayload.patientId = patientPayload.id;
+    createAppointmentPayload.doctorId = doctorPayload.id;
+
     const response = await request(app)
-      .post(patientsBaseRoute + '/')
-      .send({
-        birthDate: new Date(),
-        gender: 'Male',
-        address: 'Some x address',
-        occupation: 'Barber',
-        emergencyContactName: 'John doe',
-        emergencyContactNumber: '+212816910830',
-        primaryPhysician: 'Dr. Aouad',
-        privacyConsent: true,
-      })
+      .post(appointmentsBaseRoute + '/')
+      .send(createAppointmentPayload)
       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
       .set('Accept', 'application/json');
 
-    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+    expect(response.status).toBe(HttpStatusCode.OK);
     expect(response.body).toBeDefined();
-    expect(response.body.data).toBeUndefined();
-    expect(response.body.error).toBeDefined();
-    expect(response.body.error.code).toEqual(HttpStatusCode.FORBIDDEN);
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.id).toBeDefined();
+    expect(response.body.data.doctor.id).toEqual(createAppointmentPayload.doctorId);
+    expect(response.body.data.patient.id).toEqual(createAppointmentPayload.patientId);
+
+    appointmentPayload.id = response.body.data.id;
   });
 
-  test('Test list patients -- Doctor not linked', async () => {
+  test('Test search appointments -- empty', async () => {
     const response = await request(app)
-      .get(patientsBaseRoute + '/')
-      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
+      .get(appointmentsBaseRoute + '/')
+      .query({
+        status: 'CANCELLED',
+      })
+      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
       .set('Accept', 'application/json');
 
     expect(response.status).toBe(HttpStatusCode.OK);
@@ -301,26 +317,10 @@ describe('Test patients api', () => {
     expect(response.body.data.length).toEqual(0);
   });
 
-  test('Test link patient to doctor', async () => {
+  test('Test search appointments -- all', async () => {
     const response = await request(app)
-      .post(patientsBaseRoute + '/add-doctor')
-      .send({ doctorId: doctorPayload.id })
+      .get(appointmentsBaseRoute + '/')
       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.OK);
-    expect(response.body).toBeDefined();
-    expect(response.body.error).toBeUndefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.doctors).toBeDefined();
-    expect(response.body.data.doctors.length).toEqual(1);
-    expect(response.body.data.doctors[0].id).toEqual(doctorPayload.id);
-  });
-
-  test('Test list patients -- Doctor is linked', async () => {
-    const response = await request(app)
-      .get(patientsBaseRoute + '/')
-      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
       .set('Accept', 'application/json');
 
     expect(response.status).toBe(HttpStatusCode.OK);
@@ -328,14 +328,12 @@ describe('Test patients api', () => {
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.length).toEqual(1);
-    expect('emergencyContactName' in response.body.data[0]).toEqual(false);
   });
 
-  test('Test search patients -- Search Name', async () => {
+  test('Test search appointments -- external user', async () => {
     const response = await request(app)
-      .get(patientsBaseRoute + '/')
-      .query({ name: 'Hassan' })
-      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
+      .get(appointmentsBaseRoute + '/')
+      .set('Authorization', 'Bearer ' + doctorUserPayload2.accessToken)
       .set('Accept', 'application/json');
 
     expect(response.status).toBe(HttpStatusCode.OK);
@@ -345,24 +343,9 @@ describe('Test patients api', () => {
     expect(response.body.data.length).toEqual(0);
   });
 
-  test('Test get patient', async () => {
+  test('Test get appointment', async () => {
     const response = await request(app)
-      .get(patientsBaseRoute + '/' + patientPayload.id)
-      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.OK);
-    expect(response.body).toBeDefined();
-    expect(response.body.error).toBeUndefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.id).toEqual(patientPayload.id);
-    expect('emergencyContactName' in response.body.data).toEqual(true);
-  });
-
-  test('Test unlink patient to doctor', async () => {
-    const response = await request(app)
-      .post(patientsBaseRoute + '/remove-doctor')
-      .send({ doctorId: doctorPayload.id })
+      .get(appointmentsBaseRoute + '/' + appointmentPayload.id)
       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
       .set('Accept', 'application/json');
 
@@ -370,14 +353,15 @@ describe('Test patients api', () => {
     expect(response.body).toBeDefined();
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
-    expect(response.body.data.doctors).toBeDefined();
-    expect(response.body.data.doctors.length).toEqual(0);
+    expect(response.body.data.id).toEqual(appointmentPayload.id);
+    expect(response.body.data.doctor.id).toEqual(createAppointmentPayload.doctorId);
+    expect(response.body.data.patient.id).toEqual(createAppointmentPayload.patientId);
   });
 
-  test('Test get patient -- Unlinked doctor', async () => {
+  test('Test get appointment -- external user', async () => {
     const response = await request(app)
-      .get(patientsBaseRoute + '/' + patientPayload.id)
-      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
+      .get(appointmentsBaseRoute + '/' + appointmentPayload.id)
+      .set('Authorization', 'Bearer ' + doctorUserPayload2.accessToken)
       .set('Accept', 'application/json');
 
     expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
@@ -387,75 +371,34 @@ describe('Test patients api', () => {
     expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
   });
 
-  test('Test get patient profile', async () => {
+  test('Test update appointments', async () => {
     const response = await request(app)
-      .get(patientsBaseRoute + '/me')
-      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.OK);
-    expect(response.body).toBeDefined();
-    expect(response.body.error).toBeUndefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.id).toEqual(patientPayload.id);
-    expect('emergencyContactName' in response.body.data).toEqual(true);
-  });
-
-  test('Test update patient', async () => {
-    const updatePayload = {
-      id: patientPayload.id,
-      address: 'some other address',
-    };
-    const response = await request(app)
-      .put(patientsBaseRoute + '/')
-      .send(updatePayload)
-      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.OK);
-    expect(response.body).toBeDefined();
-    expect(response.body.error).toBeUndefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.address).toEqual(updatePayload.address);
-
-    const patient = await prisma.patient.findUnique({
-      where: { id: patientPayload.id },
-    });
-
-    expect(patient).toBeDefined();
-    expect(patient?.address).toEqual(updatePayload.address);
-  });
-
-  test('Test delete patient', async () => {
-    const deletePayload = {
-      id: patientPayload.id,
-    };
-    const response = await request(app)
-      .delete(patientsBaseRoute + '/')
-      .send(deletePayload)
-      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.OK);
-    expect(response.body).toBeDefined();
-    expect(response.body.error).toBeUndefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.status).toEqual(true);
-
-    patientUserPayload.deleteConfirmationToken = testEmails('Confirm deleting profile');
-
-    const patient = await prisma.patient.findUnique({
-      where: { id: patientPayload.id },
-    });
-
-    expect(patient).toBeDefined();
-  });
-
-  test('Test confirm delete patient', async () => {
-    const response = await request(app)
-      .post(patientsBaseRoute + '/confirm-delete')
+      .put(appointmentsBaseRoute + '/')
       .send({
-        token: patientUserPayload.deleteConfirmationToken,
+        id: appointmentPayload.id,
+        status: 'SCHEDULED',
+      })
+      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.status).toEqual('SCHEDULED');
+
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: appointmentPayload.id },
+    });
+
+    expect(appointment?.status).toEqual('SCHEDULED');
+  });
+
+  test('Test delete appointments', async () => {
+    const response = await request(app)
+      .delete(appointmentsBaseRoute + '/')
+      .send({
+        id: appointmentPayload.id,
       })
       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
       .set('Accept', 'application/json');
@@ -466,16 +409,10 @@ describe('Test patients api', () => {
     expect(response.body.data).toBeDefined();
     expect(response.body.data.status).toEqual(true);
 
-    const patient = await prisma.patient.findUnique({
-      where: { id: patientPayload.id },
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: appointmentPayload.id },
     });
 
-    expect(patient).toBeNull();
-
-    const user = await prisma.user.findUnique({
-      where: { id: patientUserPayload.userId },
-    });
-
-    expect(user).toBeNull();
+    expect(appointment).toBeNull();
   });
 });

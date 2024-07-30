@@ -51,17 +51,17 @@
   - [x] **TEST** Update Patient
   - [x] Delete Patient
   - [x] **TEST** Delete Patient
-- [ ] Appointment
-  - [ ] Create Appointment
-  - [ ] **TEST** Create Appointment
-  - [ ] Search Appointments
-  - [ ] **TEST** Search Appointments
-  - [ ] Get Appointment
-  - [ ] **TEST** Get Appointment
-  - [ ] Update Appointment
-  - [ ] **TEST** Update Appointment
-  - [ ] Delete Appointment
-  - [ ] **TEST** Delete Appointment
+- [x] Appointment
+  - [x] Create Appointment
+  - [x] **TEST** Create Appointment
+  - [x] Search Appointments
+  - [x] **TEST** Search Appointments
+  - [x] Get Appointment
+  - [x] **TEST** Get Appointment
+  - [x] Update Appointment
+  - [x] **TEST** Update Appointment
+  - [x] Delete Appointment
+  - [x] **TEST** Delete Appointment
 - [ ] Mailer
   - [ ] Mailer Service
   - [ ] **TEST** Mailer Service

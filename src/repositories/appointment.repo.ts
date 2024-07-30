@@ -143,7 +143,10 @@ export class AppointmentRepository extends AuthClass {
   ): Promise<ApiResponseBody<IAppointment>> {
     const resBody: ApiResponseBody<IAppointment> = (this as any).getResBody();
     const appointment = await prisma.appointment.create({
-      data: payload,
+      data: {
+        ...payload,
+        status: 'PENDING',
+      },
       include: {
         doctor: {
           include: {
@@ -199,6 +202,10 @@ export class AppointmentRepository extends AuthClass {
         id: payload.id,
       },
     });
+
+    resBody.data = {
+      status: true,
+    };
     return resBody;
   }
 }
