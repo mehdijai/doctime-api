@@ -45,8 +45,8 @@
   - [x] **TEST** Get Patient
   - [x] Get Patient profile
   - [x] **TEST** Get Patient profile
-  - [ ] Update Patient
-  - [ ] **TEST** Update Patient
+  - [x] Update Patient
+  - [x] **TEST** Update Patient
   - [ ] Delete Patient
   - [ ] **TEST** Delete Patient
 - [ ] Appointment

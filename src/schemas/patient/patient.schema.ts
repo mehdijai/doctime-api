@@ -25,15 +25,15 @@ export class PatientZODSchema {
 
   static readonly updatePatientSchema = z.strictObject({
     id: z.string().uuid(),
-    birthDate: z.coerce.date(),
-    gender: z.enum(['Male', 'Female']),
-    address: z.string().min(5),
-    occupation: z.string().min(2),
-    emergencyContactName: z.string().min(2),
+    birthDate: z.coerce.date().optional(),
+    gender: z.enum(['Male', 'Female']).optional(),
+    address: z.string().min(5).optional(),
+    occupation: z.string().min(2).optional(),
+    emergencyContactName: z.string().min(2).optional(),
     emergencyContactNumber: z
       .string()
-      .refine((phone) => /^\+\d{10,15}$/.test(phone), 'Invalid phone number'),
-    primaryPhysician: z.string().min(2),
+      .refine((phone) => /^\+\d{10,15}$/.test(phone), 'Invalid phone number').optional(),
+    primaryPhysician: z.string().min(2).optional(),
     insuranceProvider: z.string().optional(),
     insurancePolicyNumber: z.string().optional(),
     allergies: z.string().optional(),
@@ -43,7 +43,6 @@ export class PatientZODSchema {
     identificationType: z.string().optional(),
     identificationNumber: z.string().optional(),
     identificationUrl: z.string().url().optional(),
-    privacyConsent: z.boolean(),
   });
 
   static readonly deletePatientSchema = z.strictObject({

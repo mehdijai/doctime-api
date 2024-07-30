@@ -311,43 +311,30 @@ describe('Test patients api', () => {
     expect('emergencyContactName' in response.body.data).toEqual(true);
   });
 
-  //   test('Test get patient -- non existing', async () => {
-  //     const response = await request(app)
-  //       .get(patientsBaseRoute + '/' + uuidv4())
-  //       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-  //       .set('Accept', 'application/json');
+  test('Test update patient', async () => {
+    const updatePayload = {
+      id: patientPayload.id,
+      address: 'some other address',
+    };
+    const response = await request(app)
+      .put(patientsBaseRoute + '/')
+      .send(updatePayload)
+      .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
+      .set('Accept', 'application/json');
 
-  //     expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.data).toBeUndefined();
-  //     expect(response.body.error).toBeDefined();
-  //     expect(response.body.error.code).toEqual(HttpStatusCode.NOT_FOUND);
-  //   });
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.address).toEqual(updatePayload.address);
 
-  //   test('Test update patient', async () => {
-  //     const updatePayload = {
-  //       id: patientPayload.id,
-  //       address: 'some other address',
-  //     };
-  //     const response = await request(app)
-  //       .put(patientsBaseRoute + '/')
-  //       .send(updatePayload)
-  //       .set('Authorization', 'Bearer ' + patientUserPayload.accessToken)
-  //       .set('Accept', 'application/json');
+    const patient = await prisma.patient.findUnique({
+      where: { id: patientPayload.id },
+    });
 
-  //     expect(response.status).toBe(HttpStatusCode.OK);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.error).toBeUndefined();
-  //     expect(response.body.data).toBeDefined();
-  //     expect(response.body.data.address).toEqual(updatePayload.address);
-
-  //     const patient = await prisma.patient.findUnique({
-  //       where: { id: patientPayload.id },
-  //     });
-
-  //     expect(patient).toBeDefined();
-  //     expect(patient?.address).toEqual(updatePayload.address);
-  //   });
+    expect(patient).toBeDefined();
+    expect(patient?.address).toEqual(updatePayload.address);
+  });
 
   //   test('Test delete patient', async () => {
   //     const deletePayload = {
