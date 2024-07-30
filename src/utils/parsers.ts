@@ -1,4 +1,4 @@
-import { Doctor, Patient, User } from '@prisma/client';
+import { Appointment, Doctor, Patient, User } from '@prisma/client';
 
 export function parseUserPayload(user: User): IUser {
   return {
@@ -48,7 +48,9 @@ export function parsePublicPatient(patient: Patient & { user: User }): IPublicPa
   };
 }
 
-export function parsePrivatePatient(patient: Patient & { user: User, doctors?: Doctor[] }): IPrivatePatient {
+export function parsePrivatePatient(
+  patient: Patient & { user: User; doctors?: Doctor[] }
+): IPrivatePatient {
   const publicPatient = parsePublicPatient(patient);
   return {
     ...publicPatient,
@@ -66,5 +68,22 @@ export function parsePrivatePatient(patient: Patient & { user: User, doctors?: D
     identificationUrl: patient.identificationUrl ?? undefined,
     privacyConsent: patient.privacyConsent,
     doctors: patient.doctors?.map(parseDoctor) ?? undefined,
+  };
+}
+
+export function parseAppointment(
+  appointment: Appointment & { doctor: Doctor & { user: User }; patient: Patient & { user: User } }
+): IAppointment {
+  return {
+    id: appointment.id,
+    reason: appointment.reason,
+    cancellationReason: appointment.cancellationReason ?? undefined,
+    note: appointment.note ?? undefined,
+    doctor: parseDoctor(appointment.doctor),
+    patient: parsePublicPatient(appointment.patient),
+    status: appointment.status as AppointmentStatus,
+    schedule: appointment.schedule,
+    createdAt: appointment.createdAt,
+    updatedAt: appointment.updatedAt,
   };
 }
