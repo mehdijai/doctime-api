@@ -102,22 +102,3 @@ jobs:
         git add .
         git commit -m 'Update coverage reports'
         git push origin gh-pages
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Deploy coverage to GitHub Pages
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git clone --branch=gh-pages https://github.com/${{ github.repository }} gh-pages
-        cp -r coverage/* gh-pages/
-        cd gh-pages
-        git add .
-        git commit -m 'Update coverage reports'
-        git push origin gh-pages
