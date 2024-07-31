@@ -73,6 +73,7 @@
   - [ ] SMS Provider
   - [ ] Testing SMS Independent Provider
 - [ ] CI/CD GitHub
+- [x] Pre Commits Hooks (Lint, format and test)
 - [ ] Deployment
 - [ ] Authorization
   - [ ] Require Verified Email
