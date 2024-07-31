@@ -9,49 +9,44 @@ on:
       - main
 
 jobs:
-  setup-db:
-      runs-on: ubuntu-latest
-      steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose -y
-
-      - name: Start PostgreSQL
-        run: |
-          echo "version: '3.1'
-          services:
-            postgres:
-              image: postgres:latest
-              environment:
-                POSTGRES_PASSWORD: 123456
-              ports:
-                - 5432:5432" > docker-compose.yml
-          docker-compose up -d
-
-      - name: Wait for PostgreSQL to start
-        run: |
-          until pg_isready -h localhost -p 5432; do
-            echo "Waiting for PostgreSQL to start..."
-            sleep 1
-          done
-
-      - name: Create PostgreSQL TEST Database
-        run: |
-          psql -h localhost -U postgres -c "CREATE DATABASE doctime-test;" || exit 0
-
-      - name: Create PostgreSQL PROD Database
-        run: |
-          psql -h localhost -U postgres -c "CREATE DATABASE doctime;" || exit 0
   build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install docker-compose -y
+
+    - name: Start PostgreSQL
+      run: |
+        echo "version: '3.1'
+        services:
+          postgres:
+            image: postgres:latest
+            environment:
+              POSTGRES_PASSWORD: 123456
+            ports:
+              - 5432:5432" > docker-compose.yml
+        docker-compose up -d
+
+    - name: Wait for PostgreSQL to start
+      run: |
+        until pg_isready -h localhost -p 5432; do
+          echo "Waiting for PostgreSQL to start..."
+          sleep 1
+        done
+
+    - name: Create PostgreSQL TEST Database
+      run: |
+        psql -h localhost -U postgres -c "CREATE DATABASE doctime-test;" || exit 0
+
+    - name: Create PostgreSQL PROD Database
+      run: |
+        psql -h localhost -U postgres -c "CREATE DATABASE doctime;" || exit 0
 
     - name: Use Node.js 18.x
       uses: actions/setup-node@v4
