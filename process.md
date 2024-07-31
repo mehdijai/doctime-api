@@ -72,7 +72,7 @@
   - [ ] **TEST** SMS Service
   - [ ] SMS Provider
   - [ ] Testing SMS Independent Provider
-- [ ] CI/CD GitHub
+- [x] CI/CD GitHub
 - [x] Pre Commits Hooks (Lint, format and test)
 - [ ] Deployment
 - [ ] Authorization
