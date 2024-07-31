@@ -22,12 +22,59 @@ jobs:
         node-version: 18.x
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
+
+    - name: Set up PostgreSQL
+      uses: docker://postgres:latest
+      with:
+        args: postgres -D /var/lib/postgresql/data
+
+    - name: Wait for PostgreSQL to start
+      run: |
+        until pg_isready -h localhost -p 5432; do
+          echo "Waiting for PostgreSQL to start..."
+          sleep 1
+        done
+
+    - name: Create PostgreSQL TEST Database
+      run: |
+        psql -h localhost -U postgres -c "CREATE DATABASE doctime-test;"
+    
+    - name: Create PostgreSQL PROD Database
+      run: |
+        psql -h localhost -U postgres -c "CREATE DATABASE doctime;"
+
+    - name: Run Prisma migrations
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: npx prisma migrate deploy
+
+    - name: Run Prisma Test DB migrations
+      env:
+        DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      run: npx prisma migrate deploy
 
     - name: Run Lint, Typecheck and Format
       run: npx lint-staged
 
     - name: Run tests with coverage
+      env:
+          PORT: ${{ secrets.PORT }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          JWT_REFRESH_SECRET_KEY: ${{ secrets.JWT_REFRESH_SECRET_KEY }}
+          STAGE: ${{ secrets.STAGE }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          RESET_PASSWORD_UI_URL: ${{ secrets.RESET_PASSWORD_UI_URL }}
+          VERIFY_EMAIL_UI_URL: ${{ secrets.VERIFY_EMAIL_UI_URL }}
+          CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL: ${{ secrets.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL }}
+          DELETE_PROFILE_UI_URL: ${{ secrets.DELETE_PROFILE_UI_URL }}
+          MAIL_FROM_EMAIL: ${{ secrets.MAIL_FROM_EMAIL }}
+          MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
+          MAIL_HOST: ${{ secrets.MAIL_HOST }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
       run: npm run test
 
     - name: Deploy coverage to GitHub Pages
