@@ -91,10 +91,12 @@ jobs:
 
     - name: Deploy coverage to GitHub Pages
       if: success()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git clone --branch=gh-pages https://github.com/${{ github.repository }} gh-pages
+        git clone --branch=gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
         cp -r coverage/* gh-pages/
         cd gh-pages
         git add .
