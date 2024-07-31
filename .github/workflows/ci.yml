@@ -26,6 +26,8 @@ jobs:
 
     - name: Set up PostgreSQL
       uses: docker://postgres:latest
+      env:
+        POSTGRES_PASSWORD: 123456
       with:
         args: postgres -D /var/lib/postgresql/data
 
@@ -38,11 +40,11 @@ jobs:
 
     - name: Create PostgreSQL TEST Database
       run: |
-        psql -h localhost -U postgres -c "CREATE DATABASE doctime-test;"
-    
+        psql -h localhost -U postgres -c "CREATE DATABASE doctime-test;" || exit 0
+
     - name: Create PostgreSQL PROD Database
       run: |
-        psql -h localhost -U postgres -c "CREATE DATABASE doctime;"
+        psql -h localhost -U postgres -c "CREATE DATABASE doctime;" || exit 0
 
     - name: Run Prisma migrations
       env:
