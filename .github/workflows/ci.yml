@@ -24,14 +24,11 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Run ESLint
-      run: npm run lint
-
-    - name: Run TypeScript
-      run: npm run typecheck
+    - name: Run Lint, Typecheck and Format
+      run: npx lint-staged
 
     - name: Run tests with coverage
-      run: npm run test:coverage
+      run: npm run test
 
     - name: Deploy coverage to GitHub Pages
       if: success()
@@ -51,7 +48,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Deploy coverage to GitHub Pages
       run: |
