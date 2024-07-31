@@ -41,3 +41,9 @@ Prettier:
 ```bash
 npm run format
 ```
+
+## CI/CD
+
+We use GitHub Actions and Husky To insure code quality.
+The Pre-Commit Hooks with Husky lint and type check before committing. After pushing to Main, The GitHub Actions runs the tests, generate Coverage Directory.
+The Coverage Directory is auto-deployed in Cloudflare Page: [Page URL](https://doctime-api-coverage.pages.dev)
