@@ -9,6 +9,7 @@ const appConfig = {
   deleteProfileRequireVerification: true,
   apiVersion: '1.0.0',
   apiName: 'DocTime API',
+  appName: 'DocTime',
   jwt: {
     secret: process.env.JWT_SECRET_KEY!,
     refreshSecretKey: process.env.REFRESH_SECRET_KEY!,

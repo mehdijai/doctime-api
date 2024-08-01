@@ -10,6 +10,7 @@ import { parseAPIVersion } from './config/app.config';
 import HttpStatusCode from './utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
 import { ResponseHandler } from '@/utils/responseHandler';
+import { join } from 'path';
 
 const app = express();
 
@@ -30,6 +31,8 @@ const limiter = rateLimit({
   max: 100,
 });
 app.use(limiter);
+
+app.use(express.static(join(__dirname, '../public')));
 
 // Handle Routes
 app.use(parseAPIVersion(1), v1Routes);

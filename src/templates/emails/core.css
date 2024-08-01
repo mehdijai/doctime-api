@@ -1,0 +1,89 @@
+:root {
+  --color-primary: #369bcd;
+  --color-primary_dark: #19688f;
+  --color-secondary: #69ce36;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Rubik', sans-serif;
+  font-size: 15px;
+  color: #323232;
+}
+
+.core-mail__wrapper {
+  background-color: #f8f8f8;
+  padding: 1rem;
+}
+
+.core-mail__header {
+  padding: 1rem;
+  padding-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  height: 30px;
+}
+
+.core-mail__body {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(#222, 0.3);
+}
+
+.core-mail__footer {
+  padding: 1rem;
+  padding-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.core-mail__footer .logo {
+  height: 17px;
+}
+
+p {
+  margin: 0.8rem 0;
+  line-height: 1.5;
+}
+
+.button {
+  text-decoration: none;
+  display: block;
+  width: fit-content;
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: 5px;
+  padding: 0.5rem 0.8rem;
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--color-primary_dark);
+}
+
+.link {
+  text-decoration: underline;
+  width: fit-content;
+  color: var(--color-primary);
+  transition: color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: var(--color-primary_dark);
+}

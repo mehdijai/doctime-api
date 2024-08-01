@@ -6,7 +6,6 @@ import AppointmentsRoutes from './appointments.route';
 import appConfig from '@/config/app.config';
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
-
 const routes = Router();
 
 routes.get('/', (_, res: Response, next) => {

@@ -2,7 +2,54 @@
 
 NodeJS / ExpressJS API to handle doctor/patients relations and appointments.
 
-## Testing
+## Stack
+
+We use in this API the following tech stack:
+
+### Runtime
+
+- NodeJS
+- TypeScript
+- Nodemon
+
+### API
+
+- ExpressJS
+- jsonwebtoken
+- ZOD
+
+### Database
+
+- PrismaJS
+- PostgreSQL
+
+### Testing
+
+- Jest E2E
+- Supertest
+- Nodemailer mock
+- Cheerio
+
+### Communication Services
+
+- Nodemailer
+
+### Code Linting
+
+- ESLinter
+- Prettier
+
+### CI/CD Stack
+
+- Husky
+- Lint Staged
+- GitHub CI Actions
+
+### Logging
+
+- Winston Logger
+
+## Run Tests
 
 The API uses different DB for testing. And after the test is done, The DB is truncated.
 To run the Jest tests:

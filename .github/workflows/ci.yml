@@ -13,64 +13,64 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install docker-compose -y
+      - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
 
-    - name: Start PostgreSQL
-      run: |
-        echo "version: '3.1'
-        services:
-          postgres:
-            image: postgres:latest
-            environment:
-              POSTGRES_PASSWORD: 123456
-            ports:
-              - 5432:5432" > docker-compose.yml
-        docker-compose up -d
+      - name: Start PostgreSQL
+        run: |
+          echo "version: '3.1'
+          services:
+            postgres:
+              image: postgres:latest
+              environment:
+                POSTGRES_PASSWORD: 123456
+              ports:
+                - 5432:5432" > docker-compose.yml
+          docker-compose up -d
 
-    - name: Wait for PostgreSQL to start
-      run: |
-        until pg_isready -h localhost -p 5432; do
-          echo "Waiting for PostgreSQL to start..."
-          sleep 1
-        done
+      - name: Wait for PostgreSQL to start
+        run: |
+          until pg_isready -h localhost -p 5432; do
+            echo "Waiting for PostgreSQL to start..."
+            sleep 1
+          done
 
-    - name: Create PostgreSQL TEST Database
-      run: |
-        psql -h localhost -U postgres -c "CREATE DATABASE doctime-test;" || exit 0
+      - name: Create PostgreSQL TEST Database
+        run: |
+          psql -h localhost -U postgres -c "CREATE DATABASE doctime-test;" || exit 0
 
-    - name: Create PostgreSQL PROD Database
-      run: |
-        psql -h localhost -U postgres -c "CREATE DATABASE doctime;" || exit 0
+      - name: Create PostgreSQL PROD Database
+        run: |
+          psql -h localhost -U postgres -c "CREATE DATABASE doctime;" || exit 0
 
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18.x
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run Prisma migrations
-      env:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      run: npx prisma migrate deploy
+      - name: Run Prisma migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npx prisma migrate deploy
 
-    - name: Run Prisma Test DB migrations
-      env:
-        DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-      run: npx prisma migrate deploy
+      - name: Run Prisma Test DB migrations
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+        run: npx prisma migrate deploy
 
-    - name: Run Lint, Typecheck and Format
-      run: npx lint-staged
+      - name: Run Lint, Typecheck and Format
+        run: npx lint-staged
 
-    - name: Run tests with coverage
-      env:
+      - name: Run tests with coverage
+        env:
           PORT: ${{ secrets.PORT }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           JWT_REFRESH_SECRET_KEY: ${{ secrets.JWT_REFRESH_SECRET_KEY }}
@@ -87,18 +87,18 @@ jobs:
           MAIL_PORT: ${{ secrets.MAIL_PORT }}
           MAIL_USER: ${{ secrets.MAIL_USER }}
           MAIL_PASS: ${{ secrets.MAIL_PASS }}
-      run: npm run test
+        run: npm run test
 
-    - name: Deploy coverage to GitHub Pages
-      if: success()
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git clone --branch=gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
-        cp -r coverage/* gh-pages/
-        cd gh-pages
-        git add .
-        git commit -m 'Update coverage reports'
-        git push origin gh-pages
+      - name: Deploy coverage to GitHub Pages
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git clone --branch=gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
+          cp -r coverage/* gh-pages/
+          cd gh-pages
+          git add .
+          git commit -m 'Update coverage reports'
+          git push origin gh-pages

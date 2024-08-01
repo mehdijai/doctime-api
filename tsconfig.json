@@ -11,6 +11,7 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "lib": ["es2021"],
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
@@ -21,13 +22,13 @@
     "strictNullChecks": true,
     "noImplicitReturns": true,
     "baseUrl": ".",
-    "rootDir": ".",
+    "rootDir": "./src",
     "paths": {
       "@/*": ["src/*"]
     },
     "typeRoots": ["./node_modules/@types"]
   },
   "types": ["src/index.d.ts"],
-  "include": ["src/**/**/*.ts"],
-  "exclude": ["node_modules", "public"]
+  "include": ["src/**/**/*"],
+  "exclude": ["node_modules", "public", "src/templates", "dist"]
 }

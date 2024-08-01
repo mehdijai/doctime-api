@@ -67,6 +67,7 @@
   - [ ] **TEST** Mailer Service
   - [ ] Mailer Providers
   - [ ] Testing Mail Independent Provider
+  - [ ] Emails Templates
 - [ ] SMS
   - [ ] SMS Service
   - [ ] **TEST** SMS Service

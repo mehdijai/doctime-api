@@ -1,0 +1,29 @@
+<html lang='en'>
+
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>DocTime Mailer</title>
+    <link rel='stylesheet' href='./core.css' />
+    <link rel='shortcut icon' href='../../../../public/logos/icon.png' type='image/x-icon' />
+    <link rel='preconnect' href='https://fonts.googleapis.com' />
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+    <link
+      href='https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap'
+      rel='stylesheet'
+    />
+  </head>
+
+  <body class='core-mail__wrapper'>
+    <header class='core-mail__header'>
+      <img src='../../../../public/logos/fused.png' alt='DocTime' class='logo' />
+    </header>
+    <main class='core-mail__body'>
+      {{content}}
+    </main>
+    <footer class='core-mail__footer'>
+      <img src='../../../../public/logos/fused.png' alt='DocTime' class='logo' />
+    </footer>
+  </body>
+
+</html>
