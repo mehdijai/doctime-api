@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.46% </span>
+                <span class="strong">93.54% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>143/153</span>
+                <span class='fraction'>145/155</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>30/30</span>
+                <span class='fraction'>33/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.07% </span>
+                <span class="strong">95.13% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>135/142</span>
+                <span class='fraction'>137/144</span>
             </div>
         
             
@@ -459,14 +459,7 @@
 <a name='L394'></a><a href='#L394'>394</a>
 <a name='L395'></a><a href='#L395'>395</a>
 <a name='L396'></a><a href='#L396'>396</a>
-<a name='L397'></a><a href='#L397'>397</a>
-<a name='L398'></a><a href='#L398'>398</a>
-<a name='L399'></a><a href='#L399'>399</a>
-<a name='L400'></a><a href='#L400'>400</a>
-<a name='L401'></a><a href='#L401'>401</a>
-<a name='L402'></a><a href='#L402'>402</a>
-<a name='L403'></a><a href='#L403'>403</a>
-<a name='L404'></a><a href='#L404'>404</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L397'></a><a href='#L397'>397</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-yes">40x</span>
@@ -502,6 +495,8 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
@@ -621,15 +616,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -797,10 +790,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -826,10 +817,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -866,23 +855,22 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span></td><td class="text"><pre class="prettyprint lang-js">import { sendEmail } from '@/services/mail.service';
-import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { generateAccessToken, generateRefr<span class="branch-0 cbranch-no" title="branch not covered" >eshToke</span>n } from '@/utils/jwtHandler';<span class="branch-1 cbranch-no" title="branch not covered" ></span>
-impo<span class="missing-if-branch" title="if path not taken" >I</span>rt { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';<span class="cstat-no" title="statement not covered" ></span>
-import { logger } from '@/utils/winston';<span class="branch-1 cbranch-no" title="branch not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ><span class="branch-1 cbranch-no" title="branch not covered" ></span></span></span>
-import { User } from '@prisma/client';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import HttpStatusCode from '@/utils/HTTPStatusCodes';
+import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
+import { ApiResponseBody, ResponseHandler <span class="branch-0 cbranch-no" title="branch not covered" >} from </span>'@/utils/responseHandler';<span class="branch-1 cbranch-no" title="branch not covered" ></span>
+impo<span class="missing-if-branch" title="if path not taken" >I</span>rt { logger } from '@/utils/winston';<span class="cstat-no" title="statement not covered" ></span>
+import { User } from '@prisma/client';<span class="branch-1 cbranch-no" title="branch not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ><span class="branch-1 cbranch-no" title="branch not covered" ></span></span></span>
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-impo<span class="missing-if-branch" title="if path not taken" >I</span>rt prisma from '@/services/prisma.service';<span class="cstat-no" title="statement not covered" ></span>
-import appConfig from '@/config/app.config';
+import prisma from '@/services/prisma.service';
+impo<span class="missing-if-branch" title="if path not taken" >I</span>rt appConfig from '@/config/app.config';<span class="cstat-no" title="statement not covered" ></span>
 import { addTime } from '@/utils/helpers';
 import { apiMethod } from '@/decorators/api.decorator';
 import { Auth, AuthClass } from '@/decorators/auth.decorator';
-<span class="cstat-no" title="statement not covered" ></span>
+import { VerifyEmailMailer } from '@/mailers/verify-email.mailer';
+import { UpdatePasswordMailer } from '@/mailers/update-password.mailer';<span class="cstat-no" title="statement not covered" ></span>
+import { ResetPasswordMailer } from '@/mailers/reset-password.mailer';
+&nbsp;
 export class AuthRepository extends AuthClass {
   @apiMethod&lt;IAuthResponse&gt;()
   static async loginUser(payload: TAuthSchema): Promise&lt;ApiResponseBody&lt;IAuthResponse&gt;&gt; {
@@ -1022,18 +1010,15 @@ export class AuthRepository extends AuthClass {
       },
     });
 &nbsp;
-    const bodyHTML = `&lt;h1&gt;Reset Password&lt;/h1&gt;
-      &lt;p&gt;Click here to reset your password:&lt;/p&gt;
-      &lt;a id="token-link" href="${process.env.RESET_PASSWORD_UI_URL}/${token}"&gt;Reset Password&lt;/a&gt;&lt;br&gt;
-        or copy this link: &lt;br&gt;
-        &lt;span&gt;${process.env.RESET_PASSWORD_UI_URL}/${token}&lt;/span&gt;`;
-&nbsp;
-    if (user<span class="missing-if-branch" title="else path not taken" >E</span>) {
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Reset Password',
-        html: bodyHTML,
-      });
+    if (user) {
+      new Re<span class="missing-if-branch" title="else path not taken" >E</span>setPasswordMailer([user.email])
+        .generate({
+          name: user.name,
+          verificationLink: `${process.env.RESET_PASSWORD_UI_URL}/${token}`,
+        })
+        .then((instance) =&gt; {
+          instance.send();
+        });
     }
 &nbsp;
     resBody.data = {
@@ -1087,13 +1072,13 @@ export class AuthRepository extends AuthClass {
     return resBody;
   }
 &nbsp;
-  @Auth<span class="missing-if-branch" title="if path not taken" >I</span>
-  @apiMethod&lt;ISt<span class="cstat-no" title="statement not covered" >atusResponse&gt;()</span>
-  static async updatePassword(
+  @Auth
+  @apiMethod<span class="missing-if-branch" title="if path not taken" >I</span>&lt;IStatusResponse&gt;()
+  static async u<span class="cstat-no" title="statement not covered" >pdatePassword(</span>
     payload: TUpdatePasswordSchema
   ): Promise&lt;ApiResponseBody&lt;IStatusResponse&gt;&gt; {
-    const userId<span class="cstat-no" title="statement not covered" > = this.USER.use</span>rId;
-    const resBody = (this as any).getResBody();
+    const userId = this.USER.userId;
+    const resBod<span class="cstat-no" title="statement not covered" >y = (this as any</span>).getResBody();
     const user = await prisma.user.findUnique({
       where: {
         id: userId,
@@ -1126,9 +1111,9 @@ export class AuthRepository extends AuthClass {
         data: {
           password: hashedPassword,
         },
-      });<span class="missing-if-branch" title="if path not taken" >I</span>
-    }<span class="cstat-no" title="statement not covered" ></span>
-    resBody.data = {
+      });
+    }<span class="missing-if-branch" title="if path not taken" >I</span>
+    resBody.data<span class="cstat-no" title="statement not covered" > = {</span>
       status: true,
     };
 &nbsp;
@@ -1162,9 +1147,9 @@ export class AuthRepository extends AuthClass {
     await prisma.updatePasswordToken.delete({
       where: {
         token: payload.token,
-      },<span class="missing-if-branch" title="if path not taken" >I</span>
-    });<span class="cstat-no" title="statement not covered" ></span>
-&nbsp;
+      },
+    });<span class="missing-if-branch" title="if path not taken" >I</span>
+<span class="cstat-no" title="statement not covered" ></span>
     resBody.data = {
       status: true,
     };
@@ -1206,8 +1191,8 @@ export class AuthRepository extends AuthClass {
       },
     });
 &nbsp;
-    resBody.data = {
-      status: tr<span class="cstat-no" title="statement not covered" >ue,</span>
+    resBody.data<span class="cstat-no" title="statement not covered" > = {</span>
+      status: true,
     };
 &nbsp;
     return resBody;
@@ -1225,17 +1210,14 @@ export class AuthRepository extends AuthClass {
         },
       });
 &nbsp;
-      const bodyHTML = `&lt;h1&gt;Verify Your Email&lt;/h1&gt;
-        &lt;p&gt;Verify your email. The link expires after &lt;strong&gt;1 hour&lt;/strong&gt;.&lt;/p&gt;
-        &lt;a id="token-link" href="${process.env.VERIFY_EMAIL_UI_URL}/${token}"&gt;Confirm Email&lt;/a&gt;&lt;br&gt;
-        or copy this link: &lt;br&gt;
-        &lt;span&gt;${process.env.VERIFY_EMAIL_UI_URL}/${token}&lt;/span&gt;`;
-&nbsp;
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Verify Email',
-        html: bodyHTML,
-      });
+      new VerifyEmailMailer([user.email])
+        .generate({
+          name: user.name,
+          verificationLink: `${process.env.VERIFY_EMAIL_UI_URL}/${token}`,
+        })
+        .then((instance) =&gt; {
+          instance.send();
+        });
     } catch (err<span class="cstat-no" title="statement not covered" >) {</span>
       logger.error({ message: 'Send Email Verification Error:', error: err });
     }
@@ -1256,17 +1238,14 @@ export class AuthRepository extends AuthClass {
         },
       });
 &nbsp;
-      const bodyHTML = `&lt;h1&gt;Confirm password update&lt;/h1&gt;
-        &lt;p&gt;Confirm updating password. The link expires after &lt;strong&gt;1 hour&lt;/strong&gt;.&lt;/p&gt;
-        &lt;a id="token-link" href="${process.env.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL}/${token}"&gt;Confirm password&lt;/a&gt;&lt;br&gt;
-        or copy this link: &lt;br&gt;
-        &lt;span&gt;${process.env.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL}/${token}&lt;/span&gt;`;
-&nbsp;
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Update Password',
-        html: bodyHTML,
-      });
+      new UpdatePasswordMailer([user.email])
+        .generate({
+          name: user.name,
+          verificationLink: `${process.env.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL}/${token}`,
+        })
+        .then((instance) =&gt; {
+          instance.send();
+        });
     } catch (err) {
       logger.error({ message: 'Send password update Email Error:', error: err });
     }
@@ -1279,7 +1258,7 @@ export class AuthRepository extends AuthClass {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-01T17:48:58.435Z
+                at 2024-08-05T11:52:27.232Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

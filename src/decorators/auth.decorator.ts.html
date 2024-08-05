@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.36% </span>
+                <span class="strong">86.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>38/44</span>
+                <span class='fraction'>39/45</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">86.11% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>30/36</span>
+                <span class='fraction'>31/36</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.3% </span>
+                <span class="strong">92.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>36/39</span>
+                <span class='fraction'>37/40</span>
             </div>
         
             
@@ -126,19 +126,13 @@
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a>
-<a name='L70'></a><a href='#L70'>70</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -182,15 +176,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -199,11 +189,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">55x</span>
-<span class="cline-any cline-yes">55x</span></td><td class="text"><pre class="prettyprint lang-js">import { AuthFacade } from '@/facades/auth.facade';
-import { sendEmail } from '@/services/mail.service';
-import prisma from '@/services/prisma.service';<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AuthFacade } from '@/facades/auth.facade';
+import { ConfirmDeleteMailer } from '@/mailers/confirm-deleting.mailer';
+import prisma from '@/services/prisma.service';
 import { addTime } from '@/utils/helpers';
 import { logger } from '@/utils/winston';<span class="cstat-no" title="statement not covered" ></span>
 import { $Enums, <span class="fstat-no" title="function not covered" >User } fr</span>om '@pris<span class="cstat-no" title="statement not covered" >ma/cli<span class="cstat-no" title="statement not covered" >ent';<span class="cstat-no" title="statement not covered" ></span></span></span>
@@ -238,18 +226,12 @@ export class AuthClass {
           expiresAt: addTime(1, 'h'),
         },<span class="branch-0 cbranch-no" title="branch not covered" ></span>
       });
-&nbsp;
-      const bodyHTML = `&lt;h1&gt;Confirm deleting profile&lt;/h1&gt;
-        &lt;p&gt;Confirm deleting your profile. The link expires after &lt;strong&gt;1 hour&lt;/strong&gt;.&lt;/p&gt;
-        &lt;a id="token-link" href="${process.env.DELETE_PROFILE_UI_URL}/${token}"&gt;Confirm delete profile&lt;/a&gt;&lt;br&gt;
-        or copy this link: &lt;br&gt;
-        &lt;span&gt;${process.env.DELETE_PROFILE_UI_URL}/${token}&lt;/span&gt;`;
-&nbsp;
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Confirm deleting profile',
-        html: bodyHTML,
+      const _mailer = new ConfirmDeleteMailer([user.email]);
+      await _mailer.generate({
+        name: user.name,
+        verificationLink: `${process.env.DELETE_PROFILE_UI_URL}/${token}`,
       });
+      await _mailer.send();
     } catch (err) {
       logger.error({ message: 'Send Email Verification Error:', error: err });
     }
@@ -262,9 +244,9 @@ export function Auth(_: any, __: string, descriptor: PropertyDescriptor) {
   descriptor.value = function (this: { USER: IAuthUser }, ...args: any[]) {
     const user = AuthFacade.get();
     if (!user) {
-      throw new <span class="cstat-no" title="statement not covered" >Error('User not found');</span>
+      throw new Error('User not found');
     }
-    this.USER = user;
+    this.USER = <span class="cstat-no" title="statement not covered" >user;</span>
     return originalMethod.apply(this, args);
   };
 &nbsp;
@@ -277,7 +259,7 @@ export function Auth(_: any, __: string, descriptor: PropertyDescriptor) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-01T17:48:58.435Z
+                at 2024-08-05T11:52:27.232Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
