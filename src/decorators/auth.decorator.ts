@@ -1,5 +1,5 @@
 import { AuthFacade } from '@/facades/auth.facade';
-import { sendEmail } from '@/services/mail.service';
+import { ConfirmDeleteMailer } from '@/mailers/confirm-deleting.mailer';
 import prisma from '@/services/prisma.service';
 import { addTime } from '@/utils/helpers';
 import { logger } from '@/utils/winston';
@@ -35,18 +35,12 @@ export class AuthClass {
           expiresAt: addTime(1, 'h'),
         },
       });
-
-      const bodyHTML = `<h1>Confirm deleting profile</h1>
-        <p>Confirm deleting your profile. The link expires after <strong>1 hour</strong>.</p>
-        <a id="token-link" href="${process.env.DELETE_PROFILE_UI_URL}/${token}">Confirm delete profile</a><br>
-        or copy this link: <br>
-        <span>${process.env.DELETE_PROFILE_UI_URL}/${token}</span>`;
-
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Confirm deleting profile',
-        html: bodyHTML,
+      const _mailer = new ConfirmDeleteMailer([user.email]);
+      await _mailer.generate({
+        name: user.name,
+        verificationLink: `${process.env.DELETE_PROFILE_UI_URL}/${token}`,
       });
+      await _mailer.send();
     } catch (err) {
       logger.error({ message: 'Send Email Verification Error:', error: err });
     }

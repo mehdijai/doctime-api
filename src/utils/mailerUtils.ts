@@ -1,6 +1,8 @@
+import appConfig from '@/config/app.config';
 import { load } from 'cheerio';
 import * as nodemailer from 'nodemailer';
 import { NodemailerMock } from 'nodemailer-mock';
+import { logger } from './winston';
 const { mock } = nodemailer as unknown as NodemailerMock;
 
 export function getTokenFromMail(html: string) {
@@ -12,7 +14,7 @@ export function getTokenFromMail(html: string) {
 
 export function testEmails(subject: string) {
   const sentEmails = mock.getSentMail();
-  const email = sentEmails.find((email) => email.subject === subject);
+  const email = sentEmails.find((email) => email.subject === `${appConfig.apiName} | ${subject}`);
   expect(email).toBeDefined();
   const token = getTokenFromMail(email?.html?.toString() ?? '');
   expect(token).toBeDefined();

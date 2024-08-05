@@ -1,4 +1,4 @@
-import { HBSTemplates } from '@/services/template.service';
+import { HBSTemplates } from '@/services/handlebars.service';
 
 interface ITemplateBaseConfig {
   core: string;
@@ -25,6 +25,14 @@ const templatesConfigs: ITemplateConfig = {
     },
     CONFIRM_DELETING: {
       path: 'emails.auth.confirm-deleting',
+      core: 'emails.core',
+    },
+    ACCOUNT_DELETED: {
+      path: 'emails.auth.account-deleted',
+      core: 'emails.core',
+    },
+    PASSWORD_UPDATED: {
+      path: 'emails.auth.password-updated',
       core: 'emails.core',
     },
   },

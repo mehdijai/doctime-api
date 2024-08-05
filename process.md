@@ -63,11 +63,12 @@
   - [x] Delete Appointment
   - [x] **TEST** Delete Appointment
 - [ ] Mailer
-  - [ ] Mailer Service
-  - [ ] **TEST** Mailer Service
+  - [x] Mailer Service
+  - [x] **TEST** Mailer Service
   - [ ] Mailer Providers
   - [ ] Testing Mail Independent Provider
-  - [ ] Emails Templates
+  - [x] Emails Templates
+  - [x] **TEST** Emails Templates
 - [ ] SMS
   - [ ] SMS Service
   - [ ] **TEST** SMS Service

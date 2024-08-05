@@ -1,6 +1,10 @@
 import { logger } from '@/utils/winston';
 import { PrismaClient } from '@prisma/client';
 
+/**
+ * Prisma Singleton Service
+ * Initialize Prisma and Handle Test DB
+ */
 declare global {
   var prisma: PrismaClient | undefined;
 }

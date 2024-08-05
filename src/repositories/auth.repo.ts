@@ -1,4 +1,3 @@
-import { sendEmail } from '@/services/mail.service';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
 import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
@@ -11,6 +10,9 @@ import appConfig from '@/config/app.config';
 import { addTime } from '@/utils/helpers';
 import { apiMethod } from '@/decorators/api.decorator';
 import { Auth, AuthClass } from '@/decorators/auth.decorator';
+import { VerifyEmailMailer } from '@/mailers/verify-email.mailer';
+import { UpdatePasswordMailer } from '@/mailers/update-password.mailer';
+import { ResetPasswordMailer } from '@/mailers/reset-password.mailer';
 
 export class AuthRepository extends AuthClass {
   @apiMethod<IAuthResponse>()
@@ -151,18 +153,15 @@ export class AuthRepository extends AuthClass {
       },
     });
 
-    const bodyHTML = `<h1>Reset Password</h1>
-      <p>Click here to reset your password:</p>
-      <a id="token-link" href="${process.env.RESET_PASSWORD_UI_URL}/${token}">Reset Password</a><br>
-        or copy this link: <br>
-        <span>${process.env.RESET_PASSWORD_UI_URL}/${token}</span>`;
-
     if (user) {
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Reset Password',
-        html: bodyHTML,
-      });
+      new ResetPasswordMailer([user.email])
+        .generate({
+          name: user.name,
+          verificationLink: `${process.env.RESET_PASSWORD_UI_URL}/${token}`,
+        })
+        .then((instance) => {
+          instance.send();
+        });
     }
 
     resBody.data = {
@@ -354,17 +353,14 @@ export class AuthRepository extends AuthClass {
         },
       });
 
-      const bodyHTML = `<h1>Verify Your Email</h1>
-        <p>Verify your email. The link expires after <strong>1 hour</strong>.</p>
-        <a id="token-link" href="${process.env.VERIFY_EMAIL_UI_URL}/${token}">Confirm Email</a><br>
-        or copy this link: <br>
-        <span>${process.env.VERIFY_EMAIL_UI_URL}/${token}</span>`;
-
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Verify Email',
-        html: bodyHTML,
-      });
+      new VerifyEmailMailer([user.email])
+        .generate({
+          name: user.name,
+          verificationLink: `${process.env.VERIFY_EMAIL_UI_URL}/${token}`,
+        })
+        .then((instance) => {
+          instance.send();
+        });
     } catch (err) {
       logger.error({ message: 'Send Email Verification Error:', error: err });
     }
@@ -385,17 +381,14 @@ export class AuthRepository extends AuthClass {
         },
       });
 
-      const bodyHTML = `<h1>Confirm password update</h1>
-        <p>Confirm updating password. The link expires after <strong>1 hour</strong>.</p>
-        <a id="token-link" href="${process.env.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL}/${token}">Confirm password</a><br>
-        or copy this link: <br>
-        <span>${process.env.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL}/${token}</span>`;
-
-      sendEmail({
-        receivers: [user.email],
-        subject: 'Update Password',
-        html: bodyHTML,
-      });
+      new UpdatePasswordMailer([user.email])
+        .generate({
+          name: user.name,
+          verificationLink: `${process.env.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL}/${token}`,
+        })
+        .then((instance) => {
+          instance.send();
+        });
     } catch (err) {
       logger.error({ message: 'Send password update Email Error:', error: err });
     }

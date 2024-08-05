@@ -4,7 +4,6 @@ import appConfig, { parseAPIVersion } from '@/config/app.config';
 import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
-import { v4 as uuidv4 } from 'uuid';
 import { testEmails } from '@/utils/mailerUtils';
 
 describe('Test patients api', () => {

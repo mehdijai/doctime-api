@@ -7,6 +7,7 @@ const appConfig = {
   requireVerifyEmail: true,
   updatePasswordRequireVerification: true,
   deleteProfileRequireVerification: true,
+  supportEmail: 'support@doctime.com',
   apiVersion: '1.0.0',
   apiName: 'DocTime API',
   appName: 'DocTime',
