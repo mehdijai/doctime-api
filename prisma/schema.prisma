@@ -28,6 +28,7 @@ model User {
   updatePasswordToken  UpdatePasswordToken?
   verifyEmailToken     VerifyEmailToken?
   confirmDeletionToken ConfirmDeletionToken?
+  otps                 OTPS?
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
 
@@ -44,6 +45,18 @@ model ResetPasswordToken {
   updatedAt DateTime @updatedAt
 
   @@map("reset_password_tokens")
+}
+
+model OTPS {
+  id        String   @id @unique @default(uuid())
+  otp       String   @unique
+  expiresAt DateTime
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("otps")
 }
 
 model UpdatePasswordToken {
