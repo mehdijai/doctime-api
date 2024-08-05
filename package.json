@@ -39,6 +39,7 @@
         ]
     },
     "dependencies": {
+        "@aws-sdk/client-sns": "^3.623.0",
         "@prisma/client": "^5.14.0",
         "bcrypt": "^5.1.1",
         "bcryptjs": "^2.4.3",

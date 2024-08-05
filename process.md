@@ -70,10 +70,9 @@
   - [x] Emails Templates
   - [x] **TEST** Emails Templates
 - [ ] SMS
-  - [ ] SMS Service
+  - [x] SMS Service
   - [ ] **TEST** SMS Service
-  - [ ] SMS Provider
-  - [ ] Testing SMS Independent Provider
+  - [x] SMS Provider
 - [x] CI/CD GitHub
 - [x] Pre Commits Hooks (Lint, format and test)
 - [ ] Deployment
