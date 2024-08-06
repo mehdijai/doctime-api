@@ -39,7 +39,7 @@ export class AuthZODSchema {
     type: z.enum(['DOCTOR', 'PATIENT', 'ADMIN']),
   });
 
-  static readonly validatePhoneNumberSchema = z.strictObject({
+  static readonly validateOTPSchema = z.strictObject({
     otp: z.string().min(6),
   });
 }

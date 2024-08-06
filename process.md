@@ -20,6 +20,8 @@
   - [x] **TEST** Update password validation
   - [x] Validate Phone Number
   - [x] **TEST** Validate Phone Number
+  - [x] 2FA
+  - [x] **TEST** 2FA
 - [x] Doctors
   - [x] Create Doctor
   - [x] Validate User type
@@ -71,9 +73,9 @@
   - [ ] Testing Mail Independent Provider
   - [x] Emails Templates
   - [x] **TEST** Emails Templates
-- [ ] SMS
+- [x] SMS
   - [x] SMS Service
-  - [ ] **TEST** SMS Service
+  - [x] **TEST** SMS Service
   - [x] SMS Provider
 - [x] CI/CD GitHub
 - [x] Pre Commits Hooks (Lint, format and test)
@@ -82,4 +84,5 @@
   - [ ] Require Verified Email
   - [ ] Create Permissions
   - [x] Confirm deletion
+  - [ ] 2FA Guards
 - [ ] Implement Pagination

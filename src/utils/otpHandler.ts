@@ -1,15 +1,24 @@
-import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 import prisma from '@/services/prisma.service';
 import { addTime } from './helpers';
+import appConfig, { parseStrPeriod } from '@/config/app.config';
+import crypto from 'crypto';
 
 export class OTPHandler {
   static async generate(userId: string) {
-    const otpValue = Math.floor(100000 + Math.random() * 900000).toString();
+    const digits = '0123456789';
+    let otpValue = '';
+    for (let i = 0; i < appConfig.mfa.otp.digits; i++) {
+      const randomIndex = crypto.randomInt(0, digits.length);
+      otpValue += digits[randomIndex];
+    }
 
-    await prisma.oTPS.create({
+    const timePeriod = parseStrPeriod(appConfig.mfa.otp.expirationPeriod);
+
+    await prisma.otps.create({
       data: {
-        otp: otpValue,
-        expiresAt: addTime(5, 'm'),
+        otp: bcrypt.hashSync(otpValue, 10),
+        expiresAt: addTime(timePeriod.value, timePeriod.unit),
         user: {
           connect: {
             id: userId,
@@ -22,10 +31,9 @@ export class OTPHandler {
   }
 
   static async validateOTP(userId: string, otpValue: string) {
-    const otpRecord = await prisma.oTPS.findUnique({
+    const otpRecord = await prisma.otps.findUnique({
       where: {
         userId,
-        otp: otpValue,
       },
     });
 
@@ -33,9 +41,14 @@ export class OTPHandler {
 
     if (otpRecord.expiresAt < new Date()) return false;
 
-    await prisma.oTPS.delete({
+    const isValid = bcrypt.compareSync(otpValue, otpRecord.otp);
+    if (!isValid) {
+      return false;
+    }
+
+    await prisma.otps.delete({
       where: {
-        otp: otpValue,
+        id: otpRecord.id,
       },
     });
 

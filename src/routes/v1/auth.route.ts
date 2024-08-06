@@ -133,7 +133,7 @@ AuthRoutes.post(
   authenticateJWT,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const resBody = await AuthRepository.verifyUserPhoneNumber();
+      const resBody = await AuthRepository.send2faOtp();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -145,11 +145,43 @@ AuthRoutes.post(
 AuthRoutes.post(
   '/confirm-phone-number',
   authenticateJWT,
-  validate(AuthZODSchema.validatePhoneNumberSchema),
+  validate(AuthZODSchema.validateOTPSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: TValidatePhoneNumberSchema = req.body;
+      const body: TValidateOTPSchema = req.body;
       const resBody = await AuthRepository.confirmUserPhoneNumber(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// 2FA
+
+AuthRoutes.post(
+  '/send-verification-otp',
+  authenticateJWT,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const resBody = await AuthRepository.send2faOtp();
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+AuthRoutes.post(
+  '/confirm-verification-otp',
+  authenticateJWT,
+  validate(AuthZODSchema.validateOTPSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TValidateOTPSchema = req.body;
+      const resBody = await AuthRepository.confirm2faOtp(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {

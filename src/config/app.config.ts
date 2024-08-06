@@ -17,10 +17,31 @@ const appConfig = {
     expiresIn: '15d',
   },
   logRootPath: '.logs',
+  mfa: {
+    otp: {
+      expirationPeriod: '5m',
+      digits: 6,
+      throttle: '1m',
+    },
+  },
 };
 
 export default appConfig;
 
 export function parseAPIVersion(version: number) {
   return appConfig.apiURI.replace('$v', `v${version}`);
+}
+
+export function parseStrPeriod(timePeriod: string) {
+  const regex = /^(\d+)(ms|s|m|h|d)$/;
+  const match = timePeriod.match(regex);
+
+  if (!match) {
+    throw new Error('Invalid time period format');
+  }
+
+  const value = parseInt(match[1], 10);
+  const unit = match[2] as TimeUnit;
+
+  return { value, unit };
 }

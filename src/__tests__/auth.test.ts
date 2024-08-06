@@ -151,6 +151,46 @@ describe('Test Auth system', () => {
     expect(user?.verifiedPhoneNumber).toEqual(true);
   });
 
+  test('Test send verification otp', async () => {
+    const response = await request(app)
+      .post(baseRoute + '/send-verification-otp')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer ' + userPayload.accessToken);
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+    expect(response.body.data.otp).toBeDefined();
+    userPayload.otp = response.body.data.otp;
+  });
+
+  test('Test verify otp', async () => {
+    const response = await request(app)
+      .post(baseRoute + '/confirm-verification-otp')
+      .send({
+        otp: userPayload.otp,
+      })
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer ' + userPayload.accessToken);
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userPayload.userId,
+      },
+    });
+
+    expect(user).toBeDefined();
+    expect(user?.verifiedPhoneNumber).toEqual(true);
+  });
+
   test('Test Login none existing email', async () => {
     const loginPayload = {
       email: 'other-mail@mail.com',

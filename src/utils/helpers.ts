@@ -2,7 +2,7 @@ export default async function wait(time: number) {
   await new Promise((r) => setTimeout(r, time));
 }
 
-export function addTime(value: number, unit: 'ms' | 's' | 'm' | 'h' | 'd', start?: Date) {
+export function addTime(value: number, unit: TimeUnit, start?: Date) {
   let addedValue = value;
 
   switch (unit) {

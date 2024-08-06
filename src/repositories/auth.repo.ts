@@ -6,7 +6,7 @@ import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/services/prisma.service';
-import appConfig from '@/config/app.config';
+import appConfig, { parseStrPeriod } from '@/config/app.config';
 import { addTime } from '@/utils/helpers';
 import { apiMethod } from '@/decorators/api.decorator';
 import { Auth, AuthClass } from '@/decorators/auth.decorator';
@@ -337,32 +337,69 @@ export class AuthRepository extends AuthClass {
 
   @Auth
   @apiMethod<IStatusResponse>()
-  static async verifyUserPhoneNumber(): Promise<ApiResponseBody<IStatusResponse>> {
+  static async send2faOtp(): Promise<ApiResponseBody<IStatusResponse>> {
     const resBody = (this as any).getResBody();
     const userId = this.USER.userId;
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        otp: true,
+      },
+    });
 
     if (!user) {
       return ResponseHandler.NotFound('User not found');
     }
 
-    const otpToken = await OTPHandler.generate(userId);
+    if (user.otp && user.otp.expiresAt > new Date()) {
+      const throttleTimePeriod = parseStrPeriod(appConfig.mfa.otp.throttle);
+      if (
+        addTime(throttleTimePeriod.value, throttleTimePeriod.unit, user.otp.createdAt) < new Date()
+      ) {
+        // Resend
+        await prisma.otps.delete({
+          where: {
+            id: user.otp.id,
+          },
+        });
 
-    if (process.env.STAGE !== 'TEST') {
-      await sendSMS({
-        phoneNumber: user.phone,
-        message: `Your verification code is ${otpToken}`,
-      });
+        const otpToken = await OTPHandler.generate(userId);
 
-      resBody.data = {
-        status: true,
-      };
+        if (process.env.STAGE !== 'TEST') {
+          await sendSMS({
+            phoneNumber: user.phone,
+            message: `Your verification code is ${otpToken}`,
+          });
+
+          resBody.data = {
+            status: true,
+          };
+        } else {
+          resBody.data = {
+            status: true,
+            otp: otpToken,
+          };
+        }
+      }
     } else {
-      resBody.data = {
-        status: true,
-        otp: otpToken,
-      };
+      const otpToken = await OTPHandler.generate(userId);
+
+      if (process.env.STAGE !== 'TEST') {
+        await sendSMS({
+          phoneNumber: user.phone,
+          message: `Your verification code is ${otpToken}`,
+        });
+
+        resBody.data = {
+          status: true,
+        };
+      } else {
+        resBody.data = {
+          status: true,
+          otp: otpToken,
+        };
+      }
     }
 
     return resBody;
@@ -371,7 +408,7 @@ export class AuthRepository extends AuthClass {
   @Auth
   @apiMethod<IStatusResponse>()
   static async confirmUserPhoneNumber(
-    payload: TValidatePhoneNumberSchema
+    payload: TValidateOTPSchema
   ): Promise<ApiResponseBody<IStatusResponse>> {
     const resBody = (this as any).getResBody();
     const userId = this.USER.userId;
@@ -390,6 +427,27 @@ export class AuthRepository extends AuthClass {
         verifiedPhoneNumber: true,
       },
     });
+
+    resBody.data = {
+      status: true,
+    };
+
+    return resBody;
+  }
+
+  @Auth
+  @apiMethod<IStatusResponse>()
+  static async confirm2faOtp(
+    payload: TValidateOTPSchema
+  ): Promise<ApiResponseBody<IStatusResponse>> {
+    const resBody = (this as any).getResBody();
+    const userId = this.USER.userId;
+
+    const isValidOTP = await OTPHandler.validateOTP(userId, payload.otp);
+
+    if (!isValidOTP) {
+      return ResponseHandler.Forbidden('Invalid or expired OTP');
+    }
 
     resBody.data = {
       status: true,

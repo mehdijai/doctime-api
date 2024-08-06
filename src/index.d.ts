@@ -17,6 +17,7 @@ declare global {
   interface IWithUser {
     USER: IAuthUser;
   }
+  declare type TimeUnit = 'ms' | 's' | 'm' | 'h' | 'd';
   declare interface ICoordinates {
     lat: number;
     lng: number;
