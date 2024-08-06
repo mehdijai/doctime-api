@@ -14,6 +14,8 @@ import { VerifyEmailMailer } from '@/mailers/verify-email.mailer';
 import { PasswordUpdatedMailer } from '@/mailers/password-updated.mailer';
 import { ResetPasswordMailer } from '@/mailers/reset-password.mailer';
 import { UpdatePasswordMailer } from '@/mailers/update-password.mailer';
+import { requireVerifiedEmail } from '@/middlewares/requireVerifiedEmail.middleware';
+import { requireVerifiedPhone } from '@/middlewares/requireVerifiedPhone.middleware';
 const routes = Router();
 
 routes.get('/mailer/:type', async (req: Request, res: Response, next) => {
@@ -77,6 +79,38 @@ routes.get('/protected', authenticateJWT, (_, res: Response, next) => {
   });
   next();
 });
+
+routes.get(
+  '/requireVerifiedEmail',
+  authenticateJWT,
+  requireVerifiedEmail,
+  (_, res: Response, next) => {
+    res.status(HttpStatusCode.OK).json({
+      name: appConfig.apiName,
+      version: appConfig.apiVersion,
+      dateTime: new Date().toISOString(),
+      status: 'RUNNING',
+      protected: true,
+    });
+    next();
+  }
+);
+
+routes.get(
+  '/requireVerifiedPhone',
+  authenticateJWT,
+  requireVerifiedPhone,
+  (_, res: Response, next) => {
+    res.status(HttpStatusCode.OK).json({
+      name: appConfig.apiName,
+      version: appConfig.apiVersion,
+      dateTime: new Date().toISOString(),
+      status: 'RUNNING',
+      protected: true,
+    });
+    next();
+  }
+);
 
 routes.use('/auth', AuthRoutes);
 routes.use('/patients', PatientsRoutes);

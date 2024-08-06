@@ -59,30 +59,6 @@ describe('Test Auth system', () => {
     expect(response.body.error.code).toEqual(HttpStatusCode.CONFLICT);
   });
 
-  test('Test verify User', async () => {
-    const response = await request(app)
-      .post(baseRoute + '/verify-user')
-      .send({
-        token: userPayload.verificationToken,
-      })
-      .set('Accept', 'application/json');
-
-    expect(response.status).toBe(HttpStatusCode.OK);
-    expect(response.body).toBeDefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.error).toBeUndefined();
-    expect(response.body.data.status).toEqual(true);
-
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userPayload.userId,
-      },
-    });
-
-    expect(user).toBeDefined();
-    expect(user?.verifiedEmail).toEqual(true);
-  });
-
   test('Test Login', async () => {
     const loginPayload = {
       email: userPayload.email,
@@ -109,6 +85,57 @@ describe('Test Auth system', () => {
     expect(response.body.data.user.userType).toEqual(userPayload.type);
     userPayload.accessToken = response.body.data.accessToken.token;
     userPayload.refreshToken = response.body.data.accessToken.refreshToken;
+  });
+
+  test('Test Email Verification Middleware -- Expect to fail', async () => {
+    const response = await request(app)
+      .get(parseAPIVersion(1) + '/requireVerifiedEmail')
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
+  });
+
+  test('Test verify User', async () => {
+    const response = await request(app)
+      .post(baseRoute + '/verify-user')
+      .send({
+        token: userPayload.verificationToken,
+      })
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data.status).toEqual(true);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userPayload.userId,
+      },
+    });
+
+    expect(user).toBeDefined();
+    expect(user?.verifiedEmail).toEqual(true);
+  });
+
+  test('Test Email Verification Middleware -- Expect to succeed', async () => {
+    const response = await request(app)
+      .get(parseAPIVersion(1) + '/requireVerifiedEmail')
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+  });
+
+  test('Test Phone number Verification Middleware -- Expect to fail', async () => {
+    const response = await request(app)
+      .get(parseAPIVersion(1) + '/requireVerifiedPhone')
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.FORBIDDEN);
   });
 
   test('Test verify User phone number', async () => {
@@ -149,6 +176,15 @@ describe('Test Auth system', () => {
 
     expect(user).toBeDefined();
     expect(user?.verifiedPhoneNumber).toEqual(true);
+  });
+
+  test('Test Phone number Verification Middleware -- Expect to succeed', async () => {
+    const response = await request(app)
+      .get(parseAPIVersion(1) + '/requireVerifiedPhone')
+      .set('Authorization', 'Bearer ' + userPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
   });
 
   test('Test send verification otp', async () => {

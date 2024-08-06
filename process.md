@@ -81,8 +81,12 @@
 - [x] Pre Commits Hooks (Lint, format and test)
 - [ ] Deployment
 - [ ] Authorization
-  - [ ] Require Verified Email
+  - [x] Require Verified Email
+  - [x] **TEST** Require Verified Email
+  - [x] Require Verified Phone number
+  - [x] **TEST** Require Verified Phone number
   - [ ] Create Permissions
   - [x] Confirm deletion
   - [ ] 2FA Guards
 - [x] Implement Pagination
+- [ ] Search with Geo Location
