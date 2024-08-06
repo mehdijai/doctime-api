@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -93,27 +93,27 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -122,27 +122,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export function isNearCoordinates(
-  coord1: ICoordinates,
-  coord2: ICoordinates,
-  radiusInKm: number
+<span class="cstat-no" title="statement not covered" >  coord1: ICoordinates,</span>
+<span class="cstat-no" title="statement not covered" >  coord2: ICoordinates,</span>
+  radiusI<span class="fstat-no" title="function not covered" >nKm: number</span>
 ): boolean {
-  // Earth's radius in kilometers
+  // Earth's radius in k<span class="cstat-no" title="statement not covered" >ilome</span>ters
   const earthRadius = 6371;
-&nbsp;
-  // Convert latitude and longitude to radians
-  const lat1 = toRadians(coord1.lat);
-  const lon1 = toRadians(coord1.lng);
+<span class="cstat-no" title="statement not covered" ></span>
+  // Convert lati<span class="cstat-no" title="statement not covered" >tude and longitude to </span>radians
+  const lat1 = to<span class="cstat-no" title="statement not covered" >Radians(coord1.lat);</span>
+  const lon1 = to<span class="cstat-no" title="statement not covered" >Radians(coord1.lng);</span>
   const lat2 = toRadians(coord2.lat);
-  const lon2 = toRadians(coord2.lng);
-&nbsp;
-  // Haversine formula
+  const lon2 = to<span class="cstat-no" title="statement not covered" >Radians(coor</span>d2.lng);
+<span class="cstat-no" title="statement not covered" ></span>
+  // Haversine<span class="cstat-no" title="statement not covered" > formula</span>
   const dLat = lat2 - lat1;
-  const dLon = lon2 - lon1;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  const dLon =<span class="cstat-no" title="statement not covered" > lon2 - lon1;</span>
+  const a =<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    Math.sin(dLat / 2) * Math.sin(d</span>Lat / 2) +
     Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = earthRadius * c;
+  const c<span class="fstat-no" title="function not covered" > = 2 * Mat</span>h.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  co<span class="cstat-no" title="statement not covered" >nst distance = earthRadius * c;</span>
 &nbsp;
   return distance &lt;= radiusInKm;
 }
@@ -157,7 +157,7 @@ function toRadians(degrees: number): number {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-06T19:35:18.229Z
+                at 2024-08-06T21:22:38.157Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

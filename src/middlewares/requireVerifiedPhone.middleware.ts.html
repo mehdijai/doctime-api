@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/schemas/auth/auth.schema.ts</title>
+    <title>Code coverage report for src/middlewares/requireVerifiedPhone.middleware.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../../prettify.css" />
-    <link rel="stylesheet" href="../../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../../sort-arrow-sprite.png);
+            background-image: url(../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/schemas/auth</a> auth.schema.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/middlewares</a> requireVerifiedPhone.middleware.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>25/35</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>20/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">76.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>23/30</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -105,98 +105,89 @@
 <a name='L40'></a><a href='#L40'>40</a>
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from 'zod';
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { Request, Response, NextFunction } from 'express';
+import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
+import { AuthFacade } from '@/facades/auth.facade';<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+import prisma from '@/services/prisma.service';
+<span class="cstat-no" title="statement not covered" ></span>
+export async func<span class="fstat-no" title="function not covered" >tion requ</span>ireVerifi<span class="cstat-no" title="statement not covered" >edPhon<span class="cstat-no" title="statement not covered" >e(_: Request, res: Response, next</span>: NextFunction<span class="cstat-no" title="statement not covered" >) {</span></span>
+  try {
+    const userBody = AuthFacade.get();
 &nbsp;
-export class AuthZODSchema {
-  static readonly authSchema = z.strictObject({
-    email: z.string().email(),
-    password: z.string().min(8),
-    type: z.enum(['DOCTOR', 'PATIENT', 'ADMIN']),
-  });
+    if (!userBody) {
+      const resBody = ResponseHandler.Unauthorized('Unauthenticated');
+      res.status(resBody.error!.code).json(<span class="branch-1 cbranch-no" title="branch not covered" >resBody);</span>
+    } else {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userBody.userId,
+        },
+      });
 &nbsp;
-  static readonly registerSchema = z.strictObject({
-    name: z.string().min(2),
-    phone: z.string().refine((phone) =&gt; /^\+\d{10,15}$/.test(phone), 'Invalid phone number'),
-    email: z.string().email(),
-    password: z.string().min(8),
-    type: z.enum(['DOCTOR', 'PATIENT']),
-  });
+      if (!user) {
+        const resBody = ResponseHandler.Forbidden('Unauthorized');
+        res.status(resBody.error!.code).json(resBody);
+      } else<span class="missing-if-branch" title="if path not taken" >I</span> {
+        if (user.verifiedPhoneNu<span class="cstat-no" title="statement not covered" >mber) {</span>
+          next()<span class="cstat-no" title="statement not covered" >;</span>
+        } else {
+          const resBody = ResponseHandler.Forbidden('Your email must be verified!');
+          res.status(resBody.error!.code).json(resBody);
+        }
+      }
+    }
+  } catch (error: any) {
+    const resBod<span class="missing-if-branch" title="if path not taken" >I</span>y: ApiResponseBody = {
+      error: {<span class="cstat-no" title="statement not covered" ></span>
+        code: 505,<span class="cstat-no" title="statement not covered" ></span>
+        message: String(error),
+      },
+    };
 &nbsp;
-  static readonly refreshTokenSchema = z.strictObject({
-    refreshToken: z.string().uuid(),
-  });
-&nbsp;
-  static readonly forgetPasswordSchema = z.strictObject({
-    email: z.string().email(),
-    type: z.enum(['DOCTOR', 'PATIENT', 'ADMIN']),
-  });
-&nbsp;
-  static readonly resetPasswordSchema = z.strictObject({
-    newPassword: z.string().min(8),
-    token: z.string().uuid(),
-  });
-&nbsp;
-  static readonly validateUserSchema = z.strictObject({
-    token: z.string().uuid(),
-  });
-&nbsp;
-  static readonly updatePasswordSchema = z.strictObject({
-    oldPassword: z.string().min(8),
-    newPassword: z.string().min(8),
-    type: z.enum(['DOCTOR', 'PATIENT', 'ADMIN']),
-  });
-&nbsp;
-  static readonly validateOTPSchema = z.strictObject({
-    otp: z.string().min(6),
-  });
+    res.status(resBody.error!.code).json(resBody);
+  }
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -207,14 +198,14 @@ export class AuthZODSchema {
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at 2024-08-06T21:22:38.157Z
             </div>
-        <script src="../../../prettify.js"></script>
+        <script src="../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../../sorter.js"></script>
-        <script src="../../../block-navigation.js"></script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
     </body>
 </html>
     
