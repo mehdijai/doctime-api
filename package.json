@@ -20,7 +20,7 @@
     "homepage": "https://github.com/mehdijai/doctime-api",
     "main": "./src/server.ts",
     "scripts": {
-        "dev": "nodemon -r tsconfig-paths/register src/server.ts",
+        "dev": "nodemon -w -r tsconfig-paths/register src/server.ts",
         "start": "node -r tsconfig-paths/register dist/server.js",
         "test": "cross-env STAGE=TEST jest --detectOpenHandles",
         "format": "prettier --write .",

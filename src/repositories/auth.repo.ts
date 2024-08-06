@@ -13,6 +13,9 @@ import { Auth, AuthClass } from '@/decorators/auth.decorator';
 import { VerifyEmailMailer } from '@/mailers/verify-email.mailer';
 import { UpdatePasswordMailer } from '@/mailers/update-password.mailer';
 import { ResetPasswordMailer } from '@/mailers/reset-password.mailer';
+import { OTPHandler } from '@/utils/otpHandler';
+import { sendSMS } from '@/services/sms.service';
+import { parseUserPayload } from '@/utils/parsers';
 
 export class AuthRepository extends AuthClass {
   @apiMethod<IAuthResponse>()
@@ -48,16 +51,7 @@ export class AuthRepository extends AuthClass {
 
       const responseData = {
         accessToken: accessToken,
-        user: {
-          id: user.id,
-          email: user.email,
-          phone: user.phone,
-          name: user.name,
-          verifiedEmail: user.verifiedEmail,
-          userType: user.userType,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-        },
+        user: parseUserPayload(user),
       };
 
       resBody.data = responseData;
@@ -331,6 +325,69 @@ export class AuthRepository extends AuthClass {
     await prisma.verifyEmailToken.delete({
       where: {
         token: payload.token,
+      },
+    });
+
+    resBody.data = {
+      status: true,
+    };
+
+    return resBody;
+  }
+
+  @Auth
+  @apiMethod<IStatusResponse>()
+  static async verifyUserPhoneNumber(): Promise<ApiResponseBody<IStatusResponse>> {
+    const resBody = (this as any).getResBody();
+    const userId = this.USER.userId;
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return ResponseHandler.NotFound('User not found');
+    }
+
+    const otpToken = await OTPHandler.generate(userId);
+
+    if (process.env.STAGE !== 'TEST') {
+      await sendSMS({
+        phoneNumber: user.phone,
+        message: `Your verification code is ${otpToken}`,
+      });
+
+      resBody.data = {
+        status: true,
+      };
+    } else {
+      resBody.data = {
+        status: true,
+        otp: otpToken,
+      };
+    }
+
+    return resBody;
+  }
+
+  @Auth
+  @apiMethod<IStatusResponse>()
+  static async confirmUserPhoneNumber(
+    payload: TValidatePhoneNumberSchema
+  ): Promise<ApiResponseBody<IStatusResponse>> {
+    const resBody = (this as any).getResBody();
+    const userId = this.USER.userId;
+
+    const isValidOTP = await OTPHandler.validateOTP(userId, payload.otp);
+
+    if (!isValidOTP) {
+      return ResponseHandler.Forbidden('Invalid or expired OTP');
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        verifiedPhoneNumber: true,
       },
     });
 

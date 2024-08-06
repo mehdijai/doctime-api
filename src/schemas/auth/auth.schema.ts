@@ -38,4 +38,8 @@ export class AuthZODSchema {
     newPassword: z.string().min(8),
     type: z.enum(['DOCTOR', 'PATIENT', 'ADMIN']),
   });
+
+  static readonly validatePhoneNumberSchema = z.strictObject({
+    otp: z.string().min(6),
+  });
 }

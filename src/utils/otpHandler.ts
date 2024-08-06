@@ -4,7 +4,7 @@ import { addTime } from './helpers';
 
 export class OTPHandler {
   static async generate(userId: string) {
-    const otpValue = crypto.randomBytes(4).toString('hex');
+    const otpValue = Math.floor(100000 + Math.random() * 900000).toString();
 
     await prisma.oTPS.create({
       data: {
@@ -21,9 +21,10 @@ export class OTPHandler {
     return otpValue;
   }
 
-  static async validateOTP(otpValue: string) {
+  static async validateOTP(userId: string, otpValue: string) {
     const otpRecord = await prisma.oTPS.findUnique({
       where: {
+        userId,
         otp: otpValue,
       },
     });

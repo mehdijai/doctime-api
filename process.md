@@ -18,6 +18,8 @@
   - [x] **TEST** Update Password
   - [x] Update password validation
   - [x] **TEST** Update password validation
+  - [x] Validate Phone Number
+  - [x] **TEST** Validate Phone Number
 - [x] Doctors
   - [x] Create Doctor
   - [x] Validate User type

@@ -7,6 +7,7 @@ export function parseUserPayload(user: User): IUser {
     phone: user.phone,
     name: user.name,
     verifiedEmail: user.verifiedEmail,
+    verifiedPhoneNumber: user.verifiedPhoneNumber,
     userType: user.userType,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,

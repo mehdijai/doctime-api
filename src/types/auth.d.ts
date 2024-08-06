@@ -4,6 +4,7 @@ declare interface IUser {
   phone: string;
   name: string;
   verifiedEmail: boolean;
+  verifiedPhoneNumber: boolean;
   userType: string;
   createdAt: Date;
   updatedAt: Date;

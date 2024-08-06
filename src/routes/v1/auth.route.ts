@@ -128,4 +128,34 @@ AuthRoutes.post(
   }
 );
 
+AuthRoutes.post(
+  '/verify-phone-number',
+  authenticateJWT,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const resBody = await AuthRepository.verifyUserPhoneNumber();
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+AuthRoutes.post(
+  '/confirm-phone-number',
+  authenticateJWT,
+  validate(AuthZODSchema.validatePhoneNumberSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TValidatePhoneNumberSchema = req.body;
+      const resBody = await AuthRepository.confirmUserPhoneNumber(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 export default AuthRoutes;

@@ -8,5 +8,6 @@ declare global {
   type TResetPasswordSchema = z.infer<typeof AuthZODSchema.resetPasswordSchema>;
   type TUpdatePasswordSchema = z.infer<typeof AuthZODSchema.updatePasswordSchema>;
   type TValidateUserSchema = z.infer<typeof AuthZODSchema.validateUserSchema>;
+  type TValidatePhoneNumberSchema = z.infer<typeof AuthZODSchema.validatePhoneNumberSchema>;
   type TRefreshTokenSchema = z.infer<typeof AuthZODSchema.refreshTokenSchema>;
 }
