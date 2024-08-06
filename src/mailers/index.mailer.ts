@@ -1,6 +1,6 @@
 import appConfig from '@/config/app.config';
 import { HBSTemplateManager, HBSTemplates } from '@/services/handlebars.service';
-import { sendEmail } from '@/services/mail.service';
+import { MailerService } from '@/services/mail.service';
 
 export class InternalMailer {
   protected html: string = '';
@@ -25,7 +25,7 @@ export class InternalMailer {
     return this.text;
   }
   async send() {
-    return await sendEmail({
+    return await MailerService.getInstance().sendEmail({
       receivers: this.receivers,
       subject: `${appConfig.apiName} | ${this.subject}`,
       html: this.html,

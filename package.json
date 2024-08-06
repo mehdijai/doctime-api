@@ -20,7 +20,7 @@
     "homepage": "https://github.com/mehdijai/doctime-api",
     "main": "./src/server.ts",
     "scripts": {
-        "dev": "nodemon -w -r tsconfig-paths/register src/server.ts",
+        "dev": "nodemon -r tsconfig-paths/register src/server.ts",
         "start": "node -r tsconfig-paths/register dist/server.js",
         "test": "cross-env STAGE=TEST jest --detectOpenHandles",
         "format": "prettier --write .",
@@ -39,6 +39,7 @@
         ]
     },
     "dependencies": {
+        "@aws-sdk/client-ses": "^3.624.0",
         "@aws-sdk/client-sns": "^3.623.0",
         "@prisma/client": "^5.14.0",
         "bcrypt": "^5.1.1",

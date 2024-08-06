@@ -6,7 +6,7 @@ import AppointmentsRoutes from './appointments.route';
 import appConfig from '@/config/app.config';
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { HBSTemplateManager, HBSTemplates } from '@/services/handlebars.service';
+import { HBSTemplates } from '@/services/handlebars.service';
 import { AccountDeletedMailer } from '@/mailers/account-deleted.mailer';
 import { InternalMailer } from '@/mailers/index.mailer';
 import { ConfirmDeleteMailer } from '@/mailers/confirm-deleting.mailer';

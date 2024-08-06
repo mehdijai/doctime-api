@@ -66,11 +66,11 @@
   - [x] **TEST** Update Appointment
   - [x] Delete Appointment
   - [x] **TEST** Delete Appointment
-- [ ] Mailer
+- [x] Mailer
   - [x] Mailer Service
   - [x] **TEST** Mailer Service
-  - [ ] Mailer Providers
-  - [ ] Testing Mail Independent Provider
+  - [x] Mailer Providers
+  - [x] Testing Mail Independent Provider
   - [x] Emails Templates
   - [x] **TEST** Emails Templates
 - [x] SMS
