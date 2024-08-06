@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { searchPaginationSchema } from '../common/common.schema';
 
 export class DoctorZODSchema {
   static readonly createDoctorSchema = z.strictObject({
@@ -34,6 +35,7 @@ export class DoctorZODSchema {
   });
 
   static readonly searchDoctorSchema = z.strictObject({
+    ...searchPaginationSchema,
     name: z.string().optional(),
     email: z.string().email().optional(),
     phone: z

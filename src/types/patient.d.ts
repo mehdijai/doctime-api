@@ -14,15 +14,6 @@ declare interface IPublicPatient {
   updatedAt: Date;
 }
 
-declare interface ISearchPatient {
-  name?: string;
-  email?: string;
-  phone?: string;
-  birthDate?: Date;
-  gender?: Gender;
-  address?: string;
-}
-
 declare interface IPrivatePatient extends IPublicPatient {
   emergencyContactName: string;
   emergencyContactNumber: string;

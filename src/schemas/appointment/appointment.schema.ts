@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { searchPaginationSchema } from '../common/common.schema';
 
 export class AppointmentZODSchema {
   static readonly createAppointmentSchema = z.strictObject({
@@ -23,6 +24,7 @@ export class AppointmentZODSchema {
   });
 
   static readonly searchAppointmentSchema = z.strictObject({
+    ...searchPaginationSchema,
     patientId: z.string().uuid().optional(),
     doctorId: z.string().uuid().optional(),
     scheduleFrom: z.coerce.date().optional(),

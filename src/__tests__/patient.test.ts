@@ -297,7 +297,7 @@ describe('Test patients api', () => {
     expect(response.body).toBeDefined();
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
-    expect(response.body.data.length).toEqual(0);
+    expect(response.body.data.items.length).toEqual(0);
   });
 
   test('Test link patient to doctor', async () => {
@@ -326,14 +326,14 @@ describe('Test patients api', () => {
     expect(response.body).toBeDefined();
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
-    expect(response.body.data.length).toEqual(1);
-    expect('emergencyContactName' in response.body.data[0]).toEqual(false);
+    expect(response.body.data.items.length).toEqual(1);
+    expect('emergencyContactName' in response.body.data.items[0]).toEqual(false);
   });
 
   test('Test search patients -- Search Name', async () => {
     const response = await request(app)
       .get(patientsBaseRoute + '/')
-      .query({ name: 'Hassan' })
+      .send({ name: 'Hassan' })
       .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
       .set('Accept', 'application/json');
 
@@ -341,7 +341,22 @@ describe('Test patients api', () => {
     expect(response.body).toBeDefined();
     expect(response.body.error).toBeUndefined();
     expect(response.body.data).toBeDefined();
-    expect(response.body.data.length).toEqual(0);
+    expect(response.body.data.items.length).toEqual(0);
+  });
+
+  test('Test search patients -- Pagination', async () => {
+    const response = await request(app)
+      .get(patientsBaseRoute + '/')
+      .send({ take: 0 })
+      .set('Authorization', 'Bearer ' + doctorUserPayload.accessToken)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeDefined();
+    expect(response.body.error).toBeUndefined();
+    expect(response.body.data).toBeDefined();
+    expect(response.body.data.items.length).toEqual(0);
+    expect(response.body.data.total).toEqual(1);
   });
 
   test('Test get patient', async () => {

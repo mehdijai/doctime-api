@@ -24,9 +24,11 @@ export class DoctorRepository extends AuthClass {
     return resBody;
   }
 
-  @apiMethod<IDoctor[]>()
-  static async getDoctors(searchPayload: TSearchDoctorSchema): Promise<ApiResponseBody<IDoctor[]>> {
-    const resBody: ApiResponseBody<IDoctor[]> = (this as any).getResBody();
+  @apiMethod<IPageList<IDoctor>>()
+  static async getDoctors(
+    searchPayload: TSearchDoctorSchema
+  ): Promise<ApiResponseBody<IPageList<IDoctor>>> {
+    const resBody: ApiResponseBody<IPageList<IDoctor>> = (this as any).getResBody();
     const wherePrisma: any = {};
     if (searchPayload.name) {
       if (!wherePrisma['user']) {
@@ -59,24 +61,35 @@ export class DoctorRepository extends AuthClass {
     }
 
     const doctors = await prisma.doctor.findMany({
+      take: searchPayload.take,
+      skip: searchPayload.skip,
       where: wherePrisma,
       include: {
         user: true,
       },
     });
 
-    resBody.data = doctors
-      .filter((doctor) => {
-        if (!searchPayload.nearMe || !searchPayload.nearMe.lat || !searchPayload.nearMe.lng)
-          return true;
-        if (!doctor.mapPosition) return false;
-        return isNearCoordinates(
-          parseCoords(searchPayload.nearMe),
-          JSON.parse(doctor.mapPosition) as ICoordinates,
-          5
-        );
-      })
-      .map((doctor) => parseDoctor(doctor));
+    const count = await prisma.doctor.count({
+      where: wherePrisma,
+    });
+
+    resBody.data = {
+      items: doctors.map((doctor) => parseDoctor(doctor)),
+      total: count,
+    };
+
+    // resBody.data = doctors
+    //   .filter((doctor) => {
+    //     if (!searchPayload.nearMe || !searchPayload.nearMe.lat || !searchPayload.nearMe.lng)
+    //       return true;
+    //     if (!doctor.mapPosition) return false;
+    //     return isNearCoordinates(
+    //       parseCoords(searchPayload.nearMe),
+    //       JSON.parse(doctor.mapPosition) as ICoordinates,
+    //       5
+    //     );
+    //   })
+    //   .map((doctor) => parseDoctor(doctor));
     return resBody;
   }
 

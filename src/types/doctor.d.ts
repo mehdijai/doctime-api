@@ -17,16 +17,3 @@ declare interface IDoctor {
   updatedAt: Date;
   patients?: IPatient[];
 }
-
-declare interface ISearchDoctor {
-  name?: string;
-  email?: string;
-  phone?: string;
-  status?: DoctorStatus;
-  address?: string;
-  nearMe?: {
-    lat: number;
-    lng: number;
-  };
-  specialty?: string;
-}

@@ -16,14 +16,3 @@ declare interface IAppointment {
   createdAt: Date;
   updatedAt: Date;
 }
-
-declare interface ISearchAppointment {
-  doctorId?: string;
-  patientId?: string;
-  scheduleFrom?: Date;
-  scheduleTo?: Date;
-  status?: AppointmentStatus;
-  reason?: string;
-  note?: string;
-  cancellationReason?: string;
-}

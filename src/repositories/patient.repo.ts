@@ -58,12 +58,12 @@ export class PatientRepository extends AuthClass {
   }
 
   @Auth
-  @apiMethod<IPublicPatient[]>()
+  @apiMethod<IPageList<IPublicPatient>>()
   static async getPatients(
     searchPayload: TSearchPatientSchema
-  ): Promise<ApiResponseBody<IPublicPatient[]>> {
+  ): Promise<ApiResponseBody<IPageList<IPublicPatient>>> {
     const userId = this.USER.userId;
-    const resBody: ApiResponseBody<IPublicPatient[]> = (this as any).getResBody();
+    const resBody: ApiResponseBody<IPageList<IPublicPatient>> = (this as any).getResBody();
     const wherePrisma: any = {};
 
     if (searchPayload.name) {
@@ -103,6 +103,8 @@ export class PatientRepository extends AuthClass {
     }
 
     const patients = await prisma.patient.findMany({
+      take: searchPayload.take,
+      skip: searchPayload.skip,
       where: {
         doctors: {
           some: { userId },
@@ -114,7 +116,19 @@ export class PatientRepository extends AuthClass {
       },
     });
 
-    resBody.data = patients.map((patient) => parsePublicPatient(patient));
+    const count = await prisma.patient.count({
+      where: {
+        doctors: {
+          some: { userId },
+        },
+        ...wherePrisma,
+      },
+    });
+
+    resBody.data = {
+      items: patients.map((patient) => parsePublicPatient(patient)),
+      total: count,
+    };
 
     return resBody;
   }

@@ -25,10 +25,10 @@ AppointmentsRoutes.post(
 AppointmentsRoutes.get(
   '/',
   authenticateJWT,
-  validate(AppointmentZODSchema.searchAppointmentSchema, true),
+  validate(AppointmentZODSchema.searchAppointmentSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: TSearchAppointmentSchema = req.query;
+      const body: TSearchAppointmentSchema = req.body;
       const resBody = await AppointmentRepository.getAppointments(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();

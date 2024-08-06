@@ -50,12 +50,12 @@ export class AppointmentRepository extends AuthClass {
   }
 
   @Auth
-  @apiMethod<IAppointment[]>()
+  @apiMethod<IPageList<IAppointment>>()
   static async getAppointments(
     searchPayload: TSearchAppointmentSchema
-  ): Promise<ApiResponseBody<IAppointment[]>> {
+  ): Promise<ApiResponseBody<IPageList<IAppointment>>> {
     const userId = this.USER.userId;
-    const resBody: ApiResponseBody<IAppointment[]> = (this as any).getResBody();
+    const resBody: ApiResponseBody<IPageList<IAppointment>> = (this as any).getResBody();
 
     const wherePrisma: any = {};
 
@@ -104,6 +104,8 @@ export class AppointmentRepository extends AuthClass {
     }
 
     const appointments = await prisma.appointment.findMany({
+      take: searchPayload.take,
+      skip: searchPayload.skip,
       where: {
         OR: [
           {
@@ -133,7 +135,29 @@ export class AppointmentRepository extends AuthClass {
       },
     });
 
-    resBody.data = appointments.map((appointment) => parseAppointment(appointment));
+    const count = await prisma.appointment.count({
+      where: {
+        OR: [
+          {
+            doctor: {
+              userId,
+            },
+          },
+          {
+            patient: {
+              userId,
+            },
+          },
+        ],
+        ...wherePrisma,
+      },
+    });
+
+    resBody.data = {
+      items: appointments.map((appointment) => parseAppointment(appointment)),
+      total: count,
+    };
+
     return resBody;
   }
 

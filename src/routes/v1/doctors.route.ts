@@ -25,10 +25,10 @@ DoctorsRoutes.post(
 DoctorsRoutes.get(
   '/',
   authenticateJWT,
-  validate(DoctorZODSchema.searchDoctorSchema, true),
+  validate(DoctorZODSchema.searchDoctorSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: TSearchDoctorSchema = req.query;
+      const body: TSearchDoctorSchema = req.body;
       const resBody = await DoctorRepository.getDoctors(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();

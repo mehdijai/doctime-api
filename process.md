@@ -85,4 +85,4 @@
   - [ ] Create Permissions
   - [x] Confirm deletion
   - [ ] 2FA Guards
-- [ ] Implement Pagination
+- [x] Implement Pagination

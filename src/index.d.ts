@@ -22,4 +22,9 @@ declare global {
     lat: number;
     lng: number;
   }
+
+  declare interface IPageList<T> {
+    items: T[];
+    total: number;
+  }
 }
