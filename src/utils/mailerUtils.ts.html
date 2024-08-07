@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.63% </span>
+                <span class="strong">89.13% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>39/44</span>
+                <span class='fraction'>41/46</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.58% </span>
+                <span class="strong">72.72% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>45/62</span>
+                <span class='fraction'>48/66</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">92.1% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/36</span>
+                <span class='fraction'>35/38</span>
             </div>
         
             
@@ -85,50 +85,62 @@
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-yes">42x</span>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">56x</span>
+<span class="cline-any cline-yes">56x</span>
+<span class="cline-any cline-yes">56x</span>
+<span class="cline-any cline-yes">56x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">56x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span></td><td class="text"><pre class="prettyprint lang-js">import appConfig from '@/config/app.config';
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">56x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import appConfig from '@/config/app.config';
 import { load } from 'cheerio';
 impo<span class="missing-if-branch" title="else path not taken" >E</span>rt * as nodemailer from 'nodemailer';
 import { NodemailerMock } from 'nodemailer-mock';
-impo<span class="missing-if-branch" title="else path not taken" >E</span>rt { logger } from './winston'<span class="branch-0 cbranch-no" title="branch not covered" >;<span class="branch-1 cbranch-no" title="branch not covered" ></span></span>
-const { mock } = nodemailer as unknown as NodemailerMock;
+cons<span class="missing-if-branch" title="else path not taken" >E</span>t { mock } = nodemailer as unk<span class="branch-0 cbranch-no" title="branch not covered" >nown as Nodema</span>ilerMock;<span class="branch-1 cbranch-no" title="branch not covered" ></span>
 &nbsp;
-export function getTokenFromMail(html: string) {
-  cons<span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" >t </span>$ = load(html);</span>
-  co<span class="cstat-no" title="statement not covered" >nst link = $('#token-l<span class="cstat-no" title="statement not covered" >ink').at</span></span>tr('href');
-  co<span class="cstat-no" title="statement not covered" >nst parts = li</span>nk?.split('/') ?? [];
-  return parts[parts.length - 1];
+export function getTokenFromMail(html: string, otp = false) {
+  const $ = load(html);
+<span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" ></span></span>
+  if<span class="cstat-no" title="statement not covered" > (otp) {<span class="cstat-no" title="statement not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >    return $('#otp</span>').text().trim();
+  }
+&nbsp;
+  const link = $('#token-link').attr('href');
+  con<span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" >st</span> parts = link?.split('/') ?? [];</span>
+  re<span class="cstat-no" title="statement not covered" >turn parts[parts.l</span>ength - 1];
 }
 &nbsp;
-expor<span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" >t </span>function testEmails(subject: string) {</span>
-  co<span class="cstat-no" title="statement not covered" >nst sentEmails = m</span>ock.getSentMail();
-  const email = sentEmails.find((email) =&gt; email.subject === `${appConfig.apiName} | ${subject}`);
+expo<span class="missing-if-branch" title="if path not taken" >I</span>rt function testEmails(subj<span class="cstat-no" title="statement not covered" >ect: string,</span> otp = false) {
+  const sentEmails = mock.getSentMail();
+  co<span class="missing-if-branch" title="else path not taken" >E</span>nst email = sentEmails.find((email) <span class="missing-if-branch" title="else path not taken" >E</span>=&gt; email.subject === `${appConfig.appName} | ${subject}`);
   expect(email).toBeDefined();
-  co<span class="missing-if-branch" title="if path not taken" >I</span>nst token = getTokenFromMai<span class="cstat-no" title="statement not covered" >l(email?.htm</span>l?.toString() ?? '');
+  const token = getTokenFromMail(email?.html?.toString() ?? '', otp);
   expect(token).toBeDefined();
-  re<span class="missing-if-branch" title="else path not taken" >E</span>turn token;<span class="missing-if-branch" title="else path not taken" >E</span>
-}
+  return token;
+}<span class="branch-1 cbranch-no" title="branch not covered" ></span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -136,7 +148,7 @@ expor<span class="fstat-no" title="function not covered" ><span class="branch-1 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-06T21:22:38.157Z
+                at 2024-08-07T20:00:21.838Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
