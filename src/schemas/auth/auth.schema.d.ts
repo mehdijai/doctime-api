@@ -10,4 +10,6 @@ declare global {
   type TValidateUserSchema = z.infer<typeof AuthZODSchema.validateUserSchema>;
   type TValidateOTPSchema = z.infer<typeof AuthZODSchema.validateOTPSchema>;
   type TRefreshTokenSchema = z.infer<typeof AuthZODSchema.refreshTokenSchema>;
+  type TSendMFARequestSchema = z.infer<typeof AuthZODSchema.sendMFARequestSchema>;
+  type TConfirmMFASchema = z.infer<typeof AuthZODSchema.confirmMFASchema>;
 }

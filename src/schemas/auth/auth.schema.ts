@@ -42,4 +42,14 @@ export class AuthZODSchema {
   static readonly validateOTPSchema = z.strictObject({
     otp: z.string().min(6),
   });
+
+  static readonly sendMFARequestSchema = z.strictObject({
+    userId: z.string().uuid(),
+    method: z.enum(['phone', 'email']),
+  });
+
+  static readonly confirmMFASchema = z.strictObject({
+    userId: z.string().uuid(),
+    otp: z.string().min(6),
+  });
 }

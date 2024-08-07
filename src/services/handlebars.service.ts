@@ -13,6 +13,8 @@ export enum HBSTemplates {
   PASSWORD_UPDATED = 'PASSWORD_UPDATED',
   RESET_PASSWORD = 'RESET_PASSWORD',
   UPDATE_PASSWORD = 'UPDATE_PASSWORD',
+  MFA_EMAIL = 'MFA_EMAIL',
+  OTP_SMS = 'OTP_SMS',
 }
 
 /**
@@ -27,49 +29,51 @@ export enum HBSTemplates {
  * const htmlContent = _template.getHTMLTemplate()
  */
 export class HBSTemplateManager {
-  private corePath: string;
+  private corePath?: string;
   private templatePath: string;
   private templateTextPath: string;
   private htmlContent?: string = undefined;
   private txtContent?: string = undefined;
+  private hasOnlyTxt: boolean = false;
 
   constructor(private template: HBSTemplates) {
     const templateConfig = templatesConfigs.templateConfig[this.template];
-    this.corePath = this._resolvePaths(templateConfig.core);
+    this.hasOnlyTxt = templateConfig.onlyTXT || false;
+    if (templateConfig.core) this.corePath = this._resolvePaths(templateConfig.core);
     this.templatePath = this._resolvePaths(templateConfig.path);
     this.templateTextPath = this._resolvePaths(templateConfig.path, true);
   }
 
   async parseTemplate<T = Record<string, any>>(data: T) {
     await this._parseTextContent(data);
+    if (this.hasOnlyTxt) {
+      return;
+    }
     const htmlTemplate = await readFile(this.templatePath, 'utf-8');
     const compiledTemplate = compile(htmlTemplate);
     const htmlContent = compiledTemplate({
       appName: appConfig.appName,
       ...data,
     });
-    const cssInlined = await InlineCss(htmlContent, {
-      url: 'file://' + this.templatePath,
-      removeHtmlSelectors: false,
-      removeLinkTags: true,
-      removeStyleTags: true,
-    });
 
-    const htmlCoreTemplate = await readFile(this.corePath, 'utf-8');
-    const compiledCoreTemplate = compile(htmlCoreTemplate, {
-      noEscape: true,
-    });
-    const htmlCoreContent = compiledCoreTemplate({
-      content: cssInlined,
-    });
-    const cssCoreInlined = await InlineCss(htmlCoreContent, {
-      url: 'file://' + this.corePath,
-      removeHtmlSelectors: false,
-      removeLinkTags: true,
-      removeStyleTags: true,
-    });
-
-    this.htmlContent = await this._resolveImagePaths(cssCoreInlined);
+    if (this.corePath) {
+      const htmlCoreTemplate = await readFile(this.corePath, 'utf-8');
+      const compiledCoreTemplate = compile(htmlCoreTemplate, {
+        noEscape: true,
+      });
+      const htmlCoreContent = compiledCoreTemplate({
+        content: htmlContent,
+      });
+      const cssCoreInlined = await InlineCss(htmlCoreContent, {
+        url: 'file://' + this.corePath,
+        removeHtmlSelectors: false,
+        removeLinkTags: true,
+        removeStyleTags: true,
+      });
+      this.htmlContent = await this._resolveImagePaths(cssCoreInlined);
+    } else {
+      this.htmlContent = await this._resolveImagePaths(htmlContent);
+    }
   }
 
   private async _parseTextContent<T = Record<string, any>>(data: T) {

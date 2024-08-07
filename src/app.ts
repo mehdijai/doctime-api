@@ -42,6 +42,39 @@ app.all('*', (_, res: Response, next: NextFunction) => {
   res.status(HttpStatusCode.NOT_FOUND).json(resBody);
   next();
 });
+// interface RouteInfo {
+//   path: string;
+//   methods: string;
+// }
+// function cleanPath(regexPath: string): string {
+//   return regexPath
+//     .replace(/\^\\\//g, '/') // Remove the initial ^\/
+//     .replace(/\\\/\?\(\?=\.\*\$\)/g, '') // Remove trailing ?(?=.*$)
+//     .replace(/\\\//g, '/') // Replace escaped slashes with regular slashes
+//     .replace(/\(\?:\(\[\^\\\/]\+\?\(\?:\\\/\)\?\)\)/g, ':id') // Convert named params like (?:([^\/]+?)(?:\/)?) to :id
+//     .replace("/?(?=/|$)", '') // Remove trailing ?(?=.*$)
+// }
+
+// function getRoutes(stack: any[], parentPath = ''): RouteInfo[] {
+//   const routes: RouteInfo[] = [];
+//   stack.forEach((middleware) => {
+//     if (middleware.route) {
+//       // Routes registered directly on the app
+//       const methods = Object.keys(middleware.route.methods).join(', ').toUpperCase();
+//       routes.push({ path: parentPath + middleware.route.path, methods });
+//     } else if (middleware.name === 'router') {
+//       // Routes added via router middleware
+//       const nestedPath = cleanPath(middleware.regexp.source);
+//       routes.push(...getRoutes(middleware.handle.stack, parentPath + nestedPath));
+//     }
+//   });
+//   return routes;
+// }
+
+// const routes = getRoutes(app._router.stack);
+// routes.forEach((route) => {
+//   console.log(`${route.methods}: ${route.path}`);
+// });
 
 // Graceful shutdown
 process.on('SIGINT', async () => {

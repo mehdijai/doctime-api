@@ -1,5 +1,5 @@
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { ApiResponseBody } from '@/utils/responseHandler';
+import { APIError, ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
 import { logger } from '@/utils/winston';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
@@ -32,6 +32,11 @@ export function apiMethod<T>() {
               message: String(err),
             };
           }
+        } else if (err instanceof APIError) {
+          resBody.error = {
+            code: err.code,
+            message: err.message,
+          };
         } else {
           resBody.error = {
             code: HttpStatusCode.INTERNAL_SERVER_ERROR,

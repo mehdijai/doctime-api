@@ -45,3 +45,11 @@ export function parseStrPeriod(timePeriod: string) {
 
   return { value, unit };
 }
+
+export const TimeMap: Record<TimeUnit, string> = {
+  ms: 'milliseconds',
+  s: 'seconds',
+  m: 'minutes',
+  h: 'hours',
+  d: 'days',
+};

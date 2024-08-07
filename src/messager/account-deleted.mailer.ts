@@ -1,7 +1,7 @@
 import { HBSTemplates } from '@/services/handlebars.service';
-import { InternalMailer } from './index.mailer';
+import { InternalMessager } from './index.mailer';
 
-export class AccountDeletedMailer extends InternalMailer {
+export class AccountDeletedMailer extends InternalMessager {
   constructor(protected receivers: string[]) {
     super(receivers, 'Profile deleted!');
   }

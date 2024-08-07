@@ -7,23 +7,27 @@ import appConfig from '@/config/app.config';
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { HBSTemplates } from '@/services/handlebars.service';
-import { AccountDeletedMailer } from '@/mailers/account-deleted.mailer';
-import { InternalMailer } from '@/mailers/index.mailer';
-import { ConfirmDeleteMailer } from '@/mailers/confirm-deleting.mailer';
-import { VerifyEmailMailer } from '@/mailers/verify-email.mailer';
-import { PasswordUpdatedMailer } from '@/mailers/password-updated.mailer';
-import { ResetPasswordMailer } from '@/mailers/reset-password.mailer';
-import { UpdatePasswordMailer } from '@/mailers/update-password.mailer';
+import { AccountDeletedMailer } from '@/messager/account-deleted.mailer';
+import { InternalMessager } from '@/messager/index.mailer';
+import { ConfirmDeleteMailer } from '@/messager/confirm-deleting.mailer';
+import { VerifyEmailMailer } from '@/messager/verify-email.mailer';
+import { PasswordUpdatedMailer } from '@/messager/password-updated.mailer';
+import { ResetPasswordMailer } from '@/messager/reset-password.mailer';
+import { UpdatePasswordMailer } from '@/messager/update-password.mailer';
 import { requireVerifiedEmail } from '@/middlewares/requireVerifiedEmail.middleware';
 import { requireVerifiedPhone } from '@/middlewares/requireVerifiedPhone.middleware';
+import mailConfig, { ProvidersList } from '@/config/mail.config';
 const routes = Router();
 
 routes.get('/mailer/:type', async (req: Request, res: Response, next) => {
   const mailType: HBSTemplates = req.params.type as HBSTemplates;
   const contentType = req.header('accept');
 
-  let content = '';
-  let _mailer: InternalMailer;
+  let htmlContent = '';
+  let txtContent = '';
+  let _mailer: InternalMessager;
+
+  mailConfig.selectedProvider = ProvidersList.SMTP;
 
   switch (mailType) {
     case HBSTemplates.ACCOUNT_DELETED:
@@ -46,16 +50,19 @@ routes.get('/mailer/:type', async (req: Request, res: Response, next) => {
       break;
     case HBSTemplates.UPDATE_PASSWORD:
       _mailer = await new UpdatePasswordMailer(['user@mail.com']).generate({});
+      htmlContent = _mailer.getTEXT();
+      txtContent = _mailer.getHTML();
       break;
   }
 
+  mailConfig.selectedProvider = ProvidersList.SES;
+
   if (contentType === 'text/plain') {
-    content = _mailer.getTEXT();
+    res.status(HttpStatusCode.OK).send(txtContent);
   } else {
-    content = _mailer.getHTML();
+    res.status(HttpStatusCode.OK).send(htmlContent);
   }
 
-  res.status(HttpStatusCode.OK).send(content);
   next();
 });
 

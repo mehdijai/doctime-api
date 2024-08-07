@@ -23,6 +23,36 @@ AuthRoutes.post(
 );
 
 AuthRoutes.post(
+  '/send-mfa-request',
+  validate(AuthZODSchema.sendMFARequestSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TSendMFARequestSchema = req.body;
+      const resBody = await AuthRepository.sendMFARequest(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+AuthRoutes.post(
+  '/confirm-mfa-request',
+  validate(AuthZODSchema.confirmMFASchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TConfirmMFASchema = req.body;
+      const resBody = await AuthRepository.confirmMFARequest(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+AuthRoutes.post(
   '/refresh-token',
   validate(AuthZODSchema.refreshTokenSchema),
   async (req: Request, res: Response, next: NextFunction) => {
@@ -131,9 +161,9 @@ AuthRoutes.post(
 AuthRoutes.post(
   '/verify-phone-number',
   authenticateJWT,
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (_: Request, res: Response, next: NextFunction) => {
     try {
-      const resBody = await AuthRepository.send2faOtp();
+      const resBody = await AuthRepository.verifyUserPhoneNumber();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -161,11 +191,13 @@ AuthRoutes.post(
 // 2FA
 
 AuthRoutes.post(
-  '/send-verification-otp',
+  '/confirm-verification-otp',
   authenticateJWT,
+  validate(AuthZODSchema.validateOTPSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const resBody = await AuthRepository.send2faOtp();
+      const body: TValidateOTPSchema = req.body;
+      const resBody = await AuthRepository.confirm2faOtp(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -175,13 +207,25 @@ AuthRoutes.post(
 );
 
 AuthRoutes.post(
-  '/confirm-verification-otp',
+  '/enable-mfa',
   authenticateJWT,
-  validate(AuthZODSchema.validateOTPSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (_: Request, res: Response, next: NextFunction) => {
     try {
-      const body: TValidateOTPSchema = req.body;
-      const resBody = await AuthRepository.confirm2faOtp(body);
+      const resBody = await AuthRepository.enableMFA();
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+AuthRoutes.post(
+  '/disable-mfa',
+  authenticateJWT,
+  async (_: Request, res: Response, next: NextFunction) => {
+    try {
+      const resBody = await AuthRepository.enableMFA();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {

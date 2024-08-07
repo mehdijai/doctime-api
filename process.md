@@ -22,6 +22,8 @@
   - [x] **TEST** Validate Phone Number
   - [x] 2FA
   - [x] **TEST** 2FA
+  - [x] MFA Auth
+  - [x] **TEST** MFA Auth
 - [x] Doctors
   - [x] Create Doctor
   - [x] Validate User type

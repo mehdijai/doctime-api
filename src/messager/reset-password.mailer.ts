@@ -1,7 +1,7 @@
 import { HBSTemplates } from '@/services/handlebars.service';
-import { InternalMailer } from './index.mailer';
+import { InternalMessager } from './index.mailer';
 
-export class ResetPasswordMailer extends InternalMailer {
+export class ResetPasswordMailer extends InternalMessager {
   constructor(protected receivers: string[]) {
     super(receivers, 'Reset Password');
   }

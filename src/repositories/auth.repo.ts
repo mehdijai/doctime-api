@@ -2,20 +2,21 @@ import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { generateAccessToken, generateRefreshToken } from '@/utils/jwtHandler';
 import { ApiResponseBody, ResponseHandler } from '@/utils/responseHandler';
 import { logger } from '@/utils/winston';
-import { User } from '@prisma/client';
+import { Otps, User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '@/services/prisma.service';
-import appConfig, { parseStrPeriod } from '@/config/app.config';
+import appConfig, { parseStrPeriod, TimeMap } from '@/config/app.config';
 import { addTime } from '@/utils/helpers';
 import { apiMethod } from '@/decorators/api.decorator';
 import { Auth, AuthClass } from '@/decorators/auth.decorator';
-import { VerifyEmailMailer } from '@/mailers/verify-email.mailer';
-import { UpdatePasswordMailer } from '@/mailers/update-password.mailer';
-import { ResetPasswordMailer } from '@/mailers/reset-password.mailer';
+import { VerifyEmailMailer } from '@/messager/verify-email.mailer';
+import { UpdatePasswordMailer } from '@/messager/update-password.mailer';
+import { ResetPasswordMailer } from '@/messager/reset-password.mailer';
 import { OTPHandler } from '@/utils/otpHandler';
-import { sendSMS } from '@/services/sms.service';
 import { parseUserPayload } from '@/utils/parsers';
+import { MFAEmailMailer } from '@/messager/mfa-email.mailer';
+import { MFAMessageMailer } from '@/messager/mfa-sms.sms';
 
 export class AuthRepository extends AuthClass {
   @apiMethod<IAuthResponse>()
@@ -34,6 +35,14 @@ export class AuthRepository extends AuthClass {
     const isValidPassword = await bcrypt.compare(payload.password, user.password);
 
     if (isValidPassword) {
+      if (user.enableMFA) {
+        resBody.data = {
+          mfa: true,
+          user: parseUserPayload(user),
+        };
+
+        return resBody;
+      }
       const token = generateAccessToken(user.id);
       const refreshToken = generateRefreshToken();
       await prisma.refreshToken.create({
@@ -59,6 +68,81 @@ export class AuthRepository extends AuthClass {
     } else {
       return ResponseHandler.Unauthorized('Password not match');
     }
+  }
+
+  @apiMethod<IAuthResponse>()
+  static async sendMFARequest(
+    payload: TSendMFARequestSchema
+  ): Promise<ApiResponseBody<IStatusResponse>> {
+    const resBody: ApiResponseBody<IStatusResponse> = (this as any).getResBody();
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: payload.userId,
+      },
+      include: {
+        otp: true,
+      },
+    });
+
+    if (!user) {
+      return ResponseHandler.NotFound('User not found');
+    }
+
+    if (user.enableMFA === false) {
+      return ResponseHandler.BadRequest('MFA is not enabled for this user');
+    }
+
+    resBody.data = await this.sendMFAOtp(user, payload);
+
+    return resBody;
+  }
+
+  @apiMethod<IAuthResponse>()
+  static async confirmMFARequest(
+    payload: TConfirmMFASchema
+  ): Promise<ApiResponseBody<IAuthResponse>> {
+    const resBody = (this as any).getResBody();
+
+    const isValidOTP = await OTPHandler.validateOTP(payload.userId, payload.otp);
+
+    if (!isValidOTP) {
+      return ResponseHandler.Forbidden('Invalid or expired OTP');
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: payload.userId,
+      },
+    });
+
+    if (!user) {
+      return ResponseHandler.NotFound('User not found');
+    }
+
+    const token = generateAccessToken(payload.userId);
+    const refreshToken = generateRefreshToken();
+    await prisma.refreshToken.create({
+      data: {
+        token: refreshToken,
+        userId: payload.userId,
+        expiresAt: addTime(30, 'd'),
+      },
+    });
+
+    const accessToken = {
+      token: token,
+      refreshToken: refreshToken,
+    };
+
+    const responseData = {
+      accessToken: accessToken,
+      user: parseUserPayload(user),
+    };
+
+    resBody.data = responseData;
+
+    return resBody;
   }
 
   @apiMethod<IRefreshTokenResponse>()
@@ -154,7 +238,7 @@ export class AuthRepository extends AuthClass {
           verificationLink: `${process.env.RESET_PASSWORD_UI_URL}/${token}`,
         })
         .then((instance) => {
-          instance.send();
+          instance.sendEmail();
         });
     }
 
@@ -337,12 +421,14 @@ export class AuthRepository extends AuthClass {
 
   @Auth
   @apiMethod<IStatusResponse>()
-  static async send2faOtp(): Promise<ApiResponseBody<IStatusResponse>> {
+  static async verifyUserPhoneNumber(): Promise<ApiResponseBody<IStatusResponse>> {
     const resBody = (this as any).getResBody();
     const userId = this.USER.userId;
 
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: {
+        id: userId,
+      },
       include: {
         otp: true,
       },
@@ -352,59 +438,13 @@ export class AuthRepository extends AuthClass {
       return ResponseHandler.NotFound('User not found');
     }
 
-    if (user.otp && user.otp.expiresAt > new Date()) {
-      const throttleTimePeriod = parseStrPeriod(appConfig.mfa.otp.throttle);
-      if (
-        addTime(throttleTimePeriod.value, throttleTimePeriod.unit, user.otp.createdAt) < new Date()
-      ) {
-        // Resend
-        await prisma.otps.delete({
-          where: {
-            id: user.otp.id,
-          },
-        });
-
-        const otpToken = await OTPHandler.generate(userId);
-
-        if (process.env.STAGE !== 'TEST') {
-          await sendSMS({
-            phoneNumber: user.phone,
-            message: `Your verification code is ${otpToken}`,
-          });
-
-          resBody.data = {
-            status: true,
-          };
-        } else {
-          resBody.data = {
-            status: true,
-            otp: otpToken,
-          };
-        }
-      }
-    } else {
-      const otpToken = await OTPHandler.generate(userId);
-
-      if (process.env.STAGE !== 'TEST') {
-        await sendSMS({
-          phoneNumber: user.phone,
-          message: `Your verification code is ${otpToken}`,
-        });
-
-        resBody.data = {
-          status: true,
-        };
-      } else {
-        resBody.data = {
-          status: true,
-          otp: otpToken,
-        };
-      }
-    }
+    resBody.data = await this.sendMFAOtp(user, {
+      method: 'phone',
+      userId: userId,
+    });
 
     return resBody;
   }
-
   @Auth
   @apiMethod<IStatusResponse>()
   static async confirmUserPhoneNumber(
@@ -456,6 +496,165 @@ export class AuthRepository extends AuthClass {
     return resBody;
   }
 
+  @Auth
+  @apiMethod<IStatusResponse>()
+  static async enableMFA(): Promise<ApiResponseBody<IStatusResponse>> {
+    const resBody: ApiResponseBody<IStatusResponse> = (this as any).getResBody();
+    const userId = this.USER.userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return ResponseHandler.NotFound('User not found');
+    }
+
+    if (!user.verifiedEmail) {
+      return ResponseHandler.Unauthorized('Email must be verified first');
+    }
+
+    if (!user.verifiedPhoneNumber) {
+      return ResponseHandler.Unauthorized('Phone number must be verified first');
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        enableMFA: true,
+      },
+    });
+
+    resBody.data = {
+      status: true,
+    };
+
+    return resBody;
+  }
+
+  @Auth
+  @apiMethod<IStatusResponse>()
+  static async disableMFA(): Promise<ApiResponseBody<IStatusResponse>> {
+    const resBody: ApiResponseBody<IStatusResponse> = (this as any).getResBody();
+    const userId = this.USER.userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return ResponseHandler.NotFound('User not found');
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        enableMFA: false,
+      },
+    });
+
+    resBody.data = {
+      status: true,
+    };
+
+    return resBody;
+  }
+
+  private static async sendEmailMFAVerification(user: User) {
+    const otpToken = await OTPHandler.generate(user.id);
+
+    new MFAEmailMailer(user.email)
+      .generate({
+        name: user.name,
+        OTP: otpToken,
+        validationPeriod: `${parseStrPeriod(appConfig.mfa.otp.expirationPeriod).value} ${TimeMap[parseStrPeriod(appConfig.mfa.otp.expirationPeriod).unit]}`,
+      })
+      .then((instance) => {
+        instance.sendEmail();
+      })
+      .catch((err) => {
+        logger.error(err);
+      });
+
+    return {
+      status: true,
+    };
+  }
+  private static async sendPhoneMFAVerification(user: User) {
+    const otpToken = await OTPHandler.generate(user.id);
+
+    if (process.env.STAGE !== 'TEST') {
+      new MFAMessageMailer(user.phone)
+        .generate({
+          name: user.name,
+          OTP: otpToken,
+          validationPeriod: `${parseStrPeriod(appConfig.mfa.otp.expirationPeriod).value} ${TimeMap[parseStrPeriod(appConfig.mfa.otp.expirationPeriod).unit]}`,
+        })
+        .then((instance) => {
+          instance.sendSMS();
+        })
+        .catch((err) => {
+          logger.error(err);
+        });
+
+      return {
+        status: true,
+      };
+    } else {
+      return {
+        status: true,
+        otp: otpToken,
+      };
+    }
+  }
+
+  private static async sendMFAOtp(
+    user: User & { otp: Otps | null },
+    { method }: TSendMFARequestSchema
+  ) {
+    if (user.otp && user.otp.expiresAt < new Date()) {
+      const throttleTimePeriod = parseStrPeriod(appConfig.mfa.otp.throttle);
+      if (
+        addTime(throttleTimePeriod.value, throttleTimePeriod.unit, user.otp.createdAt) < new Date()
+      ) {
+        // Resend
+        await prisma.otps.delete({
+          where: {
+            id: user.otp.id,
+          },
+        });
+
+        switch (method) {
+          case 'email':
+            return await this.sendEmailMFAVerification(user);
+          case 'phone':
+            return await this.sendPhoneMFAVerification(user);
+        }
+      }
+    } else {
+      if (user.otp && user.otp.expiresAt > new Date()) {
+        await prisma.otps.delete({
+          where: {
+            id: user.otp.id,
+          },
+        });
+      }
+      switch (method) {
+        case 'email':
+          return await this.sendEmailMFAVerification(user);
+        case 'phone':
+          return await this.sendPhoneMFAVerification(user);
+      }
+    }
+    return {
+      status: true,
+    };
+  }
+
   private static async sendEmailVerification(user: User) {
     try {
       const token = uuidv4();
@@ -474,7 +673,7 @@ export class AuthRepository extends AuthClass {
           verificationLink: `${process.env.VERIFY_EMAIL_UI_URL}/${token}`,
         })
         .then((instance) => {
-          instance.send();
+          instance.sendEmail();
         });
     } catch (err) {
       logger.error({ message: 'Send Email Verification Error:', error: err });
@@ -502,7 +701,7 @@ export class AuthRepository extends AuthClass {
           verificationLink: `${process.env.CONFIRM_UPDATE_PASSWORD_EMAIL_UI_URL}/${token}`,
         })
         .then((instance) => {
-          instance.send();
+          instance.sendEmail();
         });
     } catch (err) {
       logger.error({ message: 'Send password update Email Error:', error: err });

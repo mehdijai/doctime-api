@@ -2,10 +2,42 @@ import HttpStatusCode from './HTTPStatusCodes';
 
 export class ApiResponseBody<T = undefined> {
   error?: {
-    code: number;
+    code: HttpStatusCode;
     message: string;
   };
   data?: T;
+}
+
+export class APIError extends Error {
+  code: number;
+
+  constructor(code: HttpStatusCode, message: string) {
+    super(message);
+    this.code = code;
+
+    // Set the prototype explicitly.
+    Object.setPrototypeOf(this, APIError.prototype);
+  }
+
+  toString() {
+    return `Error ${this.code}: ${this.message}`;
+  }
+}
+
+export class NotFoundError extends APIError {
+  constructor(message: string) {
+    super(HttpStatusCode.NOT_FOUND, message);
+  }
+}
+export class UnauthorizedError extends APIError {
+  constructor(message: string) {
+    super(HttpStatusCode.UNAUTHORIZED, message);
+  }
+}
+export class ForbiddenError extends APIError {
+  constructor(message: string) {
+    super(HttpStatusCode.FORBIDDEN, message);
+  }
 }
 
 export class ResponseHandler {

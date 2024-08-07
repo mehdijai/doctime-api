@@ -21,6 +21,7 @@ model User {
   password             String
   verifiedEmail        Boolean               @default(false)
   verifiedPhoneNumber  Boolean               @default(false)
+  enableMFA            Boolean               @default(false)
   userType             UserType
   patient              Patient?
   doctor               Doctor?

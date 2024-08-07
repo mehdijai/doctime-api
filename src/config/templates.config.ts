@@ -1,8 +1,9 @@
 import { HBSTemplates } from '@/services/handlebars.service';
 
 interface ITemplateBaseConfig {
-  core: string;
+  core?: string;
   path: string;
+  onlyTXT?: boolean;
 }
 
 interface ITemplateConfig {
@@ -34,6 +35,14 @@ const templatesConfigs: ITemplateConfig = {
     PASSWORD_UPDATED: {
       path: 'emails.auth.password-updated',
       core: 'emails.core',
+    },
+    MFA_EMAIL: {
+      path: 'emails.auth.mfa-email',
+      core: 'emails.core',
+    },
+    OTP_SMS: {
+      path: 'sms.auth.otp-message',
+      onlyTXT: true,
     },
   },
 };

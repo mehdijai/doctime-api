@@ -1,7 +1,7 @@
 import { HBSTemplates } from '@/services/handlebars.service';
-import { InternalMailer } from './index.mailer';
+import { InternalMessager } from './index.mailer';
 
-export class UpdatePasswordMailer extends InternalMailer {
+export class UpdatePasswordMailer extends InternalMessager {
   constructor(protected receivers: string[]) {
     super(receivers, 'Update Password');
   }

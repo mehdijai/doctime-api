@@ -89,7 +89,6 @@ export class MailerService {
 
     try {
       const result = await sesClient.send(sendEmailCommand);
-      console.log('result', result);
       return result;
     } catch (caught) {
       if (caught instanceof Error && caught.name === 'MessageRejected') {

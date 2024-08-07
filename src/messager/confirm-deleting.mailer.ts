@@ -1,7 +1,7 @@
 import { HBSTemplates } from '@/services/handlebars.service';
-import { InternalMailer } from './index.mailer';
+import { InternalMessager } from './index.mailer';
 
-export class ConfirmDeleteMailer extends InternalMailer {
+export class ConfirmDeleteMailer extends InternalMessager {
   constructor(protected receivers: string[]) {
     super(receivers, 'Confirm deleting profile');
   }

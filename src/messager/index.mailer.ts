@@ -1,8 +1,8 @@
 import appConfig from '@/config/app.config';
 import { HBSTemplateManager, HBSTemplates } from '@/services/handlebars.service';
 import { MailerService } from '@/services/mail.service';
-
-export class InternalMailer {
+import { sendSMS } from '@/services/sms.service';
+export class InternalMessager {
   protected html: string = '';
   protected text: string = '';
 
@@ -24,12 +24,18 @@ export class InternalMailer {
   getTEXT() {
     return this.text;
   }
-  async send() {
+  async sendEmail() {
     return await MailerService.getInstance().sendEmail({
       receivers: this.receivers,
-      subject: `${appConfig.apiName} | ${this.subject}`,
+      subject: `${appConfig.appName} | ${this.subject}`,
       html: this.html,
       text: this.text,
+    });
+  }
+  async sendSMS() {
+    return sendSMS({
+      phoneNumber: this.receivers[0],
+      message: this.text,
     });
   }
 }

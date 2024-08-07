@@ -1,5 +1,5 @@
 import { AuthFacade } from '@/facades/auth.facade';
-import { ConfirmDeleteMailer } from '@/mailers/confirm-deleting.mailer';
+import { ConfirmDeleteMailer } from '@/messager/confirm-deleting.mailer';
 import prisma from '@/services/prisma.service';
 import { addTime } from '@/utils/helpers';
 import { logger } from '@/utils/winston';
@@ -40,7 +40,7 @@ export class AuthClass {
         name: user.name,
         verificationLink: `${process.env.DELETE_PROFILE_UI_URL}/${token}`,
       });
-      await _mailer.send();
+      await _mailer.sendEmail();
     } catch (err) {
       logger.error({ message: 'Send Email Verification Error:', error: err });
     }
