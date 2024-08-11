@@ -1,7 +1,9 @@
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
+import { checkPermission } from '@/middlewares/permission.middleware';
 import { validate } from '@/middlewares/validateRequest.middleware';
 import { DoctorRepository } from '@/repositories/doctor.repo';
 import { DoctorZODSchema } from '@/schemas/doctor/doctor.schema';
+import { PermissionModel, PermissionVerb } from '@/services/permissions.service';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { NextFunction, Request, Response, Router } from 'express';
 
@@ -10,6 +12,7 @@ const DoctorsRoutes = Router();
 DoctorsRoutes.post(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.DOCTOR, PermissionVerb.CREATE),
   validate(DoctorZODSchema.createDoctorSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -25,6 +28,7 @@ DoctorsRoutes.post(
 DoctorsRoutes.get(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.DOCTOR, PermissionVerb.READ),
   validate(DoctorZODSchema.searchDoctorSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -39,6 +43,7 @@ DoctorsRoutes.get(
 );
 DoctorsRoutes.get(
   '/:docId',
+  checkPermission(PermissionModel.DOCTOR, PermissionVerb.READ),
   authenticateJWT,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -54,6 +59,7 @@ DoctorsRoutes.get(
 DoctorsRoutes.put(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.DOCTOR, PermissionVerb.UPDATE),
   validate(DoctorZODSchema.updateDoctorSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -69,6 +75,7 @@ DoctorsRoutes.put(
 DoctorsRoutes.delete(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.DOCTOR, PermissionVerb.DELETE),
   validate(DoctorZODSchema.deleteDoctorSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -85,6 +92,7 @@ DoctorsRoutes.delete(
 DoctorsRoutes.post(
   '/confirm-delete',
   authenticateJWT,
+  checkPermission(PermissionModel.DOCTOR, PermissionVerb.DELETE),
   validate(DoctorZODSchema.validateDeleteSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {

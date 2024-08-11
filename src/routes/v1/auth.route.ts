@@ -234,4 +234,20 @@ AuthRoutes.post(
   }
 );
 
+AuthRoutes.post(
+  '/set-permission',
+  validate(AuthZODSchema.setPermissionSchema),
+  authenticateJWT,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body: TSetPermissionSchema = req.body;
+      const resBody = await AuthRepository.setPermission(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 export default AuthRoutes;

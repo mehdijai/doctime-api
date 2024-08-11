@@ -1,3 +1,4 @@
+import { PermissionRole, PermissionVerb } from '@/services/permissions.service';
 import { z } from 'zod';
 
 export class AuthZODSchema {
@@ -12,7 +13,7 @@ export class AuthZODSchema {
     phone: z.string().refine((phone) => /^\+\d{10,15}$/.test(phone), 'Invalid phone number'),
     email: z.string().email(),
     password: z.string().min(8),
-    type: z.enum(['DOCTOR', 'PATIENT']),
+    type: z.enum(['DOCTOR', 'PATIENT', 'ADMIN']),
   });
 
   static readonly refreshTokenSchema = z.strictObject({
@@ -51,5 +52,10 @@ export class AuthZODSchema {
   static readonly confirmMFASchema = z.strictObject({
     userId: z.string().uuid(),
     otp: z.string().min(6),
+  });
+
+  static readonly setPermissionSchema = z.strictObject({
+    permissions: z.object({}).catchall(z.array(z.nativeEnum(PermissionVerb)).optional()),
+    roleName: z.nativeEnum(PermissionRole),
   });
 }

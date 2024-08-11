@@ -1,7 +1,9 @@
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
+import { checkPermission } from '@/middlewares/permission.middleware';
 import { validate } from '@/middlewares/validateRequest.middleware';
 import { PatientRepository } from '@/repositories/patient.repo';
 import { PatientZODSchema } from '@/schemas/patient/patient.schema';
+import { PermissionModel, PermissionVerb } from '@/services/permissions.service';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { NextFunction, Request, Response, Router } from 'express';
 
@@ -10,6 +12,7 @@ const PatientsRoutes = Router();
 PatientsRoutes.post(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.READ),
   validate(PatientZODSchema.createPatientSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -25,6 +28,7 @@ PatientsRoutes.post(
 PatientsRoutes.get(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.READ),
   validate(PatientZODSchema.searchPatientSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -40,7 +44,8 @@ PatientsRoutes.get(
 PatientsRoutes.get(
   '/me',
   authenticateJWT,
-  async (req: Request, res: Response, next: NextFunction) => {
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.READ),
+  async (_: Request, res: Response, next: NextFunction) => {
     try {
       const resBody = await PatientRepository.getPatient();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
@@ -53,6 +58,7 @@ PatientsRoutes.get(
 PatientsRoutes.get(
   '/:patientId',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.READ),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const patientId: string = req.params.patientId;
@@ -67,6 +73,7 @@ PatientsRoutes.get(
 PatientsRoutes.put(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.UPDATE),
   validate(PatientZODSchema.updatePatientSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -82,6 +89,7 @@ PatientsRoutes.put(
 PatientsRoutes.delete(
   '/',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.DELETE),
   validate(PatientZODSchema.deletePatientSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -98,6 +106,7 @@ PatientsRoutes.delete(
 PatientsRoutes.post(
   '/confirm-delete',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.DELETE),
   validate(PatientZODSchema.validateDeleteSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -114,6 +123,7 @@ PatientsRoutes.post(
 PatientsRoutes.post(
   '/add-doctor',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.UPDATE),
   validate(PatientZODSchema.addDoctorSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -130,6 +140,7 @@ PatientsRoutes.post(
 PatientsRoutes.post(
   '/remove-doctor',
   authenticateJWT,
+  checkPermission(PermissionModel.PATIENT, PermissionVerb.UPDATE),
   validate(PatientZODSchema.addDoctorSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -12,4 +12,5 @@ declare global {
   type TRefreshTokenSchema = z.infer<typeof AuthZODSchema.refreshTokenSchema>;
   type TSendMFARequestSchema = z.infer<typeof AuthZODSchema.sendMFARequestSchema>;
   type TConfirmMFASchema = z.infer<typeof AuthZODSchema.confirmMFASchema>;
+  type TSetPermissionSchema = z.infer<typeof AuthZODSchema.setPermissionSchema>;
 }

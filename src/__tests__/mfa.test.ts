@@ -5,8 +5,6 @@ import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import wait from '@/utils/helpers';
 import prisma from '@/services/prisma.service';
-import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 import { testEmails } from '@/utils/mailerUtils';
 
 describe('Test Multi-factor Authentication System', () => {
@@ -199,8 +197,6 @@ describe('Test Multi-factor Authentication System', () => {
       `Your One-Time Password (OTP) for Secure Access to ${appConfig.appName}`,
       true
     );
-
-    console.log('otp', userPayload.verificationOtp);
 
     expect(response.status).toBe(HttpStatusCode.OK);
     expect(response.body).toBeDefined();

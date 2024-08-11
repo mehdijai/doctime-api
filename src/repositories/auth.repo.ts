@@ -17,6 +17,11 @@ import { OTPHandler } from '@/utils/otpHandler';
 import { parseUserPayload } from '@/utils/parsers';
 import { MFAEmailMailer } from '@/messager/mfa-email.mailer';
 import { MFAMessageMailer } from '@/messager/mfa-sms.sms';
+import {
+  PermissionManager,
+  PermissionPayload,
+  PermissionRole,
+} from '../services/permissions.service';
 
 export class AuthRepository extends AuthClass {
   @apiMethod<IAuthResponse>()
@@ -177,6 +182,14 @@ export class AuthRepository extends AuthClass {
   static async createUser(payload: TRegisterSchema): Promise<ApiResponseBody<IUser>> {
     const resBody = (this as any).getResBody();
 
+    const role = await this.handleRole(
+      payload.type === 'DOCTOR'
+        ? PermissionRole.DOCTOR
+        : payload.type === 'PATIENT'
+          ? PermissionRole.PATIENT
+          : PermissionRole.ADMIN
+    );
+
     const user = await prisma.user.create({
       data: {
         email: payload.email,
@@ -184,6 +197,11 @@ export class AuthRepository extends AuthClass {
         name: payload.name,
         password: bcrypt.hashSync(payload.password, 10),
         userType: payload.type,
+        role: {
+          connect: {
+            id: role.id,
+          },
+        },
       },
     });
 
@@ -560,6 +578,57 @@ export class AuthRepository extends AuthClass {
     resBody.data = {
       status: true,
     };
+
+    return resBody;
+  }
+
+  private static async handleRole(role: PermissionRole) {
+    let roleData = await prisma.role.findUnique({
+      where: {
+        name: role,
+      },
+    });
+
+    if (!roleData) {
+      roleData = await prisma.role.create({ data: { name: role } });
+    }
+
+    return roleData;
+  }
+
+  @apiMethod<PermissionPayload>()
+  static async setPermission(payload: {
+    permissions: PermissionPayload;
+    roleName: PermissionRole;
+  }): Promise<ApiResponseBody<PermissionPayload>> {
+    const resBody: ApiResponseBody<PermissionPayload> = (this as any).getResBody();
+
+    const role = await this.handleRole(payload.roleName);
+
+    const permissionManager = new PermissionManager();
+    const permissionString = permissionManager.stringify(payload.permissions);
+
+    await prisma.permission.upsert({
+      where: {
+        name: permissionString,
+        roles: { some: { id: role.id } },
+      },
+      update: {
+        name: permissionString,
+      },
+      create: {
+        name: permissionString,
+        roles: {
+          connect: {
+            id: role.id,
+          },
+        },
+      },
+    });
+
+    const permissionPayload = permissionManager.parse(permissionString);
+
+    resBody.data = permissionPayload;
 
     return resBody;
   }

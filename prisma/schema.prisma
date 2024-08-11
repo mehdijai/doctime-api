@@ -13,8 +13,32 @@ enum UserType {
   ADMIN
 }
 
+model Role {
+  id           String      @id @unique @default(uuid())
+  name         String      @unique
+  users        User[]
+  permissionId String?
+  permission   Permission? @relation(fields: [permissionId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id        String   @id @unique @default(uuid())
+  name      String   @unique
+  roles     Role[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("permissions")
+}
+
 model User {
   id                   String                @id @unique @default(uuid())
+  roleId               String
+  role                 Role                  @relation(fields: [roleId], references: [id])
   name                 String
   email                String                @unique
   phone                String                @unique

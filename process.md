@@ -82,13 +82,13 @@
 - [x] CI/CD GitHub
 - [x] Pre Commits Hooks (Lint, format and test)
 - [ ] Deployment
-- [ ] Authorization
+- [x] Authorization
   - [x] Require Verified Email
   - [x] **TEST** Require Verified Email
   - [x] Require Verified Phone number
   - [x] **TEST** Require Verified Phone number
-  - [ ] Create Permissions
+  - [x] Create Permissions
   - [x] Confirm deletion
-  - [ ] 2FA Guards
+  - [x] 2FA Guards
 - [x] Implement Pagination
 - [ ] Search with Geo Location
