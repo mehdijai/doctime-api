@@ -1,7 +1,9 @@
 import request from 'supertest';
-import app from '@/app';
+import AppInstance from '@/app';
 import appConfig, { parseAPIVersion } from '@/config/app.config';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
+
+const app = AppInstance.app;
 
 describe('Test the API Status', () => {
   test('It should response the root GET method', async () => {

@@ -1,12 +1,13 @@
 import request from 'supertest';
-import app from '@/app';
+import AppInstance from '@/app';
 import appConfig, { parseAPIVersion } from '@/config/app.config';
 import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { testEmails } from '@/utils/mailerUtils';
-import { logger } from '@/utils/winston';
+
+const app = AppInstance.app;
 
 describe('Test doctors api', () => {
   const authBaseRoute = parseAPIVersion(1) + '/auth';

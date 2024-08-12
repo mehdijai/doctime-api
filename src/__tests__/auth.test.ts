@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '@/app';
+import AppInstance from '@/app';
 import appConfig, { parseAPIVersion } from '@/config/app.config';
 import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
@@ -8,6 +8,8 @@ import prisma from '@/services/prisma.service';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { testEmails } from '@/utils/mailerUtils';
+
+const app = AppInstance.app;
 
 describe('Test Auth system', () => {
   const baseRoute = parseAPIVersion(1) + '/auth';

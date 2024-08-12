@@ -3,6 +3,7 @@
 /// <reference path="./schemas/doctor/doctor.schema.d.ts" />
 /// <reference path="./schemas/appointment/appointment.schema.d.ts" />
 /// <reference path="./types/auth.d.ts" />
+/// <reference path="./types/openapi.type.d.ts" />
 /// <reference path="./types/patient.d.ts" />
 /// <reference path="./types/appointment.d.ts" />
 /// <reference path="./types/doctor.d.ts" />

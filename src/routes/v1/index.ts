@@ -17,6 +17,7 @@ import { UpdatePasswordMailer } from '@/messager/update-password.mailer';
 import { requireVerifiedEmail } from '@/middlewares/requireVerifiedEmail.middleware';
 import { requireVerifiedPhone } from '@/middlewares/requireVerifiedPhone.middleware';
 import mailConfig, { ProvidersList } from '@/config/mail.config';
+
 const routes = Router();
 
 routes.get('/mailer/:type', async (req: Request, res: Response, next) => {

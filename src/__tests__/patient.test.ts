@@ -1,10 +1,12 @@
 import request from 'supertest';
-import app from '@/app';
+import AppInstance from '@/app';
 import appConfig, { parseAPIVersion } from '@/config/app.config';
 import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
 import { testEmails } from '@/utils/mailerUtils';
+
+const app = AppInstance.app;
 
 describe('Test patients api', () => {
   const authBaseRoute = parseAPIVersion(1) + '/auth';

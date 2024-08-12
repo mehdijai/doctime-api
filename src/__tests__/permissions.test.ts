@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '@/app';
+import AppInstance from '@/app';
 import { parseAPIVersion } from '@/config/app.config';
 import { truncateAllTables } from '@/utils/truncateDB';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
@@ -7,6 +7,8 @@ import wait from '@/utils/helpers';
 import prisma from '@/services/prisma.service';
 import { testEmails } from '@/utils/mailerUtils';
 import { seedPermissions } from '@/utils/seeders/permissions';
+
+const app = AppInstance.app;
 
 describe('Test Permissions and Guards', () => {
   const baseRoute = parseAPIVersion(1) + '/auth';
