@@ -1,10 +1,6 @@
-import { Request, Response, Router } from 'express';
-import AuthRoutes from './auth.route';
-import PatientsRoutes from './patients.route';
-import DoctorsRoutes from './doctors.route';
-import AppointmentsRoutes from './appointments.route';
-import appConfig from '@/config/app.config';
-import { authenticateJWT } from '@/middlewares/jwt.middleware';
+import { Request, Response, NextFunction } from 'express';
+import { authRoutes } from './auth.route';
+import appConfig, { parseAPIVersion } from '@/config/app.config';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { HBSTemplates } from '@/services/handlebars.service';
 import { AccountDeletedMailer } from '@/messager/account-deleted.mailer';
@@ -17,82 +13,75 @@ import { UpdatePasswordMailer } from '@/messager/update-password.mailer';
 import { requireVerifiedEmail } from '@/middlewares/requireVerifiedEmail.middleware';
 import { requireVerifiedPhone } from '@/middlewares/requireVerifiedPhone.middleware';
 import mailConfig, { ProvidersList } from '@/config/mail.config';
+import { MainRouter } from '../router';
+import { AuthGuard, Get, Middlewares } from '@/decorators/router.decorator';
+import PatientsRoutes from './patients.route';
+import DoctorsRoutes from './doctors.route';
+import AppointmentsRoutes from './appointments.route';
 
-const routes = Router();
+class IndexRouter extends MainRouter {
+  @Get('/mailer/:type')
+  async mailerTests(req: Request, res: Response, next: NextFunction) {
+    const mailType: HBSTemplates = req.params.type as HBSTemplates;
+    const contentType = req.header('accept');
 
-routes.get('/mailer/:type', async (req: Request, res: Response, next) => {
-  const mailType: HBSTemplates = req.params.type as HBSTemplates;
-  const contentType = req.header('accept');
+    let htmlContent = '';
+    let txtContent = '';
+    let _mailer: InternalMessager;
 
-  let htmlContent = '';
-  let txtContent = '';
-  let _mailer: InternalMessager;
+    mailConfig.selectedProvider = ProvidersList.SMTP;
 
-  mailConfig.selectedProvider = ProvidersList.SMTP;
+    switch (mailType) {
+      case HBSTemplates.ACCOUNT_DELETED:
+        _mailer = await new AccountDeletedMailer(['user@mail.com']).generate({});
+        break;
+      case HBSTemplates.CONFIRM_DELETING:
+        _mailer = await new ConfirmDeleteMailer(['user@mail.com']).generate({});
+        break;
+      case HBSTemplates.VERIFY_EMAIL:
+        _mailer = await new VerifyEmailMailer(['user@mail.com']).generate({
+          verificationLink: '',
+          name: '',
+        });
+        break;
+      case HBSTemplates.PASSWORD_UPDATED:
+        _mailer = await new PasswordUpdatedMailer(['user@mail.com']).generate({});
+        break;
+      case HBSTemplates.RESET_PASSWORD:
+        _mailer = await new ResetPasswordMailer(['user@mail.com']).generate({});
+        break;
+      case HBSTemplates.UPDATE_PASSWORD:
+        _mailer = await new UpdatePasswordMailer(['user@mail.com']).generate({});
+        htmlContent = _mailer.getTEXT();
+        txtContent = _mailer.getHTML();
+        break;
+    }
 
-  switch (mailType) {
-    case HBSTemplates.ACCOUNT_DELETED:
-      _mailer = await new AccountDeletedMailer(['user@mail.com']).generate({});
-      break;
-    case HBSTemplates.CONFIRM_DELETING:
-      _mailer = await new ConfirmDeleteMailer(['user@mail.com']).generate({});
-      break;
-    case HBSTemplates.VERIFY_EMAIL:
-      _mailer = await new VerifyEmailMailer(['user@mail.com']).generate({
-        verificationLink: '',
-        name: '',
-      });
-      break;
-    case HBSTemplates.PASSWORD_UPDATED:
-      _mailer = await new PasswordUpdatedMailer(['user@mail.com']).generate({});
-      break;
-    case HBSTemplates.RESET_PASSWORD:
-      _mailer = await new ResetPasswordMailer(['user@mail.com']).generate({});
-      break;
-    case HBSTemplates.UPDATE_PASSWORD:
-      _mailer = await new UpdatePasswordMailer(['user@mail.com']).generate({});
-      htmlContent = _mailer.getTEXT();
-      txtContent = _mailer.getHTML();
-      break;
+    mailConfig.selectedProvider = ProvidersList.SES;
+
+    if (contentType === 'text/plain') {
+      res.status(HttpStatusCode.OK).send(txtContent);
+    } else {
+      res.status(HttpStatusCode.OK).send(htmlContent);
+    }
+
+    next();
   }
 
-  mailConfig.selectedProvider = ProvidersList.SES;
-
-  if (contentType === 'text/plain') {
-    res.status(HttpStatusCode.OK).send(txtContent);
-  } else {
-    res.status(HttpStatusCode.OK).send(htmlContent);
+  @Get('/')
+  apiStatus(_: Request, res: Response, next: NextFunction) {
+    res.status(HttpStatusCode.OK).json({
+      name: appConfig.apiName,
+      version: appConfig.apiVersion,
+      dateTime: new Date().toISOString(),
+      status: 'RUNNING',
+    });
+    next();
   }
 
-  next();
-});
-
-routes.get('/', (_, res: Response, next) => {
-  res.status(HttpStatusCode.OK).json({
-    name: appConfig.apiName,
-    version: appConfig.apiVersion,
-    dateTime: new Date().toISOString(),
-    status: 'RUNNING',
-  });
-  next();
-});
-
-routes.get('/protected', authenticateJWT, (_, res: Response, next) => {
-  res.status(HttpStatusCode.OK).json({
-    name: appConfig.apiName,
-    version: appConfig.apiVersion,
-    dateTime: new Date().toISOString(),
-    status: 'RUNNING',
-    protected: true,
-  });
-  next();
-});
-
-routes.get(
-  '/requireVerifiedEmail',
-  authenticateJWT,
-  requireVerifiedEmail,
-  (_, res: Response, next) => {
+  @AuthGuard()
+  @Get('/protected')
+  apiStatusProtected(_: Request, res: Response, next: NextFunction) {
     res.status(HttpStatusCode.OK).json({
       name: appConfig.apiName,
       version: appConfig.apiVersion,
@@ -102,13 +91,11 @@ routes.get(
     });
     next();
   }
-);
 
-routes.get(
-  '/requireVerifiedPhone',
-  authenticateJWT,
-  requireVerifiedPhone,
-  (_, res: Response, next) => {
+  @Middlewares([requireVerifiedEmail])
+  @AuthGuard()
+  @Get('/requireVerifiedEmail')
+  verifiedEmailRoute(_: Request, res: Response, next: NextFunction) {
     res.status(HttpStatusCode.OK).json({
       name: appConfig.apiName,
       version: appConfig.apiVersion,
@@ -118,11 +105,26 @@ routes.get(
     });
     next();
   }
-);
 
-routes.use('/auth', AuthRoutes);
-routes.use('/patients', PatientsRoutes);
-routes.use('/doctors', DoctorsRoutes);
-routes.use('/appointments', AppointmentsRoutes);
+  @AuthGuard()
+  @Middlewares([requireVerifiedPhone])
+  @Get('/requireVerifiedPhone')
+  verifiedPhoneRoute(_: Request, res: Response, next: NextFunction) {
+    res.status(HttpStatusCode.OK).json({
+      name: appConfig.apiName,
+      version: appConfig.apiVersion,
+      dateTime: new Date().toISOString(),
+      status: 'RUNNING',
+      protected: true,
+    });
+    next();
+  }
+}
 
-export default routes;
+const v1Router = new IndexRouter(parseAPIVersion(1));
+export const v1Routes = v1Router.getRoute(v1Router);
+
+v1Routes.use('/auth', authRoutes);
+v1Routes.use('/patients', PatientsRoutes);
+v1Routes.use('/doctors', DoctorsRoutes);
+v1Routes.use('/appointments', AppointmentsRoutes);

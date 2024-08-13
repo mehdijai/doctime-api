@@ -5,13 +5,13 @@ import helmet from 'helmet';
 import xss from 'x-xss-protection';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
-import v1Routes from './routes/v1';
 import { parseAPIVersion } from './config/app.config';
 import HttpStatusCode from './utils/HTTPStatusCodes';
 import prisma from '@/services/prisma.service';
 import { ResponseHandler } from '@/utils/responseHandler';
 import { join } from 'path';
 import { SwaggerService } from './services/swagger.service';
+import { v1Routes } from './routes/v1';
 
 export class App {
   app: Application;
@@ -24,7 +24,7 @@ export class App {
     this.swaggerInstance = new SwaggerService(this.app);
     this.swaggerInstance.setupSwagger();
     this.setupMainApiRoute();
-    // this.printRoutes()
+    // this.printRoutes();
   }
 
   private setupMiddlewares() {

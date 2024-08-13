@@ -28,4 +28,6 @@ declare global {
     items: T[];
     total: number;
   }
+
+  declare type RequestMethods = 'get' | 'post' | 'patch' | 'put' | 'delete';
 }

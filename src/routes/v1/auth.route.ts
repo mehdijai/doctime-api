@@ -1,16 +1,16 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { validate } from '@/middlewares/validateRequest.middleware';
 import { AuthRepository } from '@/repositories/auth.repo';
-import { authenticateJWT } from '@/middlewares/jwt.middleware';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { AuthZODSchema } from '@/schemas/auth/auth.schema';
+import { AuthGuard, Middlewares, Post } from '@/decorators/router.decorator';
+import { MainRouter } from '../router';
+import { parseAPIVersion } from '@/config/app.config';
 
-const AuthRoutes = Router();
-
-AuthRoutes.post(
-  '/login',
-  validate(AuthZODSchema.authSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+class AuthRouter extends MainRouter {
+  @Middlewares([validate(AuthZODSchema.authSchema)])
+  @Post('/login')
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TAuthSchema = req.body;
       const resBody = await AuthRepository.loginUser(body);
@@ -20,12 +20,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/send-mfa-request',
-  validate(AuthZODSchema.sendMFARequestSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.sendMFARequestSchema)])
+  @Post('/send-mfa-request')
+  async sendMFARequest(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TSendMFARequestSchema = req.body;
       const resBody = await AuthRepository.sendMFARequest(body);
@@ -35,12 +33,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/confirm-mfa-request',
-  validate(AuthZODSchema.confirmMFASchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.confirmMFASchema)])
+  @Post('/confirm-mfa-request')
+  async confirmMfaRequest(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TConfirmMFASchema = req.body;
       const resBody = await AuthRepository.confirmMFARequest(body);
@@ -50,12 +46,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/refresh-token',
-  validate(AuthZODSchema.refreshTokenSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.refreshTokenSchema)])
+  @Post('/refresh-token')
+  async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TRefreshTokenSchema = req.body;
       const resBody = await AuthRepository.refreshToken(body);
@@ -65,12 +59,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/register',
-  validate(AuthZODSchema.registerSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.registerSchema)])
+  @Post('/register')
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TRegisterSchema = req.body;
       const resBody = await AuthRepository.createUser(body);
@@ -80,12 +72,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/forget-password',
-  validate(AuthZODSchema.forgetPasswordSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.forgetPasswordSchema)])
+  @Post('/forget-password')
+  async forgetPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TForgetPasswordSchema = req.body;
       const resBody = await AuthRepository.forgotPassword(body);
@@ -95,12 +85,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/reset-password',
-  validate(AuthZODSchema.resetPasswordSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.resetPasswordSchema)])
+  @Post('/reset-password')
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TResetPasswordSchema = req.body;
       const resBody = await AuthRepository.resetPassword(body);
@@ -110,13 +98,11 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/update-password',
-  authenticateJWT,
-  validate(AuthZODSchema.updatePasswordSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Middlewares([validate(AuthZODSchema.updatePasswordSchema)])
+  @Post('/update-password')
+  async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TUpdatePasswordSchema = req.body;
       const resBody = await AuthRepository.updatePassword(body);
@@ -126,12 +112,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/confirm-update-password',
-  validate(AuthZODSchema.validateUserSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.validateUserSchema)])
+  @Post('/confirm-update-password')
+  async confirmUpdatePassword(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TValidateUserSchema = req.body;
       const resBody = await AuthRepository.confirmUpdatePassword(body);
@@ -141,12 +125,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/verify-user',
-  validate(AuthZODSchema.validateUserSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @Middlewares([validate(AuthZODSchema.validateUserSchema)])
+  @Post('/verify-user')
+  async verifyUser(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TValidateUserSchema = req.body;
       const resBody = await AuthRepository.verifyUser(body);
@@ -156,12 +138,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/verify-phone-number',
-  authenticateJWT,
-  async (_: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Post('/verify-phone-number')
+  async verifyPhoneNumber(req: Request, res: Response, next: NextFunction) {
     try {
       const resBody = await AuthRepository.verifyUserPhoneNumber();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
@@ -170,13 +150,11 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/confirm-phone-number',
-  authenticateJWT,
-  validate(AuthZODSchema.validateOTPSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Middlewares([validate(AuthZODSchema.validateOTPSchema)])
+  @Post('/confirm-phone-number')
+  async confirmPhoneNumber(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TValidateOTPSchema = req.body;
       const resBody = await AuthRepository.confirmUserPhoneNumber(body);
@@ -186,15 +164,11 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-// 2FA
-
-AuthRoutes.post(
-  '/confirm-verification-otp',
-  authenticateJWT,
-  validate(AuthZODSchema.validateOTPSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Middlewares([validate(AuthZODSchema.validateOTPSchema)])
+  @Post('/confirm-verification-otp')
+  async confirmVerificationOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TValidateOTPSchema = req.body;
       const resBody = await AuthRepository.confirm2faOtp(body);
@@ -204,12 +178,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/enable-mfa',
-  authenticateJWT,
-  async (_: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Post('/enable-mfa')
+  async enableMfa(req: Request, res: Response, next: NextFunction) {
     try {
       const resBody = await AuthRepository.enableMFA();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
@@ -218,12 +190,10 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/disable-mfa',
-  authenticateJWT,
-  async (_: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Post('/disable-mfa')
+  async disableMfa(req: Request, res: Response, next: NextFunction) {
     try {
       const resBody = await AuthRepository.enableMFA();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
@@ -232,13 +202,11 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
 
-AuthRoutes.post(
-  '/set-permission',
-  validate(AuthZODSchema.setPermissionSchema),
-  authenticateJWT,
-  async (req: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Post('/set-permission')
+  @Middlewares([validate(AuthZODSchema.setPermissionSchema)])
+  async setPermission(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TSetPermissionSchema = req.body;
       const resBody = await AuthRepository.setPermission(body);
@@ -248,6 +216,7 @@ AuthRoutes.post(
       next(err);
     }
   }
-);
+}
 
-export default AuthRoutes;
+const authRoute = new AuthRouter(parseAPIVersion(1) + '/auth');
+export const authRoutes = authRoute.getRoute(authRoute);
