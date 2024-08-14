@@ -37,9 +37,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.95% </span>
+                <span class="strong">81.39% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>34/42</span>
+                <span class='fraction'>35/43</span>
             </div>
         
             
@@ -285,7 +285,10 @@
 <a name='L220'></a><a href='#L220'>220</a>
 <a name='L221'></a><a href='#L221'>221</a>
 <a name='L222'></a><a href='#L222'>222</a>
-<a name='L223'></a><a href='#L223'>223</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">112x</span>
 <span class="cline-any cline-yes">112x</span>
@@ -315,6 +318,8 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -507,30 +512,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { NextFunction, Request, Response } from 'express';
-import { validate } from '@/middlewares/validateRequest.middleware';
-import { AuthRepository } from '@/reposito<span class="branch-0 cbranch-no" title="branch not covered" >ries/au</span>th.repo';<span class="branch-1 cbranch-no" title="branch not covered" ></span>
-import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>AuthZODSchema<span class="cstat-no" title="statement not covered" > } from '@/schemas/aut</span>h/auth.schema'<span class="cstat-no" title="statement not covered" >;<span class="cstat-no" title="statement not covered" ></span></span></span>
-import { AuthGuard, Middlewares, Post } from '@/decorators/router.decorator';
+import { AuthRepository } from '@/repositories/auth.repo';
+import HttpStatusCode from '@/utils/HTTPSt<span class="branch-0 cbranch-no" title="branch not covered" >atusCod</span>es';<span class="branch-1 cbranch-no" title="branch not covered" ></span>
+import { AuthZODSchema } from '@/schemas/auth/auth.schema';
+import { <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>AuthGuard, Mi<span class="cstat-no" title="statement not covered" >ddlewares, Post, Reque</span>stBody } from <span class="cstat-no" title="statement not covered" >'@/decorators/router.de<span class="cstat-no" title="statement not covered" >corator';</span></span></span>
 import { MainRouter } from '../router';
 import { parseAPIVersion } from '@/config/app.config';
-<span class="missing-if-branch" title="else path not taken" >E</span>
-class AuthRouter extends MainRouter {
-  @Middlewares([validate(AuthZODSchema.authSchema)])
-  @Post('/login')<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" ></span></span></span>
+&nbsp;
+clas<span class="missing-if-branch" title="else path not taken" >E</span>s AuthRouter extends MainRouter {
+  constructor(prefix: string) {
+    super(prefix, 'Auth');
+  }<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-1 cbranch-no" title="branch not covered" ></span></span></span>
+&nbsp;
+  @RequestBody(AuthZODSchema.authSchema, 'authSchema')<span class="cstat-no" title="statement not covered" ></span>
+  @Post('/login')<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span>
   async login(req: Request, res: Response, next: NextFunction) {
-    try {<span class="cstat-no" title="statement not covered" ></span>
-      const body:<span class="fstat-no" title="function not covered" > TAuthSch</span>ema = req<span class="cstat-no" title="statement not covered" >.body;<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span>
+    try {
+      const body: TAuthSchema = req.body;
       const resBody = await AuthRepository.loginUser(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
-      next();
+      next();<span class="branch-1 cbranch-no" title="branch not covered" ></span>
     } catch (err) {
       next(err);
-    }<span class="branch-1 cbranch-no" title="branch not covered" ></span>
+    }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.sendMFARequestSchema)])
+  @RequestBody(AuthZODSchema.sendMFARequestSchema, 'sendMFARequestSchema')
   @Post('/send-mfa-request')
   async sendMFARequest(req: Request, res: Response, next: NextFunction) {
     try {
@@ -543,12 +552,12 @@ class AuthRouter extends MainRouter {
     }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.confirmMFASchema)])
+  @RequestBody(AuthZODSchema.confirmMFASchema, 'confirmMFASchema')
   @Post('/confirm-mfa-request')
   async confirmMfaRequest(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: TConfirmMFASchema = req.body;
-      const resB<span class="cstat-no" title="statement not covered" >ody = await</span> AuthRepository.confirmMFARequest(body);
+      const body<span class="cstat-no" title="statement not covered" >: TConfirmM</span>FASchema = req.body;
+      const resBody = await AuthRepository.confirmMFARequest(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -556,12 +565,12 @@ class AuthRouter extends MainRouter {
     }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.refreshTokenSchema)])
-  @Post('/refresh-token')<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+  @RequestBody(AuthZODSchema.refreshTokenSc<span class="branch-0 cbranch-no" title="branch not covered" >hema, 'refreshToken</span>Schema')
+  @Post('/refresh-token')
   async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: TRefreshTokenSchema = req.body;
-      const resB<span class="cstat-no" title="statement not covered" >ody = await</span> AuthRepository.refreshToken(body);
+      const body<span class="cstat-no" title="statement not covered" >: TRefreshT</span>okenSchema = req.body;
+      const resBody = await AuthRepository.refreshToken(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -569,12 +578,12 @@ class AuthRouter extends MainRouter {
     }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.registerSchema)])
-  @Post('/register')<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+  @RequestBody(AuthZODSchema.registerSchema<span class="branch-0 cbranch-no" title="branch not covered" >, 'registerSchema')</span>
+  @Post('/register')
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: TRegisterSchema = req.body;
-      const resB<span class="cstat-no" title="statement not covered" >ody = await</span> AuthRepository.createUser(body);
+      const body<span class="cstat-no" title="statement not covered" >: TRegister</span>Schema = req.body;
+      const resBody = await AuthRepository.createUser(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -582,12 +591,12 @@ class AuthRouter extends MainRouter {
     }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.forgetPasswordSchema)])
-  @Post('/forget-password')<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+  @RequestBody(AuthZODSchema.forgetPassword<span class="branch-0 cbranch-no" title="branch not covered" >Schema, 'forgetPass</span>wordSchema')
+  @Post('/forget-password')
   async forgetPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: TForgetPasswordSchema = req.body;
-      const resB<span class="cstat-no" title="statement not covered" >ody = await</span> AuthRepository.forgotPassword(body);
+      const body<span class="cstat-no" title="statement not covered" >: TForgetPa</span>sswordSchema = req.body;
+      const resBody = await AuthRepository.forgotPassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -595,12 +604,12 @@ class AuthRouter extends MainRouter {
     }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.resetPasswordSchema)])
+  @RequestBody(AuthZODSchema.resetPasswordSchema, 'resetPasswordSchema')
   @Post('/reset-password')
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: TResetPasswordSchema = req.body;
-      const resB<span class="cstat-no" title="statement not covered" >ody = await</span> AuthRepository.resetPassword(body);
+      const body<span class="cstat-no" title="statement not covered" >: TResetPas</span>swordSchema = req.body;
+      const resBody = await AuthRepository.resetPassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -609,11 +618,11 @@ class AuthRouter extends MainRouter {
   }
 &nbsp;
   @AuthGuard()
-  @Middlewares([validate(AuthZODSchema.updatePasswordSchema)])
+  @RequestBody(AuthZODSchema.updatePasswordSchema, 'updatePasswordSchema')
   @Post('/update-password')
   async updatePassword(req: Request, res: Response, next: NextFunction) {
-    try {
-      const body<span class="cstat-no" title="statement not covered" >: TUpdatePa</span>sswordSchema = req.body;
+    try {<span class="cstat-no" title="statement not covered" ></span>
+      const body: TUpdatePasswordSchema = req.body;
       const resBody = await AuthRepository.updatePassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
@@ -622,11 +631,11 @@ class AuthRouter extends MainRouter {
     }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.validateUserSchema)])
+  @RequestBody(AuthZODSchema.validateUserSchema, 'validateUserSchema')
   @Post('/confirm-update-password')
   async confirmUpdatePassword(req: Request, res: Response, next: NextFunction) {
-    try {
-      const body<span class="cstat-no" title="statement not covered" >: TValidate</span>UserSchema = req.body;
+    try {<span class="cstat-no" title="statement not covered" ></span>
+      const body: TValidateUserSchema = req.body;
       const resBody = await AuthRepository.confirmUpdatePassword(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
@@ -635,12 +644,24 @@ class AuthRouter extends MainRouter {
     }
   }
 &nbsp;
-  @Middlewares([validate(AuthZODSchema.validateUserSchema)])
+  @RequestBody(AuthZODSchema.validateUserSchema, 'validateUserSchema')
   @Post('/verify-user')
   async verifyUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const body<span class="cstat-no" title="statement not covered" >: TValidate</span>UserSchema = req.body;
+    try {<span class="cstat-no" title="statement not covered" ></span>
+      const body: TValidateUserSchema = req.body;
       const resBody = await AuthRepository.verifyUser(body);
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+  @AuthGuard()
+  @Post('/verify-phone-number')
+  async verifyPhoneNumber(req: Request, res: Response, next: NextFunction) {
+    try {<span class="cstat-no" title="statement not covered" ></span>
+      const resBody = await AuthRepository.verifyUserPhoneNumber();
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -649,38 +670,12 @@ class AuthRouter extends MainRouter {
   }
 &nbsp;
   @AuthGuard()<span class="branch-0 cbranch-no" title="branch not covered" ></span>
-  @Post('/verify-phone-number')
-  async verifyPhoneNumber(req: Request, res: Response, next: NextFunction) {
-    try {
-      const resB<span class="cstat-no" title="statement not covered" >ody = await</span> AuthRepository.verifyUserPhoneNumber();
-      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
-      next();
-    } catch (err) {
-      next(err);
-    }
-  }
-&nbsp;
-  @AuthGuard()
-  @Middlewares([validate(AuthZODSchema.vali<span class="branch-0 cbranch-no" title="branch not covered" >dateOTPSchema)])</span>
+  @RequestBody(AuthZODSchema.validateOTPSchema, 'validateOTPSchema')
   @Post('/confirm-phone-number')
   async confirmPhoneNumber(req: Request, res: Response, next: NextFunction) {
-    try {
-      const body<span class="cstat-no" title="statement not covered" >: TValidate</span>OTPSchema = req.body;
-      const resBody = await AuthRepository.confirmUserPhoneNumber(body);
-      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
-      next();
-    } catch (err) {
-      next(err);
-    }
-  }
-<span class="branch-0 cbranch-no" title="branch not covered" ></span>
-  @AuthGuard()
-  @Middlewares([validate(AuthZODSchema.validateOTPSchema)])
-  @Post('/confirm-verification-otp')
-  async confirmV<span class="cstat-no" title="statement not covered" >erification</span>Otp(req: Request, res: Response, next: NextFunction) {
-    try {
+    try {<span class="cstat-no" title="statement not covered" ></span>
       const body: TValidateOTPSchema = req.body;
-      const resBody = await AuthRepository.confirm2faOtp(body);
+      const resBody = await AuthRepository.confirmUserPhoneNumber(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
@@ -689,45 +684,59 @@ class AuthRouter extends MainRouter {
   }<span class="branch-0 cbranch-no" title="branch not covered" ></span>
 &nbsp;
   @AuthGuard()
-  @Post('/enable-mfa')
-  async enableMf<span class="cstat-no" title="statement not covered" >a(req: Requ</span>est, res: Response, next: NextFunction) {
+  @RequestBody(AuthZODSchema.validateOTPSchema, 'validateOTPSchema')
+  @Post('/confir<span class="cstat-no" title="statement not covered" >m-verificat</span>ion-otp')
+  async confirmVerificationOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      const resBody = await AuthRepository.enableMFA();
-      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
-<span class="fstat-no" title="function not covered" ></span>      next();
-    } ca<span class="cstat-no" title="statement not covered" >tch (err) {<span class="fstat-no" title="function not covered" ></span></span>
-      next(e<span class="cstat-no" title="statement not covered" >rr);</span>
-    }<span class="cstat-no" title="statement not covered" ></span>
-  }<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" ></span>
-  @AuthGuard()<span class="cstat-no" title="statement not covered" ></span>
-  @Post('/disable-mfa')
-  async disableMfa(req: Request, res: Response, next: NextFunction) {
-    try {<span class="cstat-no" title="statement not covered" ></span>
-      const resBody = await AuthRepository.enableMFA();
+      const body: TValidateOTPSchema = req.body;
+      const resBody = await AuthRepository.confirm2faOtp(body);
       res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       next();
     } catch (err) {
       next(err);
-    }
+    }<span class="branch-0 cbranch-no" title="branch not covered" ></span>
   }
-<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+&nbsp;
   @AuthGuard()
-  @Post('/set-permission')
-  @Middlewares([validate(AuthZODSchema.setPermissionSchema)])
-  async setPermi<span class="cstat-no" title="statement not covered" >ssion(req: </span>Request, res: Response, next: NextFunction) {
+  @Post('/enable<span class="cstat-no" title="statement not covered" >-mfa')</span>
+  async enableMfa(req: Request, res: Response, next: NextFunction) {
     try {
-      const body: TSetPermissionSchema = req.body;
-      const resBody = await AuthRepository.setPermission(body);
+      const resBody = await AuthRepository.enableMFA();
 <span class="fstat-no" title="function not covered" ></span>      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
       ne<span class="cstat-no" title="statement not covered" >xt();<span class="fstat-no" title="function not covered" ></span></span>
     } catch <span class="cstat-no" title="statement not covered" >(err) {</span>
       next(err);<span class="cstat-no" title="statement not covered" ></span>
     }<span class="cstat-no" title="statement not covered" ></span>
   }<span class="cstat-no" title="statement not covered" ></span>
-}
+<span class="cstat-no" title="statement not covered" ></span>
+  @AuthGuard()
+  @Post('/disable-mfa')
+  async disableM<span class="cstat-no" title="statement not covered" >fa(req: Req</span>uest, res: Response, next: NextFunction) {
+    try {
+      const resBody = await AuthRepository.enableMFA();
+      res.status(resBody.error ? resBody.error.code : HttpStatusCode.OK).json(resBody);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }<span class="branch-0 cbranch-no" title="branch not covered" ></span>
 &nbsp;
-const authRoute <span class="cstat-no" title="statement not covered" >= new AuthR</span>outer(parseAPIVersion(1) + '/auth');
+  @AuthGuard()
+  @RequestBody(AuthZODSchema.setPermissionSchema, 'setPermissionSchema')
+  @Post('/set-pe<span class="cstat-no" title="statement not covered" >rmission')</span>
+  async setPermission(req: Request, res: Response, next: NextFunction) {
+    try {
+      const body: TSetPermissionSchema = req.body;
+<span class="fstat-no" title="function not covered" ></span>      const resBody = await AuthRepository.setPermission(body);
+      re<span class="cstat-no" title="statement not covered" >s.status(resBody.error ? resBody.error.<span class="fstat-no" title="function not covered" >co</span>de : HttpStatusCode.OK).json(resBody);</span>
+      next()<span class="cstat-no" title="statement not covered" >;</span>
+    } catch (err) {<span class="cstat-no" title="statement not covered" ></span>
+      next(err);<span class="cstat-no" title="statement not covered" ></span>
+    }<span class="cstat-no" title="statement not covered" ></span>
+  }
+}
+<span class="cstat-no" title="statement not covered" ></span>
+const authRoute = new AuthRouter(parseAPIVersion(1) + '/auth');
 export const authRoutes = authRoute.getRoute(authRoute);
 &nbsp;</pre></td></tr></table></pre>
 
@@ -736,7 +745,7 @@ export const authRoutes = authRoute.getRoute(authRoute);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-13T20:25:57.685Z
+                at 2024-08-14T19:54:09.901Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
