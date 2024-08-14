@@ -1,6 +1,8 @@
 import { authenticateJWT } from '@/middlewares/jwt.middleware';
+import { validate } from '@/middlewares/validateRequest.middleware';
 import { MetadataService } from '@/services/metadata.service';
 import { RequestHandler } from 'express';
+import { ZodSchema } from 'zod';
 
 export interface Route {
   path: string;
@@ -67,6 +69,30 @@ export function AuthGuard() {
     MetadataService.set('routes', existingRoutes);
   };
 }
+export function RequestBody(schema: ZodSchema, ref?: string) {
+  return function (_: Object, propertyKey: string) {
+    const existingRoutes: Route[] = MetadataService.get('routes') || [];
+    const match = existingRoutes.find((route) => route.methodName === propertyKey);
+
+    if (match) {
+      match.middlewares.push(validate(schema));
+      if (ref) {
+        match.requestBody = {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                $ref: `#/components/schemas/${ref}`,
+              },
+            },
+          },
+        };
+      }
+    }
+    MetadataService.set('routes', existingRoutes);
+  };
+}
+
 export function Middlewares(middlewares: RequestHandler[]) {
   return function (_: Object, propertyKey: string) {
     const existingRoutes: Route[] = MetadataService.get('routes') || [];

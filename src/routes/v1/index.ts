@@ -20,6 +20,10 @@ import DoctorsRoutes from './doctors.route';
 import AppointmentsRoutes from './appointments.route';
 
 class IndexRouter extends MainRouter {
+  constructor(prefix: string) {
+    super(prefix, 'Index');
+  }
+
   @Get('/mailer/:type')
   async mailerTests(req: Request, res: Response, next: NextFunction) {
     const mailType: HBSTemplates = req.params.type as HBSTemplates;

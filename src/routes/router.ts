@@ -8,7 +8,10 @@ import { Router } from 'express';
 export class MainRouter {
   protected routes: Router;
 
-  constructor(protected pathPrefix: string) {
+  constructor(
+    protected pathPrefix: string,
+    protected tag: string
+  ) {
     this.routes = Router();
   }
 
@@ -30,6 +33,7 @@ export class MainRouter {
   private _registerOpenApiPath(route: Route) {
     const instance = OpenAPIDocInstance.getInstance();
     const pathElement: PathItemObject = {};
+
     pathElement[route.method] = {
       summary: route.summary,
       operationId: `${parseAPIVersion(1)}/${route.methodName}`,
@@ -37,7 +41,7 @@ export class MainRouter {
       requestBody: route.requestBody,
       responses: {},
       security: route.middlewares.includes(authenticateJWT) ? [{ bearerAuth: [] }] : [],
-      tags: [],
+      tags: [this.tag],
     };
     const swaggerPath = this._parseDynamicRoute(this.pathPrefix + route.path);
     instance.addPath(swaggerPath, pathElement);

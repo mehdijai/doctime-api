@@ -1,14 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { validate } from '@/middlewares/validateRequest.middleware';
 import { AuthRepository } from '@/repositories/auth.repo';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { AuthZODSchema } from '@/schemas/auth/auth.schema';
-import { AuthGuard, Middlewares, Post } from '@/decorators/router.decorator';
+import { AuthGuard, Middlewares, Post, RequestBody } from '@/decorators/router.decorator';
 import { MainRouter } from '../router';
 import { parseAPIVersion } from '@/config/app.config';
 
 class AuthRouter extends MainRouter {
-  @Middlewares([validate(AuthZODSchema.authSchema)])
+  constructor(prefix: string) {
+    super(prefix, 'Auth');
+  }
+
+  @RequestBody(AuthZODSchema.authSchema, 'authSchema')
   @Post('/login')
   async login(req: Request, res: Response, next: NextFunction) {
     try {
@@ -21,7 +24,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.sendMFARequestSchema)])
+  @RequestBody(AuthZODSchema.sendMFARequestSchema, 'sendMFARequestSchema')
   @Post('/send-mfa-request')
   async sendMFARequest(req: Request, res: Response, next: NextFunction) {
     try {
@@ -34,7 +37,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.confirmMFASchema)])
+  @RequestBody(AuthZODSchema.confirmMFASchema, 'confirmMFASchema')
   @Post('/confirm-mfa-request')
   async confirmMfaRequest(req: Request, res: Response, next: NextFunction) {
     try {
@@ -47,7 +50,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.refreshTokenSchema)])
+  @RequestBody(AuthZODSchema.refreshTokenSchema, 'refreshTokenSchema')
   @Post('/refresh-token')
   async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
@@ -60,7 +63,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.registerSchema)])
+  @RequestBody(AuthZODSchema.registerSchema, 'registerSchema')
   @Post('/register')
   async register(req: Request, res: Response, next: NextFunction) {
     try {
@@ -73,7 +76,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.forgetPasswordSchema)])
+  @RequestBody(AuthZODSchema.forgetPasswordSchema, 'forgetPasswordSchema')
   @Post('/forget-password')
   async forgetPassword(req: Request, res: Response, next: NextFunction) {
     try {
@@ -86,7 +89,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.resetPasswordSchema)])
+  @RequestBody(AuthZODSchema.resetPasswordSchema, 'resetPasswordSchema')
   @Post('/reset-password')
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
@@ -100,7 +103,7 @@ class AuthRouter extends MainRouter {
   }
 
   @AuthGuard()
-  @Middlewares([validate(AuthZODSchema.updatePasswordSchema)])
+  @RequestBody(AuthZODSchema.updatePasswordSchema, 'updatePasswordSchema')
   @Post('/update-password')
   async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
@@ -113,7 +116,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.validateUserSchema)])
+  @RequestBody(AuthZODSchema.validateUserSchema, 'validateUserSchema')
   @Post('/confirm-update-password')
   async confirmUpdatePassword(req: Request, res: Response, next: NextFunction) {
     try {
@@ -126,7 +129,7 @@ class AuthRouter extends MainRouter {
     }
   }
 
-  @Middlewares([validate(AuthZODSchema.validateUserSchema)])
+  @RequestBody(AuthZODSchema.validateUserSchema, 'validateUserSchema')
   @Post('/verify-user')
   async verifyUser(req: Request, res: Response, next: NextFunction) {
     try {
@@ -152,7 +155,7 @@ class AuthRouter extends MainRouter {
   }
 
   @AuthGuard()
-  @Middlewares([validate(AuthZODSchema.validateOTPSchema)])
+  @RequestBody(AuthZODSchema.validateOTPSchema, 'validateOTPSchema')
   @Post('/confirm-phone-number')
   async confirmPhoneNumber(req: Request, res: Response, next: NextFunction) {
     try {
@@ -166,7 +169,7 @@ class AuthRouter extends MainRouter {
   }
 
   @AuthGuard()
-  @Middlewares([validate(AuthZODSchema.validateOTPSchema)])
+  @RequestBody(AuthZODSchema.validateOTPSchema, 'validateOTPSchema')
   @Post('/confirm-verification-otp')
   async confirmVerificationOtp(req: Request, res: Response, next: NextFunction) {
     try {
@@ -204,8 +207,8 @@ class AuthRouter extends MainRouter {
   }
 
   @AuthGuard()
+  @RequestBody(AuthZODSchema.setPermissionSchema, 'setPermissionSchema')
   @Post('/set-permission')
-  @Middlewares([validate(AuthZODSchema.setPermissionSchema)])
   async setPermission(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TSetPermissionSchema = req.body;
