@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AuthRepository } from '@/repositories/auth.repo';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
 import { AuthZODSchema } from '@/schemas/auth/auth.schema';
-import { AuthGuard, Middlewares, Post, RequestBody } from '@/decorators/router.decorator';
+import { AuthGuard, Post, RequestBody } from '@/decorators/router.decorator';
 import { MainRouter } from '../router';
 import { parseAPIVersion } from '@/config/app.config';
 

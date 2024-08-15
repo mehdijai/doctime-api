@@ -1,17 +1,20 @@
-import { authenticateJWT } from '@/middlewares/jwt.middleware';
-import { validate } from '@/middlewares/validateRequest.middleware';
 import { AppointmentRepository } from '@/repositories/appointment.repo';
 import { AppointmentZODSchema } from '@/schemas/appointment/appointment.schema';
+import { NextFunction, Request, Response } from 'express';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { NextFunction, Request, Response, Router } from 'express';
+import { AuthGuard, Delete, Get, Post, Put, RequestBody } from '@/decorators/router.decorator';
+import { MainRouter } from '../router';
+import { parseAPIVersion } from '@/config/app.config';
 
-const AppointmentsRoutes = Router();
+class AppointmentsRouter extends MainRouter {
+  constructor(prefix: string) {
+    super(prefix, 'Appointments');
+  }
 
-AppointmentsRoutes.post(
-  '/',
-  authenticateJWT,
-  validate(AppointmentZODSchema.createAppointmentSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @RequestBody(AppointmentZODSchema.createAppointmentSchema, 'createAppointmentSchema')
+  @Post('/')
+  async createAppointment(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TCreateAppointmentSchema = req.body;
       const resBody = await AppointmentRepository.createAppointment(body);
@@ -21,12 +24,11 @@ AppointmentsRoutes.post(
       next(err);
     }
   }
-);
-AppointmentsRoutes.get(
-  '/',
-  authenticateJWT,
-  validate(AppointmentZODSchema.searchAppointmentSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @RequestBody(AppointmentZODSchema.searchAppointmentSchema, 'searchAppointmentSchema')
+  @Get('/')
+  async getAppointments(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TSearchAppointmentSchema = req.body;
       const resBody = await AppointmentRepository.getAppointments(body);
@@ -36,11 +38,10 @@ AppointmentsRoutes.get(
       next(err);
     }
   }
-);
-AppointmentsRoutes.get(
-  '/:id',
-  authenticateJWT,
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @Get('/:id')
+  async getAppointment(req: Request, res: Response, next: NextFunction) {
     try {
       const id: string = req.params.id;
       const resBody = await AppointmentRepository.getAppointment(id);
@@ -50,12 +51,11 @@ AppointmentsRoutes.get(
       next(err);
     }
   }
-);
-AppointmentsRoutes.put(
-  '/',
-  authenticateJWT,
-  validate(AppointmentZODSchema.updateAppointmentSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @RequestBody(AppointmentZODSchema.updateAppointmentSchema, 'updateAppointmentSchema')
+  @Put('/')
+  async updateAppointment(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TUpdateAppointmentSchema = req.body;
       const resBody = await AppointmentRepository.updateAppointment(body);
@@ -65,12 +65,11 @@ AppointmentsRoutes.put(
       next(err);
     }
   }
-);
-AppointmentsRoutes.delete(
-  '/',
-  authenticateJWT,
-  validate(AppointmentZODSchema.deleteAppointmentSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @RequestBody(AppointmentZODSchema.deleteAppointmentSchema, 'deleteAppointmentSchema')
+  @Delete('/')
+  async deleteAppointment(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TDeleteAppointmentSchema = req.body;
       const resBody = await AppointmentRepository.deleteAppointment(body);
@@ -80,6 +79,7 @@ AppointmentsRoutes.delete(
       next(err);
     }
   }
-);
+}
 
-export default AppointmentsRoutes;
+const appointmentsRoute = new AppointmentsRouter(parseAPIVersion(1) + '/appointments');
+export const appointmentsRoutes = appointmentsRoute.getRoute(appointmentsRoute);

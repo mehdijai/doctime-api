@@ -15,9 +15,9 @@ import { requireVerifiedPhone } from '@/middlewares/requireVerifiedPhone.middlew
 import mailConfig, { ProvidersList } from '@/config/mail.config';
 import { MainRouter } from '../router';
 import { AuthGuard, Get, Middlewares } from '@/decorators/router.decorator';
-import PatientsRoutes from './patients.route';
-import DoctorsRoutes from './doctors.route';
-import AppointmentsRoutes from './appointments.route';
+import { patientsRoutes } from './patients.route';
+import { doctorsRoutes } from './doctors.route';
+import { appointmentsRoutes } from './appointments.route';
 
 class IndexRouter extends MainRouter {
   constructor(prefix: string) {
@@ -129,6 +129,6 @@ const v1Router = new IndexRouter(parseAPIVersion(1));
 export const v1Routes = v1Router.getRoute(v1Router);
 
 v1Routes.use('/auth', authRoutes);
-v1Routes.use('/patients', PatientsRoutes);
-v1Routes.use('/doctors', DoctorsRoutes);
-v1Routes.use('/appointments', AppointmentsRoutes);
+v1Routes.use('/patients', patientsRoutes);
+v1Routes.use('/doctors', doctorsRoutes);
+v1Routes.use('/appointments', appointmentsRoutes);

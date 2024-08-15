@@ -1,20 +1,31 @@
-import { authenticateJWT } from '@/middlewares/jwt.middleware';
 import { checkPermission } from '@/middlewares/permission.middleware';
-import { validate } from '@/middlewares/validateRequest.middleware';
 import { DoctorRepository } from '@/repositories/doctor.repo';
 import { DoctorZODSchema } from '@/schemas/doctor/doctor.schema';
 import { PermissionModel, PermissionVerb } from '@/services/permissions.service';
+import { NextFunction, Request, Response } from 'express';
 import HttpStatusCode from '@/utils/HTTPStatusCodes';
-import { NextFunction, Request, Response, Router } from 'express';
+import {
+  AuthGuard,
+  Delete,
+  Get,
+  Middlewares,
+  Post,
+  Put,
+  RequestBody,
+} from '@/decorators/router.decorator';
+import { MainRouter } from '../router';
+import { parseAPIVersion } from '@/config/app.config';
 
-const DoctorsRoutes = Router();
+class DoctorsRouter extends MainRouter {
+  constructor(prefix: string) {
+    super(prefix, 'Doctors');
+  }
 
-DoctorsRoutes.post(
-  '/',
-  authenticateJWT,
-  checkPermission(PermissionModel.DOCTOR, PermissionVerb.CREATE),
-  validate(DoctorZODSchema.createDoctorSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Middlewares([checkPermission(PermissionModel.DOCTOR, PermissionVerb.CREATE)])
+  @RequestBody(DoctorZODSchema.createDoctorSchema, 'createDoctorSchema')
+  @Post('/')
+  async createDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TCreateDoctorSchema = req.body;
       const resBody = await DoctorRepository.createDoctor(body);
@@ -24,13 +35,12 @@ DoctorsRoutes.post(
       next(err);
     }
   }
-);
-DoctorsRoutes.get(
-  '/',
-  authenticateJWT,
-  checkPermission(PermissionModel.DOCTOR, PermissionVerb.READ),
-  validate(DoctorZODSchema.searchDoctorSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @Middlewares([checkPermission(PermissionModel.DOCTOR, PermissionVerb.READ)])
+  @RequestBody(DoctorZODSchema.searchDoctorSchema, 'searchDoctorSchema')
+  @Get('/')
+  async getDoctors(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TSearchDoctorSchema = req.body;
       const resBody = await DoctorRepository.getDoctors(body);
@@ -40,12 +50,11 @@ DoctorsRoutes.get(
       next(err);
     }
   }
-);
-DoctorsRoutes.get(
-  '/:docId',
-  checkPermission(PermissionModel.DOCTOR, PermissionVerb.READ),
-  authenticateJWT,
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @Middlewares([checkPermission(PermissionModel.DOCTOR, PermissionVerb.READ)])
+  @Get('/:docId')
+  async getDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.docId;
       const resBody = await DoctorRepository.getDoctor(id);
@@ -55,13 +64,12 @@ DoctorsRoutes.get(
       next(err);
     }
   }
-);
-DoctorsRoutes.put(
-  '/',
-  authenticateJWT,
-  checkPermission(PermissionModel.DOCTOR, PermissionVerb.UPDATE),
-  validate(DoctorZODSchema.updateDoctorSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @Middlewares([checkPermission(PermissionModel.DOCTOR, PermissionVerb.UPDATE)])
+  @RequestBody(DoctorZODSchema.updateDoctorSchema, 'updateDoctorSchema')
+  @Put('/')
+  async updateDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TUpdateDoctorSchema = req.body;
       const resBody = await DoctorRepository.updateDoctor(body);
@@ -71,13 +79,12 @@ DoctorsRoutes.put(
       next(err);
     }
   }
-);
-DoctorsRoutes.delete(
-  '/',
-  authenticateJWT,
-  checkPermission(PermissionModel.DOCTOR, PermissionVerb.DELETE),
-  validate(DoctorZODSchema.deleteDoctorSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+
+  @AuthGuard()
+  @Middlewares([checkPermission(PermissionModel.DOCTOR, PermissionVerb.DELETE)])
+  @RequestBody(DoctorZODSchema.deleteDoctorSchema, 'deleteDoctorSchema')
+  @Delete('/')
+  async deleteDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TDeleteDoctorSchema = req.body;
       const resBody = await DoctorRepository.deleteDoctor(body);
@@ -87,14 +94,12 @@ DoctorsRoutes.delete(
       next(err);
     }
   }
-);
 
-DoctorsRoutes.post(
-  '/confirm-delete',
-  authenticateJWT,
-  checkPermission(PermissionModel.DOCTOR, PermissionVerb.DELETE),
-  validate(DoctorZODSchema.validateDeleteSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  @AuthGuard()
+  @Middlewares([checkPermission(PermissionModel.DOCTOR, PermissionVerb.DELETE)])
+  @RequestBody(DoctorZODSchema.validateDeleteSchema, 'validateDeleteSchema')
+  @Post('/confirm-delete')
+  async conformDeleteDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const body: TValidateDeleteSchema = req.body;
       const resBody = await DoctorRepository.confirmDeleteDoctor(body);
@@ -104,6 +109,7 @@ DoctorsRoutes.post(
       next(err);
     }
   }
-);
+}
 
-export default DoctorsRoutes;
+const doctorsRoute = new DoctorsRouter(parseAPIVersion(1) + '/doctors');
+export const doctorsRoutes = doctorsRoute.getRoute(doctorsRoute);

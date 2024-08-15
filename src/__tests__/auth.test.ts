@@ -29,7 +29,7 @@ describe('Test Auth system', () => {
       .send(userPayload)
       .set('Accept', 'application/json');
 
-    await wait(1000);
+    await wait(2000);
     userPayload.verificationToken = testEmails('Verify Email');
 
     expect(response.status).toBe(HttpStatusCode.OK);
@@ -522,7 +522,7 @@ describe('Test Auth system', () => {
       .set('Authorization', 'Bearer ' + userPayload.accessToken)
       .set('Accept', 'application/json');
 
-    await wait(1000);
+    await wait(2000);
     userPayload.updatePasswordToken = testEmails('Update Password');
 
     expect(response.status).toBe(HttpStatusCode.OK);
